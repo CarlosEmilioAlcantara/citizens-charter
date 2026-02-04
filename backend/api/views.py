@@ -1,11 +1,15 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from .models import Office, User
-from .serializers import OfficeSerializer, UserSerializer
+from .serializers import OfficeSerializer, UserSerializer, MyTokenObtainPairSerializer
 
 # Create your views here.
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
 class OfficeView(APIView):
     def post(self, request):
         serializer = OfficeSerializer(data=request.data)

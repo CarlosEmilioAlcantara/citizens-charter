@@ -1,7 +1,10 @@
 from django.urls import path
-from .views import OfficeView, UserView
+from rest_framework_simplejwt.views import TokenRefreshView
+from .views import OfficeView, UserView, MyTokenObtainPairView
 
 urlpatterns = [
+    path('token', MyTokenObtainPairView.as_view(), name='get_token'),
+    path('token/refresh', TokenRefreshView.as_view(), name='refresh_token'),
     path('office/create', OfficeView.as_view(), name='create_office'),
     path('office/delete/<int:pk>', OfficeView.as_view(), name='delete_office'),
     path('office/update/<int:pk>', OfficeView.as_view(), name='update_office'),
