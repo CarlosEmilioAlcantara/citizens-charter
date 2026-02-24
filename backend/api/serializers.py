@@ -1,4 +1,4 @@
-from .models import Office, Service, User
+from .models import Office, Position, Requirement, Service, Step, User 
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -55,7 +55,21 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class PositionSerializer(serializers.ModelSerializer):
+    office = serializers.PrimaryKeyRelatedField(
+        queryset=Office.objects.all()
+    )
+
+    class Meta:
+        model = Position
+        fields = ['name', 'office']
+        extra_kwargs = {'office': {'read_only': True}}
+
 class ServiceSerializer(serializers.ModelSerializer):
+    classification_types = serializers.MultipleChoiceField(
+        choices = Service.CLASSIFICATION_CHOICES
+    )
+
     class Meta:
         model = Service
         fields = [
@@ -68,3 +82,23 @@ class ServiceSerializer(serializers.ModelSerializer):
             'office',
         ]
         extra_kwargs = {'office': {'read_only': True}}
+
+class RequirementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Requirement
+        fields = ['name', 'where_to_secure', 'service']
+        extra_kwargs = {'service': {'read_only': True}}
+
+class StepSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Step
+        fields = [
+            'name', 
+            'action',
+            'fee',
+            'legal_basis',
+            'processing_time',
+            'service',
+            'position',
+        ]
+        extra_kwargs = {'service': {'read_only': True}}

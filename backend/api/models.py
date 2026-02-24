@@ -60,6 +60,20 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.name
 
+class Position(models.Model):
+    name = models.CharField(max_length=180)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    office = models.ForeignKey(
+        Office,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.name
+
 class Service(models.Model):
     name = models.CharField(max_length=180)
     description = models.CharField(max_length=255) 
@@ -75,10 +89,10 @@ class Service(models.Model):
     )
 
     CLASSIFICATION_CHOICES = (
-        ('G2B', 'G2B - Government to Business'),
-        ('G2C', 'G2C - Government to Client'),
-        ('G2E', 'G2E - Government to Employee'),
-        ('G2G', 'G2G - Government to Government'),
+        ('g2b', 'G2B - Government to Business'),
+        ('g2c', 'G2C - Government to Client'),
+        ('g2e', 'G2E - Government to Employee'),
+        ('g2g', 'G2G - Government to Government'),
     )
     classification_types = MultiSelectField(
         max_length=32, 
@@ -124,22 +138,6 @@ class Step(models.Model):
         on_delete=models.CASCADE
     )
 
-class Position(models.Model):
-    name = models.CharField(max_length=180)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    office = models.ForeignKey(
-        Office,
-        on_delete=models.CASCADE
+    position = models.ManyToManyField(
+        Position
     )
-
-    step = models.ManyToManyField(
-        Step,
-        blank=True,
-        null=True
-    )
-
-    def __str__(self):
-        return self.name
