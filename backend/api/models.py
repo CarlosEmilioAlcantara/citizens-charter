@@ -1,6 +1,7 @@
 import datetime
 from datetime import timezone
 from django.db import models
+from multiselectfield import MultiSelectField
 from django.core.validators import MinLengthValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
@@ -13,6 +14,11 @@ class UserManager(BaseUserManager):
         return user
     
     def create_user(self, name, password, office, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(name, password, office, **extra_fields)
+
+    def create_staff(self, name, password, office, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', False)
         return self._create_user(name, password, office, **extra_fields)
@@ -54,66 +60,86 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.name
 
-# class Service(models.Model):
-#     name = models.CharField(max_length=180)
-#     description = models.CharField(max_length=255) 
+class Service(models.Model):
+    name = models.CharField(max_length=180)
+    description = models.CharField(max_length=255) 
 
-#     CLASSIFICATION_CHOICES = (
-#         ('simple', 'Simple'),
-#         ('complicated', 'Komplikado'),
-#         ('technical', 'Lubhang Teknikal'),
-#     )
-#     classification = models.CharField(
-#         max_length=32,
-#         choices=CLASSIFICATION_CHOICES,
-#         default='simple',
-#     )
+    TRANSACTION_CHOICES = (
+        ('simple', 'Simple'),
+        ('complicated', 'Komplikado'),
+        ('technical', 'Lubhang Teknikal'),
+    )
+    transaction = models.CharField(
+        max_length=12,
+        choices=TRANSACTION_CHOICES
+    )
 
-#     TRANSACTION_CHOICES = (
-#         ('G2B', 'G2B - Government to Business'),
-#         ('G2C', 'G2C - Government to Client'),
-#         ('G2E', 'G2E - Government to Employee'),
-#         ('G2G', 'G2G - Government to Government'),
-#         ('G2B,G2C', 
-#             '''
-#                G2B - Government to Business, 
-#                G2C - Government to Client
-#             '''
-#         ),
-#         ('G2B,G2E', 
-#             '''
-#                G2B - Government to Business, 
-#                G2C - Government to Client
-#             '''
-#         ),
-#         ('G2B,G2G', 
-#             '''
-#                G2B - Government to Business, 
-#                G2C - Government to Client
-#             '''
-#         ),
-#         ('G2C,G2E', 
-#             '''
-#                 G2C - Government to Client, 
-#                 G2E - Government to Employee
-#             '''
-#         ),
-#         ('G2C,G2E,G2G', 
-#             '''
-#                 G2C - Government to Client, 
-#                 G2E - Government to Employee,
-#                 G2G - Government to Government
-#             '''
-#         )
-#         ('G2E,G2G', 
-#             '''
-#                 G2C - Government to Client, 
-#                 G2E - Government to Employee,
-#                 G2G - Government to Government
-#             '''
-#         )
-#     )
-#     transaction_types = models.CharField(max_length=180)
+    CLASSIFICATION_CHOICES = (
+        ('G2B', 'G2B - Government to Business'),
+        ('G2C', 'G2C - Government to Client'),
+        ('G2E', 'G2E - Government to Employee'),
+        ('G2G', 'G2G - Government to Government'),
+    )
+    classification_types = MultiSelectField(
+        max_length=32, 
+        choices=CLASSIFICATION_CHOICES, 
+        max_choices=4
+    )
 
-#     availers = models.CharField(max_length=180)
-#     is_subservice = models.BooleanField(default=False)
+    availers = models.CharField(max_length=180)
+    is_subservice = models.BooleanField(default=False)
+
+    office = models.ForeignKey(
+        Office,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.name
+
+class Requirement(models.Model):
+    name = models.CharField(max_length=180)
+    where_to_secure = models.CharField(max_length=180)
+
+    service = models.ForeignKey(
+        Service,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.name
+
+class Step(models.Model):
+    name = models.CharField(max_length=180)
+    action = models.CharField(max_length=180)
+    fee = models.DecimalField(max_digits=8, decimal_places=2)
+    legal_basis = models.CharField(max_length=180)
+    processing_time = models.BigIntegerField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    service = models.ForeignKey(
+        Service,
+        on_delete=models.CASCADE
+    )
+
+class Position(models.Model):
+    name = models.CharField(max_length=180)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    office = models.ForeignKey(
+        Office,
+        on_delete=models.CASCADE
+    )
+
+    step = models.ManyToManyField(
+        Step,
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return self.name
