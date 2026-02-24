@@ -1,21 +1,19 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import (
-    CreateRequirementView,
-    CreateStepView,
-    OfficeView,
-    PositionView,
-    RequirementView, 
-    ServiceView,
-    UserView, 
-    MyTokenObtainPairView
-)
+from .views.token_views import MyTokenObtainPairView
+from .views.office_views import OfficeView, OfficeListView
+from .views.user_views import UserView
+from .views.position_views import PositionView
+from .views.service_views import ServiceView
+from .views.requirement_views import CreateRequirementView, RequirementView
+from .views.step_views import CreateStepView, StepView
 
 urlpatterns = [
     path('token', MyTokenObtainPairView.as_view(), name='get_token'),
     path('token/refresh', TokenRefreshView.as_view(), name='refresh_token'),
     path('office/create', OfficeView.as_view(), name='create_office'),
     path('office/<int:pk>', OfficeView.as_view(), name='update_delete_office'),
+    path('offices', OfficeListView.as_view(), name='fetch_offices'),
     path('user/create', UserView.as_view(), name='create_user'),
     path('user/<int:pk>', UserView.as_view(), name='update_delete_user'),
     path('position/create', PositionView.as_view(), name='create_position'),

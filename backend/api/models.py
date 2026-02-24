@@ -54,7 +54,8 @@ class User(AbstractBaseUser):
 
     office = models.ForeignKey(
         Office,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='users'
     )
 
     def __str__(self):
@@ -68,7 +69,8 @@ class Position(models.Model):
 
     office = models.ForeignKey(
         Office,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='positions'
     )
 
     def __str__(self):
@@ -105,7 +107,8 @@ class Service(models.Model):
 
     office = models.ForeignKey(
         Office,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='services'
     )
 
     def __str__(self):
@@ -117,7 +120,8 @@ class Requirement(models.Model):
 
     service = models.ForeignKey(
         Service,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='requirements'
     )
 
     def __str__(self):
@@ -135,7 +139,8 @@ class Step(models.Model):
 
     service = models.ForeignKey(
         Service,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='steps'
     )
 
     position = models.ManyToManyField(

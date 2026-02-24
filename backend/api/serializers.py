@@ -17,9 +17,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
     
 class OfficeSerializer(serializers.ModelSerializer):
+    service_count = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Office
-        fields = ['name']
+        fields = ['id', 'name', 'service_count']
 
 class UserSerializer(serializers.ModelSerializer):
     # Get all possible foreign keys
