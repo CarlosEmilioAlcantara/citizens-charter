@@ -7,9 +7,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from ..models import Office, Service
 from ..serializers import ServiceSerializer
+from ..permissions import IsInOffice
 
 class ServiceView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsInOffice]
 
     def post(self, request):
         office = get_object_or_404(Office, pk=self.request.user.office_id)
@@ -27,19 +28,13 @@ class ServiceView(APIView):
 
     def delete(self, request, pk):
         service = get_object_or_404(Service, pk=pk)
-
-        if service.office_id != self.request.user.office_id:
-            raise PermissionDenied('You are not part of this Office.')
-        
+        self.check_object_permissions(request, service)
         service.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, pk):
         service = get_object_or_404(Service, pk=pk)
-
-        if service.office_id != self.request.user.office_id:
-            raise PermissionDenied('You are not part of this Office.')
-
+        self.check_object_permissions(request, service)
         serializer = ServiceSerializer(service, data=request.data)
 
         if serializer.is_valid():
@@ -54,7 +49,7 @@ class ServiceView(APIView):
 
 class ServiceListView(ListAPIView):
     queryset = Service.objects.all().order_by('id')
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsInOffice]
     serializer_class = ServiceSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']

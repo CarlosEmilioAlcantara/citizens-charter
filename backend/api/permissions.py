@@ -1,0 +1,25 @@
+from rest_framework import permissions
+from .models import Office
+
+class IsSuperuser(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_superuser:
+            return True
+
+class IsInOffice(permissions.BasePermission):
+    def has_permission(self, request, view):
+        try:
+            office = Office.objects.get(pk=request.user.office_id)
+        except Office.DoesNotExist:
+            return False
+
+        if office.pk == request.user.office_id:
+            return True
+        else:
+            return False
+
+    def has_object_permission(self, request, view, obj):
+        if obj.office_id == request.user.office_id:
+            return True
+        else:
+            return False

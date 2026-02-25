@@ -7,14 +7,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from ..models import User
 from ..serializers import UserSerializer
+from ..permissions import IsSuperuser
 
 class UserView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsSuperuser]
 
     def post(self, request):
-        if not self.request.user.is_superuser:
-            raise PermissionDenied('Superadmin only.')
-
         serializer = UserSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -28,16 +26,11 @@ class UserView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, pk):
-        if not self.request.user.is_superuser:
-            raise PermissionDenied('Superadmin only.')
         user = get_object_or_404(User, pk=pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, pk):
-        if not self.request.user.is_superuser:
-            raise PermissionDenied('Superadmin only.')
-
         user = get_object_or_404(User, pk=pk)
         serializer = UserSerializer(user, data=request.data)
 
@@ -53,13 +46,10 @@ class UserView(APIView):
 
 class UserListView(ListAPIView):
     queryset = User.objects.all().order_by('id')
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsSuperuser]
     serializer_class = UserSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
     def get_queryset(self):
-        if self.queryset.user.is_superuser:
-            return self.queryset
-        else:
-            raise PermissionDenied('Superadmin only.')
+        return self.queryset

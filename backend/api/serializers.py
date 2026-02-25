@@ -18,10 +18,12 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     
 class OfficeSerializer(serializers.ModelSerializer):
     service_count = serializers.IntegerField(read_only=True)
+    user_count = serializers.IntegerField(read_only=True)
+    position_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Office
-        fields = ['id', 'name', 'service_count']
+        fields = ['id', 'name', 'service_count', 'user_count', 'position_count']
 
 class UserSerializer(serializers.ModelSerializer):
     # Get all possible foreign keys
@@ -31,7 +33,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['name', 'password', 'is_staff', 'is_superuser', 'office']
+        fields = [
+            'id', 
+            'name', 
+            'password', 
+            'is_staff', 
+            'is_superuser', 
+            'office',
+        ]
         extra_kwargs = {
             'password': {'write_only': True},
             'office': {'read_only': True},
@@ -64,7 +73,7 @@ class PositionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Position
-        fields = ['name', 'office']
+        fields = ['id', 'name', 'office']
         extra_kwargs = {'office': {'read_only': True}}
 
 class ServiceSerializer(serializers.ModelSerializer):
@@ -75,6 +84,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = [
+            'id',
             'name', 
             'description', 
             'transaction', 
@@ -88,13 +98,14 @@ class ServiceSerializer(serializers.ModelSerializer):
 class RequirementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Requirement
-        fields = ['name', 'where_to_secure', 'service']
+        fields = ['id', 'name', 'where_to_secure', 'service']
         extra_kwargs = {'service': {'read_only': True}}
 
 class StepSerializer(serializers.ModelSerializer):
     class Meta:
         model = Step
         fields = [
+            'id',
             'name', 
             'action',
             'fee',
