@@ -11,6 +11,10 @@ from .views.requirement_views import (
     RequirementListView,
 )
 from .views.step_views import CreateStepView, StepView, StepListView
+from .views.analytics_views import (
+    OfficeAnalyticsView, 
+    OfficeAnalyticsListView,
+)
 
 urlpatterns = [
     path('token', MyTokenObtainPairView.as_view(), name='get_token'),
@@ -56,5 +60,15 @@ urlpatterns = [
         name='create_step'
     ),
     path('step/<int:pk>', StepView.as_view(), name='update_delete_step'),
-    path('service/<int:pk>/steps', StepListView.as_view(), name='fetch_steps')
+    path('service/<int:pk>/steps', StepListView.as_view(), name='fetch_steps'),
+    path(
+        'office-analytics', 
+        OfficeAnalyticsView.as_view(), 
+        name='analysis_office'
+    ),
+    path(
+        'office-analytics-list', 
+        OfficeAnalyticsListView.as_view(), 
+        name='fetch_analysis_office'
+    ),
 ]

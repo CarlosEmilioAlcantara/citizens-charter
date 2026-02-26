@@ -95,6 +95,25 @@ class ServiceSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {'office': {'read_only': True}}
 
+class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
+    requirement_count = serializers.IntegerField(read_only=True)
+    step_count = serializers.IntegerField(read_only=True)
+    total_price = serializers.IntegerField(read_only=True)
+    total_time = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Service
+        fields = [
+            'id',
+            'name', 
+            'office',
+            'requirement_count',
+            'step_count',
+            'total_price',
+            'total_time',
+        ]
+        extra_kwargs = {'office': {'read_only': True}}
+
 class RequirementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Requirement

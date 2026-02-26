@@ -9,13 +9,8 @@ class IsSuperuser(permissions.BasePermission):
 class IsInOffice(permissions.BasePermission):
     def has_permission(self, request, view):
         try:
-            office = Office.objects.get(pk=request.user.office_id)
+            _ = Office.objects.get(pk=request.user.office_id)
         except Office.DoesNotExist:
-            return False
-
-        if office.pk == request.user.office_id:
-            return True
-        else:
             return False
 
     def has_object_permission(self, request, view, obj):
