@@ -14,6 +14,7 @@ from .views.step_views import CreateStepView, StepView, StepListView
 from .views.analytics_views import (
     OfficeAnalyticsView, 
     OfficeAnalyticsListView,
+    CitizensCharterAnalyticsView,
 )
 
 urlpatterns = [
@@ -70,5 +71,10 @@ urlpatterns = [
         'office-analytics-list', 
         OfficeAnalyticsListView.as_view(), 
         name='fetch_analysis_office'
+    ),
+    path(
+        'citizens-charter-analytics', 
+        CitizensCharterAnalyticsView.as_view(), 
+        name='analysis_citizens_charter'
     ),
 ]

@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from ..serializers import OfficeAnalyticsListSerializer
 from ..permissions import IsInOffice
-from ..models import Service, Requirement, Step
+from ..models import Service, Requirement, Step, Office
 
 class OfficeAnalyticsView(APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
@@ -71,3 +71,19 @@ class OfficeAnalyticsListView(ListAPIView):
             office_id=self.request.user.office_id
         )
         return excluded_queryset
+
+class CitizensCharterAnalyticsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get(self, request):
+        offices = Office.objects.prefetch_related(
+            'services'
+        ).annotate(
+            total_service=Count('services'),
+            total_requirement=Count('services__requirements'),
+            total_step=Count('services__steps'),
+            total_action=Count('services__steps__action'),
+            total_time=Sum('services__steps__processing_time')
+        ).values()
+
+        return Response(data=offices, status=status.HTTP_200_OK)

@@ -1,5 +1,3 @@
-import datetime
-from datetime import timezone
 from django.db import models
 from multiselectfield import MultiSelectField
 from django.core.validators import MinLengthValidator
