@@ -25,7 +25,8 @@ class OfficeView(APIView):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    def delete(self, request, pk):
+    # TODO; Mass deletes and edits
+    def delete(self, request, pk=None):
         office = get_object_or_404(Office, pk=pk)
         office.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -43,6 +44,45 @@ class OfficeView(APIView):
             )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class DeleteOfficeView(APIView):
+    permission_classes = [IsAuthenticated, IsSuperuser]
+
+    def post(self, request):
+        data = request.data.get('offices')
+        offices = Office.objects.filter(pk__in=data)
+        existing_offices = list(offices.values_list('pk', flat=True))
+        missing = set(data) - set(existing_offices)
+
+        if missing:
+            return Response(
+                data=f"Values {missing} sent are missing.",
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        to_delete = Office.objects.filter(pk__in=existing_offices)
+        to_delete.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+# class UpdateOfficeView(APIView):
+#     permission_classes = [IsAuthenticated, IsSuperuser]
+
+    # TODO; Fix mass update
+    # def post(self, request):
+    #     data = request.data.get('offices')
+    #     print(data)
+    #     offices = Office.objects.filter(pk__in=data['pk'])
+    #     existing_offices = list(offices.values_list('pk', flat=True))
+    #     missing = set(data) - set(existing_offices)
+
+    #     if missing:
+    #         return Response(
+    #             data=f"Values {missing} sent are missing.",
+    #             status=status.HTTP_400_BAD_REQUEST
+    #         )
+
+    #     return Response(status=status.HTTP_200_OK)
 
 class OfficeListView(ListAPIView):
     queryset = Office.objects.prefetch_related(
