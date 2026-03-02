@@ -16,6 +16,64 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
 
+class BaseBulkUpdateSerializer(serializers.ListSerializer):
+    def to_internal_value(self, data):
+        if self.instance is None:
+            return super().to_internal_value(data)
+
+        instance_map = {
+            obj.pk: obj for obj in self.instance
+        }
+
+        ret = []
+        errors = []
+
+        for item in data:
+            pk = item.get('pk')
+            instance = instance_map.get(pk)
+
+            if not instance:
+                errors.append(
+                    {'pk': f"Object with pk={pk} does not exist."}
+                )
+                continue
+
+            self.child.instance = instance
+            
+            try:
+                validated = self.child.run_validation(item)
+                ret.append(validated)
+            except serializers.ValidationError as exc:
+                errors.append(exc.detail)
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        return ret
+    
+    def update(self, queryset, validated_data):
+        model = self.child.Meta.model
+
+        instance_map = {obj.pk: obj for obj in queryset}
+        data_map = {item['pk']: item for item in validated_data}
+
+        update_fields = set()
+        instances = []
+
+        for pk, data in data_map.items():
+            instance = instance_map[pk]
+
+            for attr, value in data.items():
+                if attr == 'pk':
+                    continue
+                setattr(instance, attr, value)
+                update_fields.add(attr)
+
+            instances.append(instance)
+
+        model.objects.bulk_update(instances, list(update_fields))
+        return instances
+
 class OfficeSerializer(serializers.ModelSerializer):
     service_count = serializers.IntegerField(read_only=True)
     user_count = serializers.IntegerField(read_only=True)
@@ -25,58 +83,13 @@ class OfficeSerializer(serializers.ModelSerializer):
         model = Office
         fields = ['id', 'name', 'service_count', 'user_count', 'position_count']
 
-class OfficeBulkItemSerializer(serializers.ModelSerializer):
+class OfficeBulkUpdateSerializer(serializers.ModelSerializer):
     pk = serializers.IntegerField()
 
     class Meta:
         model = Office
         fields = ['pk', 'name']        
-
-class OfficeBulkUpdateSerializer(serializers.Serializer):
-    offices = OfficeBulkItemSerializer(many=True)
-
-    def save(self):
-        validated_offices = self.validated_data['offices']
-        pks = [item['pk'] for item in validated_offices]
-
-        instances = Office.objects.filter(pk__in=pks)
-        existing = list(instances.values_list('pk', flat=True))
-        missing = set(pks) - set(existing)
-
-        if missing:
-            raise serializers.ValidationError(
-                f"Some instances, {missing}, do not exist."
-            )
-
-        office_map = {item['pk']: item for item in validated_offices}
-        update_fields = set()
-
-        for office in instances:
-            payload = office_map[office.pk]
-            for attr, value in payload.items():
-                if attr == 'pk':
-                    continue
-                setattr(office, attr, value)
-                update_fields.add(attr)
-
-        Office.objects.bulk_update(list(instances), list(update_fields))
-        return instances
-
-    # def update(self, instances, validated_data):
-    #     instance_map = {obj.pk: obj for obj in instances}
-    #     update_fields = set()
-
-    #     for item in validated_data:
-    #         office = instance_map.get(item['pk'])
-
-    #         for attr, value in item.items():
-    #             if attr == 'pk':
-    #                 continue
-    #             setattr(office, attr, value)
-    #             update_fields.add(attr)
-
-    #     Office.objects.bulk_update(instances, list(update_fields))
-    #     return instances
+        list_serializer_class = BaseBulkUpdateSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     # Get all possible foreign keys

@@ -7,7 +7,7 @@ from .views.office_views import (
     UpdateOfficeView,
     OfficeListView
 )
-from .views.user_views import UserView, UserListView
+from .views.user_views import UserView, DeleteUserView, UserListView
 from .views.position_views import PositionView, PositionListView
 from .views.service_views import (
     ServiceView, 
@@ -37,6 +37,7 @@ urlpatterns = [
     path('offices', OfficeListView.as_view(), name='fetch_offices'),
     path('user/create', UserView.as_view(), name='create_user'),
     path('user/<int:pk>', UserView.as_view(), name='update_delete_user'),
+    path('user/delete', DeleteUserView.as_view(), name='delete_user'),
     path('users', UserListView.as_view(), name='fetch_users'),
     path('position/create', PositionView.as_view(), name='create_position'),
     path(

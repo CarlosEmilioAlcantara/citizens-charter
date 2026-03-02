@@ -7,7 +7,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..models import Office
-from ..serializers import OfficeBulkUpdateSerializer, OfficeSerializer, OfficeBulkItemSerializer
+from ..serializers import OfficeBulkUpdateSerializer, OfficeSerializer
 from ..permissions import IsSuperuser
 
 class OfficeView(APIView):
@@ -49,10 +49,16 @@ class DeleteOfficeView(APIView):
     permission_classes = [IsAuthenticated, IsSuperuser]
 
     def post(self, request):
-        data = request.data.get('offices')
+        data = request.data.get('delete')
         offices = Office.objects.filter(pk__in=data)
-        existing_offices = list(offices.values_list('pk', flat=True))
-        missing = set(data) - set(existing_offices)
+        existing = list(offices.values_list('pk', flat=True))
+        missing = set(data) - set(existing)
+
+        if not data:
+            return Response(
+                data='Cannot delete using an empty dictionary.',
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         if missing:
             return Response(
@@ -60,7 +66,7 @@ class DeleteOfficeView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        to_delete = Office.objects.filter(pk__in=existing_offices)
+        to_delete = Office.objects.filter(pk__in=existing)
         to_delete.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -69,7 +75,14 @@ class UpdateOfficeView(APIView):
     permission_classes = [IsAuthenticated, IsSuperuser]
 
     def post(self, request):
-        serializer = OfficeBulkUpdateSerializer(data=request.data)
+        pks = [item['pk'] for item in request.data]
+        queryset = list(Office.objects.filter(pk__in=pks))
+        serializer = OfficeBulkUpdateSerializer(
+            queryset,
+            data=request.data,
+            many=True,
+            partial=True
+        )
 
         if serializer.is_valid():
             serializer.save()
@@ -79,7 +92,7 @@ class UpdateOfficeView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        return Response(status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class OfficeListView(ListAPIView):
     queryset = Office.objects.prefetch_related(

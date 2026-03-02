@@ -47,10 +47,16 @@ class DeleteUserView(APIView):
     permission_classes = [IsAuthenticated, IsSuperuser]
 
     def post(self, request):
-        data = request.data.get('users')
+        data = request.data.get('delete')
         users = User.objects.filter(pk__in=data)
-        existing_users = list(users.values_list('pk', flat=True))
-        missing = set(data) - set(existing_users)
+        existing = list(users.values_list('pk', flat=True))
+        missing = set(data) - set(existing)
+
+        if not data:
+            return Response(
+                data='Cannot delete using an empty dictionary.',
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         if missing:
             return Response(
@@ -58,7 +64,7 @@ class DeleteUserView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        to_delete = User.objects.filter(pk__in=existing_users)
+        to_delete = User.objects.filter(pk__in=existing)
         to_delete.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
