@@ -50,6 +50,27 @@ class RequirementView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class DeleteRequirementView(APIView):
+    permission_classes = [IsAuthenticated, IsInOffice]
+
+    def post(self, request):
+        data = request.data.get('requirements')
+        requirements = Requirement.objects.filter(pk__in=data)
+        existing_requirements = list(requirements.values_list('pk', flat=True))
+        missing = set(data) - set(existing_requirements)
+
+        if missing:
+            return Response(
+                data=f"Values {missing} sent are missing.",
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        to_delete = Requirement.objects.filter(pk__in=existing_requirements)
+        self.check_object_permissions(request, to_delete)
+        to_delete.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 class RequirementListView(ListAPIView):
     queryset = Requirement.objects.all().order_by('id')
     permission_classes = [IsAuthenticated, IsInOffice]

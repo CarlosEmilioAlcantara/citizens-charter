@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 from django.db.models import Count
 from rest_framework import status, filters
 from rest_framework.views import APIView
@@ -6,7 +7,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..models import Office
-from ..serializers import OfficeSerializer
+from ..serializers import OfficeBulkUpdateSerializer, OfficeSerializer, OfficeBulkItemSerializer
 from ..permissions import IsSuperuser
 
 class OfficeView(APIView):
@@ -25,7 +26,6 @@ class OfficeView(APIView):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    # TODO; Mass deletes and edits
     def delete(self, request, pk=None):
         office = get_object_or_404(Office, pk=pk)
         office.delete()
@@ -56,7 +56,7 @@ class DeleteOfficeView(APIView):
 
         if missing:
             return Response(
-                data=f"Values {missing} sent are missing.",
+                data=f"Some instances, {missing}, do not exist.",
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -65,24 +65,21 @@ class DeleteOfficeView(APIView):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# class UpdateOfficeView(APIView):
-#     permission_classes = [IsAuthenticated, IsSuperuser]
+class UpdateOfficeView(APIView):
+    permission_classes = [IsAuthenticated, IsSuperuser]
 
-    # TODO; Fix mass update
-    # def post(self, request):
-    #     data = request.data.get('offices')
-    #     print(data)
-    #     offices = Office.objects.filter(pk__in=data['pk'])
-    #     existing_offices = list(offices.values_list('pk', flat=True))
-    #     missing = set(data) - set(existing_offices)
+    def post(self, request):
+        serializer = OfficeBulkUpdateSerializer(data=request.data)
 
-    #     if missing:
-    #         return Response(
-    #             data=f"Values {missing} sent are missing.",
-    #             status=status.HTTP_400_BAD_REQUEST
-    #         )
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-    #     return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)
 
 class OfficeListView(ListAPIView):
     queryset = Office.objects.prefetch_related(

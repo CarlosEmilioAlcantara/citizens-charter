@@ -15,7 +15,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['is_superuser'] = user.is_superuser
 
         return token
-    
+
 class OfficeSerializer(serializers.ModelSerializer):
     service_count = serializers.IntegerField(read_only=True)
     user_count = serializers.IntegerField(read_only=True)
@@ -24,6 +24,59 @@ class OfficeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Office
         fields = ['id', 'name', 'service_count', 'user_count', 'position_count']
+
+class OfficeBulkItemSerializer(serializers.ModelSerializer):
+    pk = serializers.IntegerField()
+
+    class Meta:
+        model = Office
+        fields = ['pk', 'name']        
+
+class OfficeBulkUpdateSerializer(serializers.Serializer):
+    offices = OfficeBulkItemSerializer(many=True)
+
+    def save(self):
+        validated_offices = self.validated_data['offices']
+        pks = [item['pk'] for item in validated_offices]
+
+        instances = Office.objects.filter(pk__in=pks)
+        existing = list(instances.values_list('pk', flat=True))
+        missing = set(pks) - set(existing)
+
+        if missing:
+            raise serializers.ValidationError(
+                f"Some instances, {missing}, do not exist."
+            )
+
+        office_map = {item['pk']: item for item in validated_offices}
+        update_fields = set()
+
+        for office in instances:
+            payload = office_map[office.pk]
+            for attr, value in payload.items():
+                if attr == 'pk':
+                    continue
+                setattr(office, attr, value)
+                update_fields.add(attr)
+
+        Office.objects.bulk_update(list(instances), list(update_fields))
+        return instances
+
+    # def update(self, instances, validated_data):
+    #     instance_map = {obj.pk: obj for obj in instances}
+    #     update_fields = set()
+
+    #     for item in validated_data:
+    #         office = instance_map.get(item['pk'])
+
+    #         for attr, value in item.items():
+    #             if attr == 'pk':
+    #                 continue
+    #             setattr(office, attr, value)
+    #             update_fields.add(attr)
+
+    #     Office.objects.bulk_update(instances, list(update_fields))
+    #     return instances
 
 class UserSerializer(serializers.ModelSerializer):
     # Get all possible foreign keys

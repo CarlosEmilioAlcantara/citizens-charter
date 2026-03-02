@@ -42,6 +42,26 @@ class PositionView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class DeletePositionView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def post(self, request):
+        data = request.data.get('users')
+        position = Position.objects.filter(pk__in=data)
+        existing_positions = list(position.values_list('pk', flat=True))
+        missing = set(data) - set(existing_positions)
+
+        if missing:
+            return Response(
+                data=f"Values {missing} sent are missing.",
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        to_delete = Position.objects.filter(pk__in=existing_positions)
+        to_delete.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 class PositionListView(ListAPIView):
     queryset = Position.objects.all().order_by('id')
     permission_classes = [IsAuthenticated, IsAdminUser]

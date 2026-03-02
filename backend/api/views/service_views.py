@@ -46,6 +46,27 @@ class ServiceView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class DeleteServiceView(APIView):
+    permission_classes = [IsAuthenticated, IsInOffice]
+
+    def post(self, request):
+        data = request.data.get('services')
+        service = Service.objects.filter(pk__in=data)
+        existing_services = list(service.values_list('pk', flat=True))
+        missing = set(data) - set(existing_services)
+
+        if missing:
+            return Response(
+                data=f"Values {missing} sent are missing.",
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        to_delete = Service.objects.filter(pk__in=existing_services)
+        self.check_object_permissions(request, to_delete)
+        to_delete.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 class ServiceListView(ListAPIView):
     queryset = Service.objects.all().order_by('id')
     permission_classes = [IsAuthenticated, IsInOffice]

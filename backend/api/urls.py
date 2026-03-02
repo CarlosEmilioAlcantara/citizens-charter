@@ -9,9 +9,14 @@ from .views.office_views import (
 )
 from .views.user_views import UserView, UserListView
 from .views.position_views import PositionView, PositionListView
-from .views.service_views import ServiceView, ServiceListView
+from .views.service_views import (
+    ServiceView, 
+    DeleteServiceView, 
+    ServiceListView,
+)
 from .views.requirement_views import (
-    CreateRequirementView, 
+    CreateRequirementView,
+    DeleteRequirementView, 
     RequirementView, 
     RequirementListView,
 )
@@ -46,6 +51,7 @@ urlpatterns = [
         ServiceView.as_view(),
         name='update_delete_service'
     ),
+    path('service/delete', DeleteServiceView.as_view(), name='delete_service'),
     path('services', ServiceListView.as_view(), name='fetch_services'),
     path(
         'service/<int:pk>/create-requirement', 
@@ -56,6 +62,11 @@ urlpatterns = [
         'requirement/<int:pk>', 
         RequirementView.as_view(),
         name='update_delete_requirement'
+    ),
+    path(
+        'requirement/delete', 
+        DeleteRequirementView.as_view(),
+        name='delete_requirement'
     ),
     path(
         'service/<int:pk>/requirements',

@@ -42,6 +42,55 @@ class UserView(APIView):
             )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class DeleteUserView(APIView):
+    permission_classes = [IsAuthenticated, IsSuperuser]
+
+    def post(self, request):
+        data = request.data.get('users')
+        users = User.objects.filter(pk__in=data)
+        existing_users = list(users.values_list('pk', flat=True))
+        missing = set(data) - set(existing_users)
+
+        if missing:
+            return Response(
+                data=f"Values {missing} sent are missing.",
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        to_delete = User.objects.filter(pk__in=existing_users)
+        to_delete.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+# class UpdateUserView(APIView):
+#     permission_classes = [IsAuthenticated, IsSuperuser]
+
+#     # TODO; Fix mass update
+#     def post(self, request):
+#         data = request.data.get('users')
+#         user_pks = list(map(lambda dict: dict['pk'], data))
+#         users = User.objects.filter(pk__in=user_pks)
+#         existing_users = list(users.values_list('pk', flat=True))
+#         missing = set(user_pks) - set(existing_users)
+
+#         if missing:
+#             return Response(
+#                 data=f"Values {missing} sent are missing.",
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
+
+#         list_users = list(users)
+#         updates = list(data)
+
+#         for i in range(0, len(user_pks)):
+#             if user_pks[i] == list_users[i].pk:
+#                 list_users[i].name = updates[i].get('name')
+#                 list_users[i].password = updates[i].get('')
+
+#         Office.objects.bulk_update(list_offices, ['name'], batch_size=10)
+
+#         return Response(status=status.HTTP_200_OK)
 
 class UserListView(ListAPIView):
     queryset = User.objects.all().order_by('id')
