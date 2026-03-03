@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from ..mixins import BulkDeleteMixin, BulkUpdateMixin, PkRequiredMixin
 from ..models import Office
 from ..serializers import OfficeBulkUpdateSerializer, OfficeSerializer
 from ..permissions import IsSuperuser
@@ -45,54 +46,45 @@ class OfficeView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class DeleteOfficeView(APIView):
+class DeleteOfficeView(BulkDeleteMixin, APIView):
     permission_classes = [IsAuthenticated, IsSuperuser]
 
-    def post(self, request):
-        data = request.data.get('delete')
-        offices = Office.objects.filter(pk__in=data)
-        existing = list(offices.values_list('pk', flat=True))
-        missing = set(data) - set(existing)
+    def get_queryset(self):
+        return Office.objects.all()
 
-        if not data:
-            return Response(
-                data='Cannot delete using an empty dictionary.',
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if missing:
-            return Response(
-                data=f"Some instances, {missing}, do not exist.",
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        to_delete = Office.objects.filter(pk__in=existing)
-        to_delete.delete()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-class UpdateOfficeView(APIView):
+class UpdateOfficeView(BulkUpdateMixin, APIView):
     permission_classes = [IsAuthenticated, IsSuperuser]
 
-    def post(self, request):
-        pks = [item['pk'] for item in request.data]
-        queryset = list(Office.objects.filter(pk__in=pks))
-        serializer = OfficeBulkUpdateSerializer(
-            queryset,
-            data=request.data,
-            many=True,
-            partial=True
-        )
+    def get_queryset(self):
+        return Office.objects.all()
 
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    def get_serializer_class(self):
+        return OfficeBulkUpdateSerializer
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    # def post(self, request):
+    #     if any('pk' not in item for item in request.data):
+    #         return Response(
+    #             data='Every item must include a pk.',
+    #             status=status.HTTP_400_BAD_REQUEST
+    #         )
+
+    #     pks = [item['pk'] for item in request.data]
+    #     queryset = list(Office.objects.filter(pk__in=pks))
+    #     serializer = OfficeBulkUpdateSerializer(
+    #         queryset,
+    #         data=request.data,
+    #         many=True
+    #     )
+
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #     else:
+    #         return Response(
+    #             serializer.errors,
+    #             status=status.HTTP_400_BAD_REQUEST
+    #         )
+
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
 
 class OfficeListView(ListAPIView):
     queryset = Office.objects.prefetch_related(

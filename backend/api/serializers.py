@@ -132,6 +132,28 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+# class UserBulkUpdateSerializer(serializers.ModelSerializer):
+#     pk = serializers.IntegerField()
+#     office = serializers.PrimaryKeyRelatedField(
+#         queryset=Office.objects.all()
+#     )
+
+#     class Meta:
+#         model = User
+#         fields = [
+#             'pk', 
+#             'name', 
+#             'password', 
+#             'is_staff', 
+#             'is_superuser', 
+#             'office',
+#         ]
+#         extra_kwargs = {
+#             'password': {'write_only': True},
+#             'office': {'read_only': True},
+#         }
+#         list_serializer_class = BaseBulkUpdateSerializer
+
 class PositionSerializer(serializers.ModelSerializer):
     office = serializers.PrimaryKeyRelatedField(
         queryset=Office.objects.all()
@@ -141,6 +163,17 @@ class PositionSerializer(serializers.ModelSerializer):
         model = Position
         fields = ['id', 'name', 'office']
         extra_kwargs = {'office': {'read_only': True}}
+
+class PositionBulkUpdateSerializer(serializers.ModelSerializer):
+    office = serializers.PrimaryKeyRelatedField(
+        queryset=Office.objects.all()
+    )
+
+    class Meta:
+        model = Position
+        fields = ['pk', 'name', 'office']
+        extra_kwargs = {'office': {'read_only': True}}
+        list_serializer_class = BaseBulkUpdateSerializer
 
 class ServiceSerializer(serializers.ModelSerializer):
     classification_types = serializers.MultipleChoiceField(

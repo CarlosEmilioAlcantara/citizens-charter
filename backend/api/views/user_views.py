@@ -47,16 +47,16 @@ class DeleteUserView(APIView):
     permission_classes = [IsAuthenticated, IsSuperuser]
 
     def post(self, request):
-        data = request.data.get('delete')
-        users = User.objects.filter(pk__in=data)
-        existing = list(users.values_list('pk', flat=True))
-        missing = set(data) - set(existing)
-
-        if not data:
+        if any('pk' not in item for item in request.data):
             return Response(
-                data='Cannot delete using an empty dictionary.',
+                data='Every item must include a pk.',
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        pks = [item['pk'] for item in request.data]
+        users = User.objects.filter(pk__in=pks)
+        existing = list(users.values_list('pk', flat=True))
+        missing = set(pks) - set(existing)
 
         if missing:
             return Response(
@@ -72,31 +72,24 @@ class DeleteUserView(APIView):
 # class UpdateUserView(APIView):
 #     permission_classes = [IsAuthenticated, IsSuperuser]
 
-#     # TODO; Fix mass update
 #     def post(self, request):
-#         data = request.data.get('users')
-#         user_pks = list(map(lambda dict: dict['pk'], data))
-#         users = User.objects.filter(pk__in=user_pks)
-#         existing_users = list(users.values_list('pk', flat=True))
-#         missing = set(user_pks) - set(existing_users)
-
-#         if missing:
+#         pks = [item['pk'] for item in request.data]
+#         queryset = list(User.objects.filter(pk__in=pks))
+#         serializer = UserBulkUpdateSerializer(
+#             queryset,
+#             data=request.data,
+#             many=True,
+#         )
+        
+#         if serializer.is_valid():
+#             serializer.save()
+#         else:
 #             return Response(
-#                 data=f"Values {missing} sent are missing.",
+#                 serializer.errors,
 #                 status=status.HTTP_400_BAD_REQUEST
 #             )
 
-#         list_users = list(users)
-#         updates = list(data)
-
-#         for i in range(0, len(user_pks)):
-#             if user_pks[i] == list_users[i].pk:
-#                 list_users[i].name = updates[i].get('name')
-#                 list_users[i].password = updates[i].get('')
-
-#         Office.objects.bulk_update(list_offices, ['name'], batch_size=10)
-
-#         return Response(status=status.HTTP_200_OK)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserListView(ListAPIView):
     queryset = User.objects.all().order_by('id')

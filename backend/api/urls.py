@@ -5,10 +5,20 @@ from .views.office_views import (
     OfficeView,
     DeleteOfficeView,
     UpdateOfficeView,
-    OfficeListView
+    OfficeListView,
 )
-from .views.user_views import UserView, DeleteUserView, UserListView
-from .views.position_views import PositionView, PositionListView
+from .views.user_views import (
+    UserView, 
+    DeleteUserView, 
+    # UpdateUserView, 
+    UserListView,
+)
+from .views.position_views import (
+    PositionView, 
+    DeletePositionView, 
+    UpdatePositionView, 
+    PositionListView,
+)
 from .views.service_views import (
     ServiceView, 
     DeleteServiceView, 
@@ -38,12 +48,18 @@ urlpatterns = [
     path('user/create', UserView.as_view(), name='create_user'),
     path('user/<int:pk>', UserView.as_view(), name='update_delete_user'),
     path('user/delete', DeleteUserView.as_view(), name='delete_user'),
+    # path('user/update', UpdateUserView.as_view(), name='update_user'),
     path('users', UserListView.as_view(), name='fetch_users'),
     path('position/create', PositionView.as_view(), name='create_position'),
     path(
         'position/<int:pk>',
         PositionView.as_view(),
         name='update_delete_position'
+    ),
+    path(
+        'position/update', 
+        UpdatePositionView.as_view(), 
+        name='update_position'
     ),
     path('positions', PositionListView.as_view(), name='fetch_positions'),
     path('service/create', ServiceView.as_view(), name='create_service'),
