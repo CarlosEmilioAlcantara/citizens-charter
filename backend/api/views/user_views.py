@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from ..models import User
 from ..serializers import UserSerializer
 from ..permissions import IsSuperuser
+from ..mixins import BulkDeleteMixin
 
 class UserView(APIView):
     permission_classes = [IsAuthenticated, IsSuperuser]
@@ -43,31 +44,11 @@ class UserView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-class DeleteUserView(APIView):
+class DeleteUserView(BulkDeleteMixin, APIView):
     permission_classes = [IsAuthenticated, IsSuperuser]
 
-    def post(self, request):
-        if any('pk' not in item for item in request.data):
-            return Response(
-                data='Every item must include a pk.',
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        pks = [item['pk'] for item in request.data]
-        users = User.objects.filter(pk__in=pks)
-        existing = list(users.values_list('pk', flat=True))
-        missing = set(pks) - set(existing)
-
-        if missing:
-            return Response(
-                data=f"Values {missing} sent are missing.",
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        to_delete = User.objects.filter(pk__in=existing)
-        to_delete.delete()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def get_queryset(self):
+        return User.objects.all()
 
 # class UpdateUserView(APIView):
 #     permission_classes = [IsAuthenticated, IsSuperuser]

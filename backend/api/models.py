@@ -1,6 +1,6 @@
 from django.db import models
 from multiselectfield import MultiSelectField
-from django.core.validators import MinLengthValidator
+from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 # Create your models here.
@@ -38,7 +38,10 @@ class User(AbstractBaseUser):
     name = models.CharField(max_length=180, unique=True)
     password = models.CharField(
         max_length=180, 
-        validators=[MinLengthValidator(8)]
+        validators=[RegexValidator(
+            regex=r'^\S{8,}$',
+            message='Password should be atleast 8 characters with no spaces.'
+        )]
     )
 
     is_staff = models.BooleanField(default=False)

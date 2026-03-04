@@ -57,6 +57,11 @@ urlpatterns = [
         name='update_delete_position'
     ),
     path(
+        'position/delete', 
+        DeletePositionView.as_view(), 
+        name='delete_position'
+    ),
+    path(
         'position/update', 
         UpdatePositionView.as_view(), 
         name='update_position'

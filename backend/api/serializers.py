@@ -55,6 +55,7 @@ class BaseBulkUpdateSerializer(serializers.ListSerializer):
         model = self.child.Meta.model
 
         instance_map = {obj.pk: obj for obj in queryset}
+        print(validated_data)
         data_map = {item['pk']: item for item in validated_data}
 
         update_fields = set()
@@ -165,6 +166,7 @@ class PositionSerializer(serializers.ModelSerializer):
         extra_kwargs = {'office': {'read_only': True}}
 
 class PositionBulkUpdateSerializer(serializers.ModelSerializer):
+    pk = serializers.IntegerField()
     office = serializers.PrimaryKeyRelatedField(
         queryset=Office.objects.all()
     )

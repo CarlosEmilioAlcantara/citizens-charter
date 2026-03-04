@@ -14,7 +14,7 @@ class PkRequiredMixin:
         return response
 
 class BulkDeleteMixin:
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request):
         if not isinstance(request.data, dict) or not request.data:
             return Response(
                 data={'detail': 'No items provided.'},
@@ -33,6 +33,12 @@ class BulkDeleteMixin:
         if not all(isinstance(pk, int) for pk in pks):
             return Response(
                 data={'detail': 'Pks must be integers.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if len(pks) != len(set(pks)):
+            return Response(
+                data={'detail': 'Pks must not have duplicates.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -55,7 +61,7 @@ class BulkDeleteMixin:
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class BulkUpdateMixin:
-    def put(self, request, *args, **kwargs):
+    def put(self, request):
         if not isinstance(request.data, list) or not request.data:
             return Response(
                 data={'detail': 'No items provided.'},
@@ -69,6 +75,13 @@ class BulkUpdateMixin:
             )
 
         pks = [item['pk'] for item in request.data]
+
+        if len(pks) != len(set(pks)):
+            return Response(
+                data={'detail': 'Pks must not have duplicates.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         queryset = self.get_queryset()
         existing = list(
             queryset.filter(pk__in=pks).values_list('pk', flat=True)

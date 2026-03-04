@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from ..models import Position
 from ..serializers import PositionBulkUpdateSerializer, PositionSerializer
+from ..mixins import BulkDeleteMixin, BulkUpdateMixin
 
 class PositionView(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -42,53 +43,20 @@ class PositionView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class DeletePositionView(APIView):
+class DeletePositionView(BulkDeleteMixin, APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
-    def post(self, request):
-        if any('pk' not in item for item in request.data):
-            return Response(
-                data='Every item must include a pk.',
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        pks = [item['pk'] for item in request.data]
-        position = Position.objects.filter(pk__in=pks)
-        existing = list(position.values_list('pk', flat=True))
-        missing = set(pks) - set(existing)
-
-        if missing:
-            return Response(
-                data=f"Values {missing} sent are missing.",
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        to_delete = Position.objects.filter(pk__in=existing)
-        to_delete.delete()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-class UpdatePositionView(APIView):
+    def get_queryset(self):
+        return Position.objects.all()
+    
+class UpdatePositionView(BulkUpdateMixin, APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
-    def post(self, request):
-        pks = [item['pk'] for item in request.data]
-        queryset = list(Position.objects.filter(pk__in=pks))
-        serializer = PositionBulkUpdateSerializer(
-            queryset,
-            data=request.data,
-            many=True
-        )
+    def get_queryset(self):
+        return Position.objects.all()
 
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get_serializer_class(self):
+        return PositionBulkUpdateSerializer
 
 class PositionListView(ListAPIView):
     queryset = Position.objects.all().order_by('id')
