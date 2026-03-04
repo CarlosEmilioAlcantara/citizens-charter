@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import UniqueConstraint
 from multiselectfield import MultiSelectField
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
@@ -74,6 +75,14 @@ class Position(models.Model):
         related_name='positions'
     )
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=['name', 'office'], 
+                name='unique_name_per_office'
+            )
+        ]
+
     def __str__(self):
         return self.name
 
@@ -131,7 +140,7 @@ class Requirement(models.Model):
 class Step(models.Model):
     name = models.CharField(max_length=180)
     action = models.CharField(max_length=180)
-    fee = models.DecimalField(max_digits=8, decimal_places=2)
+    fee = models.DecimalField(max_digits=9, decimal_places=2)
     legal_basis = models.CharField(max_length=180)
     processing_time = models.BigIntegerField()
 

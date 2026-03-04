@@ -5,8 +5,9 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..models import Requirement, Service
-from ..serializers import RequirementSerializer
+from ..serializers import RequirementBulkUpdateSerializer, RequirementSerializer
 from ..permissions import IsInOffice
+from ..mixins import BulkDeleteMixin, BulkUpdateMixin
 
 class CreateRequirementView(APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
@@ -50,26 +51,22 @@ class RequirementView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class DeleteRequirementView(APIView):
+class DeleteRequirementView(BulkDeleteMixin, APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
+    service_child = True
 
-    def post(self, request):
-        data = request.data.get('requirements')
-        requirements = Requirement.objects.filter(pk__in=data)
-        existing_requirements = list(requirements.values_list('pk', flat=True))
-        missing = set(data) - set(existing_requirements)
+    def get_queryset(self):
+        return Requirement.objects.all()
+    
+class UpdateRequirementView(BulkUpdateMixin, APIView):
+    permission_classes = [IsAuthenticated, IsInOffice]
+    service_child = True
 
-        if missing:
-            return Response(
-                data=f"Values {missing} sent are missing.",
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    def get_queryset(self):
+        return Requirement.objects.all()
 
-        to_delete = Requirement.objects.filter(pk__in=existing_requirements)
-        self.check_object_permissions(request, to_delete)
-        to_delete.delete()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def get_serializer_class(self):
+        return RequirementBulkUpdateSerializer
 
 class RequirementListView(ListAPIView):
     queryset = Requirement.objects.all().order_by('id')

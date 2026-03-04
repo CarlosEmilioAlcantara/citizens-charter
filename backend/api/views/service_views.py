@@ -5,8 +5,9 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..models import Office, Service
-from ..serializers import ServiceSerializer
+from ..serializers import ServiceBulkUpdateSerializer, ServiceSerializer
 from ..permissions import IsInOffice
+from ..mixins import BulkDeleteMixin, BulkUpdateMixin
 
 class ServiceView(APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
@@ -46,26 +47,20 @@ class ServiceView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class DeleteServiceView(APIView):
+class DeleteServiceView(BulkDeleteMixin, APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
 
-    def post(self, request):
-        data = request.data.get('services')
-        service = Service.objects.filter(pk__in=data)
-        existing_services = list(service.values_list('pk', flat=True))
-        missing = set(data) - set(existing_services)
+    def get_queryset(self):
+        return Service.objects.all()
+    
+class UpdateServiceView(BulkUpdateMixin, APIView):
+    permission_classes = [IsAuthenticated, IsInOffice]
 
-        if missing:
-            return Response(
-                data=f"Values {missing} sent are missing.",
-                status=status.HTTP_400_BAD_REQUEST
-            )
+    def get_queryset(self):
+        return Service.objects.all()
 
-        to_delete = Service.objects.filter(pk__in=existing_services)
-        self.check_object_permissions(request, to_delete)
-        to_delete.delete()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def get_serializer_class(self):
+        return ServiceBulkUpdateSerializer
 
 class ServiceListView(ListAPIView):
     queryset = Service.objects.all().order_by('id')

@@ -55,7 +55,6 @@ class BaseBulkUpdateSerializer(serializers.ListSerializer):
         model = self.child.Meta.model
 
         instance_map = {obj.pk: obj for obj in queryset}
-        print(validated_data)
         data_map = {item['pk']: item for item in validated_data}
 
         update_fields = set()
@@ -67,12 +66,15 @@ class BaseBulkUpdateSerializer(serializers.ListSerializer):
             for attr, value in data.items():
                 if attr == 'pk':
                     continue
+                if attr == 'position':
+                    instance.position.set(value)
+                    continue
                 setattr(instance, attr, value)
                 update_fields.add(attr)
 
             instances.append(instance)
 
-        model.objects.bulk_update(instances, list(update_fields))
+        model.objects.bulk_update(instances, list(update_fields), batch_size=10)
         return instances
 
 class OfficeSerializer(serializers.ModelSerializer):
@@ -196,6 +198,75 @@ class ServiceSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {'office': {'read_only': True}}
 
+class ServiceBulkUpdateSerializer(serializers.ModelSerializer):
+    pk = serializers.IntegerField()
+    classification_types = serializers.MultipleChoiceField(
+        choices = Service.CLASSIFICATION_CHOICES
+    )
+
+    class Meta:
+        model = Service
+        fields = [
+            'pk',
+            'name', 
+            'description', 
+            'transaction', 
+            'classification_types',
+            'availers',
+            'is_subservice',
+            'office',
+        ]
+        extra_kwargs = {'office': {'read_only': True}}
+        list_serializer_class = BaseBulkUpdateSerializer
+
+class RequirementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Requirement
+        fields = ['id', 'name', 'where_to_secure', 'service']
+        extra_kwargs = {'service': {'read_only': True}}
+
+class RequirementBulkUpdateSerializer(serializers.ModelSerializer):
+    pk = serializers.IntegerField()
+
+    class Meta:
+        model = Requirement
+        fields = ['pk', 'name', 'where_to_secure', 'service']
+        extra_kwargs = {'service': {'read_only': True}}
+        list_serializer_class = BaseBulkUpdateSerializer
+
+class StepSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Step
+        fields = [
+            'id',
+            'name', 
+            'action',
+            'fee',
+            'legal_basis',
+            'processing_time',
+            'service',
+            'position',
+        ]
+        extra_kwargs = {'service': {'read_only': True}}
+
+class StepBulkUpdateSerializer(serializers.ModelSerializer):
+    pk = serializers.IntegerField()
+
+    class Meta:
+        model = Step
+        fields = [
+            'pk',
+            'name', 
+            'action',
+            'fee',
+            'legal_basis',
+            'processing_time',
+            'service',
+            'position',
+        ]
+        extra_kwargs = {'service': {'read_only': True}}
+        list_serializer_class = BaseBulkUpdateSerializer
+
 class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
     requirement_count = serializers.IntegerField(read_only=True)
     step_count = serializers.IntegerField(read_only=True)
@@ -214,24 +285,3 @@ class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
             'total_time',
         ]
         extra_kwargs = {'office': {'read_only': True}}
-
-class RequirementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Requirement
-        fields = ['id', 'name', 'where_to_secure', 'service']
-        extra_kwargs = {'service': {'read_only': True}}
-
-class StepSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Step
-        fields = [
-            'id',
-            'name', 
-            'action',
-            'fee',
-            'legal_basis',
-            'processing_time',
-            'service',
-            'position',
-        ]
-        extra_kwargs = {'service': {'read_only': True}}

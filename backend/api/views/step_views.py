@@ -5,8 +5,9 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..models import Service, Step
-from ..serializers import StepSerializer
+from ..serializers import StepBulkUpdateSerializer, StepSerializer
 from ..permissions import IsInOffice
+from ..mixins import BulkDeleteMixin, BulkUpdateMixin
 
 class CreateStepView(APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
@@ -52,6 +53,23 @@ class StepView(APIView):
             )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class DeleteStepView(BulkDeleteMixin, APIView):
+    permission_classes = [IsAuthenticated, IsInOffice]
+    service_child = True
+
+    def get_queryset(self):
+        return Step.objects.all()
+    
+class UpdateStepView(BulkUpdateMixin, APIView):
+    permission_classes = [IsAuthenticated, IsInOffice]
+    service_child = True
+
+    def get_queryset(self):
+        return Step.objects.all()
+
+    def get_serializer_class(self):
+        return StepBulkUpdateSerializer
 
 class StepListView(ListAPIView):
     queryset = Step.objects.all().order_by('id')

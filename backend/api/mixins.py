@@ -2,18 +2,20 @@ from django.db import transaction
 from rest_framework import status
 from rest_framework.response import Response
 
-class PkRequiredMixin:
-    def post(self, request, *args, **kwargs):
-        if any('pk' not in item for item in request.data):
-            return Response(
-                data='Every item must include a pk.',
-                status=status.HTTP_400_BAD_REQUEST
-            )
+# class PkRequiredMixin:
+#     def post(self, request, *args, **kwargs):
+#         if any('pk' not in item for item in request.data):
+#             return Response(
+#                 data='Every item must include a pk.',
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
         
-        response = super().post(request, *args, **kwargs)
-        return response
+#         response = super().post(request, *args, **kwargs)
+#         return response
 
 class BulkDeleteMixin:
+    service_child = False
+
     def delete(self, request):
         if not isinstance(request.data, dict) or not request.data:
             return Response(
@@ -54,13 +56,19 @@ class BulkDeleteMixin:
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        self.validated_pks = list(existing)
+        for obj in queryset.filter(pk__in=existing):
+            self.check_object_permissions(
+                request, 
+                self.service_child and obj.service or obj
+            )
 
         with transaction.atomic():
             queryset.filter(pk__in=existing).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class BulkUpdateMixin:
+    service_child = False
+
     def put(self, request):
         if not isinstance(request.data, list) or not request.data:
             return Response(
@@ -92,6 +100,12 @@ class BulkUpdateMixin:
             return Response(
                 data=f"Some instances, {missing}, do not exist.",
                 status=status.HTTP_400_BAD_REQUEST
+            )
+
+        for obj in queryset.filter(pk__in=existing):
+            self.check_object_permissions(
+                request, 
+                self.service_child and obj.service or obj
             )
 
         serializer_class = self.get_serializer_class()

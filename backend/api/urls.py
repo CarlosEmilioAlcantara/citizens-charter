@@ -22,15 +22,23 @@ from .views.position_views import (
 from .views.service_views import (
     ServiceView, 
     DeleteServiceView, 
+    UpdateServiceView,
     ServiceListView,
 )
 from .views.requirement_views import (
     CreateRequirementView,
     DeleteRequirementView, 
+    UpdateRequirementView, 
     RequirementView, 
     RequirementListView,
 )
-from .views.step_views import CreateStepView, StepView, StepListView
+from .views.step_views import (
+    CreateStepView, 
+    DeleteStepView,
+    UpdateStepView,
+    StepView, 
+    StepListView,
+)
 from .views.analytics_views import (
     OfficeAnalyticsView, 
     OfficeAnalyticsListView,
@@ -74,6 +82,7 @@ urlpatterns = [
         name='update_delete_service'
     ),
     path('service/delete', DeleteServiceView.as_view(), name='delete_service'),
+    path('service/update', UpdateServiceView.as_view(), name='update_service'),
     path('services', ServiceListView.as_view(), name='fetch_services'),
     path(
         'service/<int:pk>/create-requirement', 
@@ -91,6 +100,11 @@ urlpatterns = [
         name='delete_requirement'
     ),
     path(
+        'requirement/update', 
+        UpdateRequirementView.as_view(),
+        name='update_requirement'
+    ),
+    path(
         'service/<int:pk>/requirements',
         RequirementListView.as_view(),
         name='fetch_services'
@@ -101,6 +115,8 @@ urlpatterns = [
         name='create_step'
     ),
     path('step/<int:pk>', StepView.as_view(), name='update_delete_step'),
+    path('step/delete', DeleteStepView.as_view(), name='delete_step'),
+    path('step/update', UpdateStepView.as_view(), name='update_step'),
     path('service/<int:pk>/steps', StepListView.as_view(), name='fetch_steps'),
     path(
         'office-analytics', 
