@@ -1,17 +1,9 @@
+import io
+import zipfile
 from django.db import transaction
+from django.http import StreamingHttpResponse, FileResponse
 from rest_framework import status
 from rest_framework.response import Response
-
-# class PkRequiredMixin:
-#     def post(self, request, *args, **kwargs):
-#         if any('pk' not in item for item in request.data):
-#             return Response(
-#                 data='Every item must include a pk.',
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-        
-#         response = super().post(request, *args, **kwargs)
-#         return response
 
 class BulkDeleteMixin:
     service_child = False
@@ -125,3 +117,20 @@ class BulkUpdateMixin:
             )
 
         return Response(serializer.data, status=status.HTTP_200_OK)    
+
+class ExportCsvMixin:
+    model = ''
+    csv = ''
+
+    def get(self, request):
+        queryset = self.get_queryset()
+        resource = self.get_resource()
+        dataset = resource.export(queryset)
+
+        return StreamingHttpResponse(
+            dataset.csv,
+            content_type='text/csv',
+            headers={
+                'Content-Disposition': f"attachment; filename={self.csv}.csv"
+            }
+        )
