@@ -46,6 +46,11 @@ from .views.analytics_views import (
 )
 from .views.csv_export_views import (
     ExportOfficeCsvView,
+    ExportUserCsvView,
+    ExportPositionCsvView,
+    ExportServiceCsvView,
+    ExportRequirementCsvView,
+    ExportStepCsvView,
 )
 
 urlpatterns = [
@@ -157,5 +162,30 @@ urlpatterns = [
         'csv/office', 
         ExportOfficeCsvView.as_view(), 
         name='export_office_csv'
+    ),
+    path(
+        'csv/user', 
+        ExportUserCsvView.as_view(), 
+        name='export_user_csv'
+    ),
+    path(
+        'csv/position', 
+        ExportPositionCsvView.as_view(), 
+        name='export_position_csv'
+    ),
+    path(
+        'csv/service', 
+        ExportServiceCsvView.as_view(), 
+        name='export_service_csv'
+    ),
+    path(
+        'csv/requirement', 
+        ExportRequirementCsvView.as_view(), 
+        name='export_requirement_csv'
+    ),
+    path(
+        'csv/step', 
+        ExportStepCsvView.as_view(), 
+        name='export_step_csv'
     ),
 ]

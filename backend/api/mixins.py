@@ -120,7 +120,6 @@ class BulkUpdateMixin:
 
 class ExportCsvMixin:
     model = ''
-    csv = ''
 
     def get(self, request):
         queryset = self.get_queryset()
@@ -131,6 +130,6 @@ class ExportCsvMixin:
             dataset.csv,
             content_type='text/csv',
             headers={
-                'Content-Disposition': f"attachment; filename={self.csv}.csv"
+                'Content-Disposition': f"attachment; filename={self.model}.csv"
             }
         )

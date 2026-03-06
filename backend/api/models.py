@@ -115,6 +115,9 @@ class Service(models.Model):
     availers = models.CharField(max_length=180)
     is_subservice = models.BooleanField(default=False)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     office = models.ForeignKey(
         Office,
         on_delete=models.CASCADE,
@@ -127,6 +130,9 @@ class Service(models.Model):
 class Requirement(models.Model):
     name = models.CharField(max_length=180)
     where_to_secure = models.CharField(max_length=180)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     service = models.ForeignKey(
         Service,
@@ -154,5 +160,28 @@ class Step(models.Model):
     )
 
     position = models.ManyToManyField(
-        Position
+        Position,
+        through='StepPosition',
+        
     )
+
+    def __str__(self):
+        return self.name
+
+class StepPosition(models.Model):
+    step = models.ForeignKey(
+        Step,
+        on_delete=models.CASCADE,
+        related_name='step_positions'
+    )
+    position = models.ForeignKey(
+        Position,
+        on_delete=models.CASCADE,
+        related_name='step_positions'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.step} - {self.position}"
