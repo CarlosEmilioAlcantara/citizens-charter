@@ -1,6 +1,14 @@
 from django.contrib import admin
 from import_export import resources
-from .models import Office, User, Position, Service, Requirement, Step
+from .models import (
+    Office,
+    User,
+    Position,
+    Service,
+    Requirement,
+    Step,
+    StepPosition,
+)
 
 # Register your models here.
 class OfficeResource(resources.ModelResource):
@@ -29,4 +37,4 @@ class StepResource(resources.ModelResource):
 
 class StepPositionResource(resources.ModelResource):
     class Meta:
-        model = Step
+        model = StepPosition

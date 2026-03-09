@@ -51,6 +51,7 @@ from .views.csv_export_views import (
     ExportServiceCsvView,
     ExportRequirementCsvView,
     ExportStepCsvView,
+    ExportStepPositionCsvView,
 )
 
 urlpatterns = [
@@ -187,5 +188,10 @@ urlpatterns = [
         'csv/step', 
         ExportStepCsvView.as_view(), 
         name='export_step_csv'
+    ),
+    path(
+        'csv/step-position', 
+        ExportStepPositionCsvView.as_view(), 
+        name='export_step_position_csv'
     ),
 ]

@@ -21,9 +21,9 @@ class OfficeAnalyticsView(APIView):
         total_step = Step.objects.filter(
             service__office_id=request.user.office_id
         ).count()
-        total_action = Step.objects.filter(
-            service__office_id=request.user.office_id
-        ).values('action').count()
+        # total_action = Step.objects.filter(
+        #     service__office_id=request.user.office_id
+        # ).values('action').count()
         total_price = Step.objects.filter(
             service__office_id=request.user.office_id
         ).aggregate(total_price=Sum('fee'))
@@ -36,7 +36,7 @@ class OfficeAnalyticsView(APIView):
             'total_service': total_service,
             'total_requirement': total_requirement,
             'total_step': total_step,
-            'total_action': total_action,
+            # 'total_action': total_action,
             'total_price': total_price,
             'total_time': total_time,
         }
@@ -79,10 +79,10 @@ class CitizensCharterAnalyticsView(APIView):
         offices = Office.objects.prefetch_related(
             'services'
         ).annotate(
-            total_service=Count('services'),
-            total_requirement=Count('services__requirements'),
-            total_step=Count('services__steps'),
-            total_action=Count('services__steps__action'),
+            total_service=Count('services', distinct=True),
+            total_requirement=Count('services__requirements', distinct=True),
+            total_step=Count('services__steps', distinct=True),
+            # total_action=Count('services__steps__action', distinct=True),
             total_time=Sum('services__steps__processing_time')
         ).values()
 

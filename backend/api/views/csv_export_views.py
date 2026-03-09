@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from ..models import Office, User, Position, Service, Requirement, Step
+from ..models import Office, StepPosition, User, Position, Service, Requirement, Step
 from ..admin import (
-    OfficeResource, 
+    OfficeResource,
+    StepPositionResource, 
     UserResource,
     PositionResource,
     ServiceResource,
@@ -71,3 +72,13 @@ class ExportStepCsvView(ExportCsvMixin, APIView):
 
     def get_resource(self):
         return StepResource()
+
+class ExportStepPositionCsvView(ExportCsvMixin, APIView):
+    model = 'step_position'
+    permission_classes = [IsAuthenticated, IsSuperuser]
+
+    def get_queryset(self):
+        return StepPosition.objects.all()
+
+    def get_resource(self):
+        return StepPositionResource()

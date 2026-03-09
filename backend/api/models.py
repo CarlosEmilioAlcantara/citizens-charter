@@ -162,7 +162,6 @@ class Step(models.Model):
     position = models.ManyToManyField(
         Position,
         through='StepPosition',
-        
     )
 
     def __str__(self):

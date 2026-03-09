@@ -1,6 +1,6 @@
-from .models import Office, Position, Requirement, Service, Step, User 
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import Office, Position, Requirement, Service, Step, User 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -235,6 +235,11 @@ class RequirementBulkUpdateSerializer(serializers.ModelSerializer):
         list_serializer_class = BaseBulkUpdateSerializer
 
 class StepSerializer(serializers.ModelSerializer):
+    position = serializers.PrimaryKeyRelatedField(
+        queryset=Position.objects.all(),
+        many=True
+    )
+
     class Meta:
         model = Step
         fields = [
@@ -248,6 +253,11 @@ class StepSerializer(serializers.ModelSerializer):
             'position',
         ]
         extra_kwargs = {'service': {'read_only': True}}
+
+    # def validate_position(self, value):
+    #     if not value.position or len(value.position) == 0:
+    #         raise serializers.ValidationError('Position is required.')
+    #     return value
 
 class StepBulkUpdateSerializer(serializers.ModelSerializer):
     pk = serializers.IntegerField()
