@@ -1,0 +1,9 @@
+{% extends 'report-base.html' %}
+{% load static %}
+{% block content %}
+<p>Total Services: {{ total_service }}</p>
+<p>Total Requirements: {{ total_requirement }}</p>
+<p>Total Steps: {{ total_step }}</p>
+<p>Total Price of Services: {{ total_price.total_price }}</p>
+<p>Total Time of Services: {{ total_time.total_time }}</p>
+{% endblock %}

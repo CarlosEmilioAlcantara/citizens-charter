@@ -1,6 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from ..models import Office, StepPosition, User, Position, Service, Requirement, Step
+from ..models import (
+    Office,
+    StepPosition,
+    User,
+    Position,
+    Service,
+    Requirement,
+    Step,
+)
 from ..admin import (
     OfficeResource,
     StepPositionResource, 

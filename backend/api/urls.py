@@ -53,6 +53,9 @@ from .views.csv_export_views import (
     ExportStepCsvView,
     ExportStepPositionCsvView,
 )
+from .views.pdf_export_views import (
+    ExportOfficeReportView,
+)
 
 urlpatterns = [
     # Auth Tokens
@@ -193,5 +196,12 @@ urlpatterns = [
         'csv/step-position', 
         ExportStepPositionCsvView.as_view(), 
         name='export_step_position_csv'
+    ),
+
+    # Pdf urls
+    path(
+        'pdf/office-report', 
+        ExportOfficeReportView.as_view(), 
+        name='export_office_report_pdf'
     ),
 ]

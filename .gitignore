@@ -198,3 +198,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+migration_backups/

@@ -7,40 +7,13 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from ..serializers import OfficeAnalyticsListSerializer
 from ..permissions import IsInOffice
 from ..models import Service, Requirement, Step, Office
+from ..utils import create_office_report
 
 class OfficeAnalyticsView(APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
 
     def get(self, request):
-        total_service = Service.objects.filter(
-            office_id=request.user.office_id
-        ).count()
-        total_requirement = Requirement.objects.filter(
-            service__office_id=request.user.office_id
-        ).count()
-        total_step = Step.objects.filter(
-            service__office_id=request.user.office_id
-        ).count()
-        # total_action = Step.objects.filter(
-        #     service__office_id=request.user.office_id
-        # ).values('action').count()
-        total_price = Step.objects.filter(
-            service__office_id=request.user.office_id
-        ).aggregate(total_price=Sum('fee'))
-        total_time = Step.objects.filter(
-            service__office_id=request.user.office_id
-        ).aggregate(total_time=Sum('processing_time'))
-
-
-        data = {
-            'total_service': total_service,
-            'total_requirement': total_requirement,
-            'total_step': total_step,
-            # 'total_action': total_action,
-            'total_price': total_price,
-            'total_time': total_time,
-        }
-
+        data = create_office_report(request)
         return Response(data=data, status=status.HTTP_200_OK)
         
 class OfficeAnalyticsListView(ListAPIView):

@@ -1,7 +1,5 @@
-import io
-import zipfile
 from django.db import transaction
-from django.http import StreamingHttpResponse, FileResponse
+from django.http import StreamingHttpResponse
 from rest_framework import status
 from rest_framework.response import Response
 
