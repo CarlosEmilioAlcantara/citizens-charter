@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,49 +5,10 @@
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
- <header>
-  <div class="header__images">
-   <img 
-    src="{% static 'citizens_charter/images/logo-SPC-est.png' %}" 
-    alt="SPC Logo"
-    class="image--spc-logo"
-   >
-
-   <img 
-    src="{% static 'citizens_charter/images/cmo-logo.png' %}" 
-    alt="Office Logo"
-    class="image--office-logo"
-   >
-  </div>
-
-  <div class="header__title">
-   <span class="title--top">REPUBLIC OF THE PHILIPPINES</span>
-   <span class="title--bottom">City of San Pablo</span>
-  </div>
-
-  <div class="header__office">
-   <span class="office--name">{{ office_name }}</span>
-  </div>
- </header>
-
+ {% include 'components/header.html' %}
  <main>
   {% block content %}{% endblock %}
  </main>
-
- <footer>
-  <img
-   src="{% static 'citizens_charter/images/official-letter-footer.png' %}" 
-   alt="footer"
-   class="image--footer"
-  >
-
-  <div class="footer__address">
-   <p>2nd Floor New Governance Building Annex B,</p> 
-   <p>Trece Martires St, San Pablo City, Laguna,</p>
-   <p>Philippines</p>
-  </div>
-
-  <p class="footer__email"></p>
- </footer>
+ {% include 'components/footer.html' %}
 </body>
 </html>

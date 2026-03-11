@@ -178,7 +178,21 @@ footer {
 }
 
 .image--footer {
+  position: relative;
   width: 100%;
+  z-index: -10;
+}
+
+.footer__address {
+  position: absolute;
+  left: 43px;
+  bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  font-size: 1.2rem;
+  color: white;
+  z-index: 10;
 }
 
 /* MAIN */

@@ -14,7 +14,7 @@ class ExportOfficeReportView(APIView):
 
     def get(self, request):
         data = create_office_report(request)
-        html = render_to_string('office-report.html', context=data)
+        html = render_to_string('documents/office-report.html', context=data)
 
         return StreamingHttpResponse(
             pdf_chunks(
