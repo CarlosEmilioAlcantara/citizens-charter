@@ -1,13 +1,13 @@
 {% load static %}
 <header>
  <div class="header__images">
+  {% include "components/_office_logo.html" %}
+  
   <img 
    src="{% static 'citizens_charter/images/spc-logo.png' %}" 
    alt="SPC Logo"
    class="image--spc-logo"
   >
-
-  {% include "components/_office_logo.html" %}
  </div>
 
  <div class="header__title">
@@ -16,7 +16,6 @@
  </div>
 
  <div class="header__office">
-  {% comment %} TODO; Change header name according to office {% endcomment %}
-  <span class="office--name">{{ office_name }}</span>
+  {% include "components/_office_name.html" %}
  </div>
 </header>

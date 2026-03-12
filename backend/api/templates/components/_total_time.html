@@ -1,0 +1,15 @@
+{% if total_time.total_time < 60 %}
+ <li>Total Time of Services: {{ total_time.total_time }} Seconds</li>
+{% elif total_time.total_time == 60 %}
+ <li>Total Time of Services: {{ total_time.total_time / 60 }} Minute</li>
+{% elif total_time.total_time < 3600 %}
+ <li>Total Time of Services: {{ total_time.total_time / 60 }} Minutes</li>
+{% elif total_time.total_time == 3600 %}
+ <li>Total Time of Services: {{ total_time.total_time / 60 }} Hour</li>
+{% elif total_time.total_time < 86400 %}
+ <li>Total Time of Services: {{ total_time.total_time / 3600 }} Hours</li>
+{% elif total_time.total_time == 86400 %}
+ <li>Total Time of Services: {{ total_time.total_time / 86400 }} Day</li>
+{% else %}
+ <li>Total Time of Services: {{ total_time.total_time / 86400 }} Days</li>
+{% endif %}

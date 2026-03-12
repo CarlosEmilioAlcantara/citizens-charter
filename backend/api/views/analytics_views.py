@@ -1,4 +1,4 @@
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, OuterRef, Subquery
 from rest_framework import status, filters
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
@@ -17,21 +17,32 @@ class OfficeAnalyticsView(APIView):
         return Response(data=data, status=status.HTTP_200_OK)
         
 class OfficeAnalyticsListView(ListAPIView):
-    queryset = Service.objects.prefetch_related(
-        'requirements',
-        'steps'
-    ).annotate(
-        requirement_count=Count('requirements'),
-        step_count=Count('steps'),
-        total_price=Sum('steps__fee'),
-        total_time=Sum('steps__processing_time')
+    step_queryset = Step.objects.filter(
+        service=OuterRef('pk')
+    ).values('service').annotate(
+        total_step=Count('id'),
+        total_price=Sum('fee'),
+        total_time=Sum('processing_time')
+    )
+    requirement_queryset = Requirement.objects.filter(
+        service=OuterRef('pk')
+    ).values('service').annotate(
+        total_requirement=Count('id')
+    )
+    queryset = Service.objects.annotate(
+        total_requirement=Subquery(requirement_queryset.values(
+            'total_requirement'
+        )),
+        total_step=Subquery(step_queryset.values('total_step')),
+        total_price=Subquery(step_queryset.values('total_price')),
+        total_time=Subquery(step_queryset.values('total_time'))
     ).values(
         'id', 
         'name', 
-        'requirement_count', 
-        'step_count', 
-        'total_price',
-        'total_time'
+        'total_requirement',
+        'total_step', 
+        'total_price', 
+        'total_time' 
     ).order_by('id')
 
     permission_classes = [IsAuthenticated, IsInOffice]
@@ -55,6 +66,7 @@ class CitizensCharterAnalyticsView(APIView):
             total_service=Count('services', distinct=True),
             total_requirement=Count('services__requirements', distinct=True),
             total_step=Count('services__steps', distinct=True),
+            total_price=Sum('services__steps__fee'),
             # total_action=Count('services__steps__action', distinct=True),
             total_time=Sum('services__steps__processing_time')
         ).values()

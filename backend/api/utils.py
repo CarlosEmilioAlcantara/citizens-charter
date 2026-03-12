@@ -16,6 +16,20 @@ def pdf_chunks(html, request, stylesheet):
     for i in range(0, len(pdf), chunk_size):
         yield pdf[i:i+chunk_size]
 
+def create_total_time(total_time):
+    if total_time < 60:
+        total_time = f"{total_time} Seconds"
+    elif total_time < 3600:
+        total_time = \
+            total_time // 60 == 1 and "1 Minute" or f"{total_time // 60} Minutes"
+    elif total_time < 86400:
+        total_time = \
+            total_time // 3600 == 1 and "1 Hour" or f"{total_time // 3600} Hours"
+    else:
+        total_time = \
+            total_time // 86400 == 1 and "1 Day" or f"{total_time // 86400} Days"
+    return total_time
+
 def create_office_report(request):
     office = Office.objects.get(pk=request.user.office_id) 
     total_service = Service.objects.filter(
@@ -37,7 +51,6 @@ def create_office_report(request):
         service__office_id=office.pk
     ).aggregate(total_time=Sum('processing_time'))
 
-
     data = {
         'office_name': office.name,
         'total_service': total_service,
@@ -45,7 +58,7 @@ def create_office_report(request):
         'total_step': total_step,
         # 'total_action': total_action,
         'total_price': total_price,
-        'total_time': total_time,
+        'total_time': create_total_time(total_time['total_time']),
     }
 
     return data

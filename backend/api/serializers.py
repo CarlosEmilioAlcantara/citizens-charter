@@ -278,8 +278,8 @@ class StepBulkUpdateSerializer(serializers.ModelSerializer):
         list_serializer_class = BaseBulkUpdateSerializer
 
 class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
-    requirement_count = serializers.IntegerField(read_only=True)
-    step_count = serializers.IntegerField(read_only=True)
+    total_requirement = serializers.IntegerField(read_only=True)
+    total_step = serializers.IntegerField(read_only=True)
     total_price = serializers.IntegerField(read_only=True)
     total_time = serializers.IntegerField(read_only=True)
 
@@ -289,8 +289,8 @@ class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
             'id',
             'name', 
             'office',
-            'requirement_count',
-            'step_count',
+            'total_requirement',
+            'total_step',
             'total_price',
             'total_time',
         ]

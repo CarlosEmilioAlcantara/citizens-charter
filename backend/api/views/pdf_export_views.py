@@ -4,12 +4,11 @@ from django.template.loader import render_to_string
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from ..renderers import PDFRenderer
-from ..models import Office
 from ..permissions import IsSuperuser
 from ..utils import pdf_chunks, create_office_report
 
 class ExportOfficeReportView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     renderer_classes = [PDFRenderer]
 
     def get(self, request):
