@@ -17,17 +17,37 @@ def pdf_chunks(html, request, stylesheet):
         yield pdf[i:i+chunk_size]
 
 def create_total_time(total_time):
+    if not total_time:
+        return
+
     if total_time < 60:
         total_time = f"{total_time} Seconds"
     elif total_time < 3600:
+        remaining_time = total_time % 60
         total_time = \
             total_time // 60 == 1 and "1 Minute" or f"{total_time // 60} Minutes"
     elif total_time < 86400:
+        remaining_time = total_time % 3600
         total_time = \
             total_time // 3600 == 1 and "1 Hour" or f"{total_time // 3600} Hours"
     else:
+        remaining_time = total_time % 86400
         total_time = \
             total_time // 86400 == 1 and "1 Day" or f"{total_time // 86400} Days"
+
+    if remaining_time < 60:
+        remaining_time = f"{total_time} Seconds"
+    elif remaining_time < 3600:
+        remaining_time = \
+            remaining_time // 60 == 1 and "1 Minute" or f"{remaining_time // 60} Minutes"
+    elif remaining_time < 86400:
+        remaining_time = \
+            remaining_time // 3600 == 1 and "1 Hour" or f"{remaining_time // 3600} Hours"
+    else:
+        remaining_time = \
+            remaining_time // 86400 == 1 and "1 Day" or f"{remaining_time // 86400} Days"
+
+    total_time = f"{total_time} and {remaining_time}"
     return total_time
 
 def create_office_report(request):
@@ -41,9 +61,6 @@ def create_office_report(request):
     total_step = Step.objects.filter(
         service__office_id=office.pk
     ).count()
-    # total_action = Step.objects.filter(
-    #     service__office_id=request.user.office_id
-    # ).values('action').count()
     total_price = Step.objects.filter(
         service__office_id=office.pk
     ).aggregate(total_price=Sum('fee'))
@@ -56,7 +73,6 @@ def create_office_report(request):
         'total_service': total_service,
         'total_requirement': total_requirement,
         'total_step': total_step,
-        # 'total_action': total_action,
         'total_price': total_price,
         'total_time': create_total_time(total_time['total_time']),
     }

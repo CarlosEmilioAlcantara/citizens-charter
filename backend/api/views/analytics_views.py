@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from ..serializers import OfficeAnalyticsListSerializer
 from ..permissions import IsInOffice
 from ..models import Service, Requirement, Step, Office
-from ..utils import create_office_report
+from ..utils import create_office_report, create_total_time
 
 class OfficeAnalyticsView(APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
@@ -60,15 +60,30 @@ class CitizensCharterAnalyticsView(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get(self, request):
-        offices = Office.objects.prefetch_related(
-            'services'
-        ).annotate(
+        step_queryset = Step.objects.filter(
+            service__office=OuterRef('pk')
+        ).values('service__office').annotate(
+            total_step=Count('id'),
+            total_price=Sum('fee'),
+            total_time=Sum('processing_time')
+        )
+        requirement_queryset = Requirement.objects.filter(
+            service__office=OuterRef('pk')
+        ).values('service__office').annotate(
+            total_requirement=Count('id')
+        )
+
+        queryset = Office.objects.annotate(
             total_service=Count('services', distinct=True),
-            total_requirement=Count('services__requirements', distinct=True),
-            total_step=Count('services__steps', distinct=True),
-            total_price=Sum('services__steps__fee'),
-            # total_action=Count('services__steps__action', distinct=True),
-            total_time=Sum('services__steps__processing_time')
+            total_requirement=Subquery(
+                requirement_queryset.values('total_requirement')
+            ),
+            total_step=Subquery(step_queryset.values('total_step')),
+            total_price=Subquery(step_queryset.values('total_price')),
+            total_time=Subquery(step_queryset.values('total_time'))
         ).values()
 
-        return Response(data=offices, status=status.HTTP_200_OK)
+        for office in queryset:
+            office['total_time'] = create_total_time(office['total_time'])
+
+        return Response(data=queryset, status=status.HTTP_200_OK)

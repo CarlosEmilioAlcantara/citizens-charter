@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Office, Position, Requirement, Service, Step, User 
+from .utils import create_total_time
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -281,7 +282,10 @@ class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
     total_requirement = serializers.IntegerField(read_only=True)
     total_step = serializers.IntegerField(read_only=True)
     total_price = serializers.IntegerField(read_only=True)
-    total_time = serializers.IntegerField(read_only=True)
+    total_time = serializers.SerializerMethodField()
+
+    def get_total_time(self, obj):
+        return create_total_time(obj['total_time'])
 
     class Meta:
         model = Service
