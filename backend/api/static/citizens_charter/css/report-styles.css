@@ -1,87 +1,9 @@
-/* RESET */
-*, 
-*::before, 
-*::after {
-  box-sizing: border-box;
-}
-
-*{
-  margin: 0;
-  padding: 0;
-  font: inherit;
-}
-
-body {
-  min-height: 100vh;
-  margin: 0;
-}
-
-img, 
-picture, 
-svg, 
-video {
-  display: block;
-  width: 100%;
-}
-
-/* img {
-  width: 74.5px;
-  height: 74.5px;
-} */
-
-:root {
-  --green: #215C3D;
-}
-
+/* PAGE */
 @page {
   /* A4 size (210mm × 297mm) scaled by 1.5x */
   /* size: 315mm 445.5mm; */
   size: 210mm 297mm;
   margin: 0;
-}
-
-/* TYPOGRAPHY */
-@font-face {
-  font-family: 'Nimbus Sans L';
-  src: url(
-        '/citizens_charter/fonts/NimbusSanL-Regu.ttf'
-        ) 
-       format('truetype');
-}
-
-html {
-  font-family: 'Nimbus Sans L';
-  font-size: 62.5%;
-  letter-spacing: .2px;
-}
-
-p {
-  font-size: 1.6rem;
-}
-
-h1,
-h2,
-h3 {
-  font-weight: 700;
-}
-
-h1 {
-  font-size: 3rem;
-  margin-bottom: 0.8em;
-}
-
-h2 {
-  font-size: 2.0rem;
-}
-
-h3 {
-  font-size: 1.6rem;
-}
-
-li {
-  font-size: 1.6rem;
-  margin-left: 1em;
-  margin-bottom: 1em;
 }
 
 /* HEADER */
@@ -207,4 +129,10 @@ footer span {
 /* MAIN */
 main {
   margin: 16em 6em 0em;
+}
+
+.test {
+  --idk: red;
+  color: if(style(--idk: red): red;)
+  /* if(style(--scheme: dark): #eeeeee;) */
 }

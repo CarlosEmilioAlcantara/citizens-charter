@@ -1,0 +1,10 @@
+{% extends "citizens-charter-base.html" %}
+{% block content %}
+{% for service in services %}
+ <section class="service">
+  <div class="service__title">
+   <p>{{ service.name }}</p>
+  </div>
+ </section>
+{% endfor %}
+{% endblock %}

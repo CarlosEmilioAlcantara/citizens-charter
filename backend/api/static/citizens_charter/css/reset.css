@@ -1,0 +1,78 @@
+/* RESET */
+*, 
+*::before, 
+*::after {
+  box-sizing: border-box;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+}
+
+img, 
+picture, 
+svg, 
+video {
+  display: block;
+  width: 100%;
+}
+
+/* img {
+  width: 74.5px;
+  height: 74.5px;
+} */
+
+:root {
+  --green: #215C3D;
+}
+
+/* TYPOGRAPHY */
+@font-face {
+  font-family: 'Nimbus Sans L';
+  src: url(
+        '/citizens_charter/fonts/NimbusSanL-Regu.ttf'
+        ) 
+       format('truetype');
+}
+
+html {
+  font-family: 'Nimbus Sans L';
+  font-size: 62.5%;
+  letter-spacing: .2px;
+}
+
+p {
+  font-size: 1.6rem;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 0.8em;
+}
+
+h2 {
+  font-size: 2.0rem;
+}
+
+h3 {
+  font-size: 1.6rem;
+}
+
+li {
+  font-size: 1.6rem;
+  margin-left: 1em;
+  margin-bottom: 1em;
+}

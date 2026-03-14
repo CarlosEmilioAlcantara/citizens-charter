@@ -55,6 +55,7 @@ from .views.csv_export_views import (
 )
 from .views.pdf_export_views import (
     ExportOfficeReportView,
+    ExportCitizensCharterView,
 )
 
 urlpatterns = [
@@ -203,5 +204,10 @@ urlpatterns = [
         'pdf/office-report', 
         ExportOfficeReportView.as_view(), 
         name='export_office_report_pdf'
+    ),
+    path(
+        'pdf/citizens-charter', 
+        ExportCitizensCharterView.as_view(), 
+        name='export_citizen_charter_pdf'
     ),
 ]

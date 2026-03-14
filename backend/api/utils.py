@@ -1,15 +1,13 @@
-from django.db.models import Sum
+from django.db.models import Sum, Prefetch
 from weasyprint import HTML, CSS
 from .models import Office, Service, Requirement, Step
 
-def pdf_chunks(html, request, stylesheet):
+def pdf_chunks(html, request, stylesheets):
     pdf = HTML(
         string=html, 
         base_url=request.build_absolute_uri('/api/')
     ).write_pdf(
-        stylesheets=[
-            CSS(stylesheet)
-        ]
+        stylesheets=[CSS(stylesheet) for stylesheet in stylesheets]
     )
 
     chunk_size = 8192
@@ -78,3 +76,24 @@ def create_office_report(request):
     }
 
     return data
+
+def create_citizens_charter(request, pk=None):
+    office = Office.objects.get(pk=request.user.office_id) 
+    office_name = office.name
+
+    if pk:
+        service = Service.objects.filter(
+            pk=pk
+        ).prefetch_related(
+            'requirements',
+            'steps'
+        )
+        return (office_name, service)
+    else: 
+        services = Service.objects.filter(
+            office_id=request.user.office_id
+        ).prefetch_related(
+            'requirements',
+            'steps'
+        )
+        return (office_name, services)
