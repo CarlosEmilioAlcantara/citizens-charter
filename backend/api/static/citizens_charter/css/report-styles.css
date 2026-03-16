@@ -6,6 +6,13 @@
   margin: 0;
 }
 
+/* TYPOGRAPHY */
+li {
+  font-size: 1.6rem;
+  margin-left: 1em;
+  margin-bottom: 1em;
+}
+
 /* HEADER */
 header {
   display: flex;
@@ -129,10 +136,4 @@ footer span {
 /* MAIN */
 main {
   margin: 16em 6em 0em;
-}
-
-.test {
-  --idk: red;
-  color: if(style(--idk: red): red;)
-  /* if(style(--scheme: dark): #eeeeee;) */
 }

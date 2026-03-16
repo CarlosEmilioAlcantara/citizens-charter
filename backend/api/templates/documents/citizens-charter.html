@@ -3,8 +3,102 @@
 {% for service in services %}
  <section class="service">
   <div class="service__title">
-   <p>{{ service.name }}</p>
+   <p>{{ service.id }}) {{ service.name }}</p>
+   <p>{{ service.description }}</p>
   </div>
+
+  <table class="service__table--top">
+   <tr class="table--top__item">
+    <td class="
+     table--header
+     table--header--top
+     "
+    >
+     Departamento o Opisina
+    </td>
+    <td>{{ office_name }}</td>
+   </tr>
+
+   <tr class="table--top__item">
+    <td class="
+     table--header
+     table--header--top
+     "
+    >
+     Klasipikasyon
+    </td>
+    <td class="table--header__classifications">
+     <ul>
+      {% for classification in service.classification_types %}
+       {% if classification == 'g2b' %}
+        <li>G2B - Government to Business</li>
+       {% endif %}
+       {% if classification == 'g2c' %}
+        <li>G2C - Government to Client</li>
+       {% endif %}
+       {% if classification == 'g2e' %}
+        <li>G2E - Government to Employee</li>
+       {% endif %}
+       {% if classification == 'g2g' %}
+        <li>G2G - Government to Government</li>
+       {% endif %}
+      {% endfor %}
+     </ul>
+    </td>
+   </tr>
+
+   <tr class="table--top__item">
+    <td class="
+     table--header
+     table--header--top
+     "
+    >
+     Uri ng Transaksyon
+    </td>
+    <td>
+     {% if service.transaction == 'simple' %}
+      Simple
+     {% elif service.transaction == 'complicated' %}
+      Komplikado
+     {% elif service.transaction == 'technical' %}
+      Lubhang Teknikal
+     {% endif %}
+    </td>
+   </tr>
+
+   <tr class="table--top__item">
+    <td class="
+     table--header
+     table--header--top
+     "
+    >
+     Sino ang pwede kumuha:
+    </td>
+    <td>{{ service.availers }}</td>
+   </tr>
+
+  </table>
+
+  <table class="service__table--requirements">
+   <tr class="table--top">
+    <th class="
+     table--header
+     table--header--requirements
+    ">
+     TSEKLIST NG MGA KINAKAILANGAN:
+    </th>
+    <th class="
+     table--header
+     table--header--requirements
+    ">
+     SAAN MATATAGPUAN:
+    </th>
+   </tr>
+  </table>
+
+  <footer>
+   <p>QMS-QMR-002 Rev 03 2024.02.08</p>
+  </footer>
  </section>
 {% endfor %}
 {% endblock %}

@@ -2,10 +2,83 @@
 @page {
   /* A4 size (210mm × 297mm) scaled by 1.5x */
   /* size: 315mm 445.5mm; */
-  size: 297mm 210mm ;
-  margin: 0;
+  size: 297mm 210mm;
+  margin: 16mm;
 }
 
+/* TYPOGRAPHY */
+html {
+  font-weight: 700;
+}
+
+/* FOOTER */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* SECTION */
 section {
     break-before: always;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 1.3rem;
+}
+
+table td, th {
+  padding: 0.3em;
+}
+
+.service__title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  margin-bottom: 1em;
+}
+
+.service__table--top {
+  font-size: 1.3rem;
+}
+
+.table--top {
+  width: 100%;
+}
+
+.table--header {
+  background-color: #c9ddfc;
+  border: 1px solid black;
+}
+
+.table--header--top {
+  width: 40%;
+}
+
+.table--header__classifications ul {
+  list-style: none;
+}
+
+.table--header__classifications li {
+  display: inline;
+}
+
+.table--header__classifications li:after {
+  content: ", ";
+}
+
+.table--header__classifications li:last-child:after {
+  content: "";
+}
+
+.service__table--requirements {
+  width: 100%;
+  font-size: 1.3rem;
+}
+
+.table--header--requirements {
+  width: 50%;
+  text-align: center;
 }

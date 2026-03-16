@@ -1,6 +1,4 @@
-from django.db.models import QuerySet
 from rest_framework import permissions
-from .models import Office
 
 class IsSuperuser(permissions.BasePermission):
     def has_permission(self, request, view):

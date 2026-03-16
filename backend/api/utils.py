@@ -1,4 +1,4 @@
-from django.db.models import Sum, Prefetch
+from django.db.models import Sum
 from weasyprint import HTML, CSS
 from .models import Office, Service, Requirement, Step
 
