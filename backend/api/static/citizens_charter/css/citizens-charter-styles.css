@@ -82,3 +82,17 @@ table td, th {
   width: 50%;
   text-align: center;
 }
+
+.table--middle__item {
+  border: 1px solid black;
+  text-align: center;
+}
+
+.spacer {
+  width: 100%;
+  border: 1px solid black;
+}
+
+.spacer td {
+  padding: 10px;
+}

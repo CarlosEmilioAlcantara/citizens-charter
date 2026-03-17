@@ -80,7 +80,7 @@
   </table>
 
   <table class="service__table--requirements">
-   <tr class="table--top">
+   <tr class="table--middle">
     <th class="
      table--header
      table--header--requirements
@@ -94,6 +94,14 @@
      SAAN MATATAGPUAN:
     </th>
    </tr>
+
+   {% for requirement in service.requirements.all %}
+    <tr class="table--middle">
+     <td class="table--middle__item">{{ requirement.name }}</td>
+     <td class="table--middle__item">{{ requirement.where_to_secure }}</td>
+    </tr>
+   {% endfor %}
+   <tr class="spacer"><td></td></tr>
   </table>
 
   <footer>
