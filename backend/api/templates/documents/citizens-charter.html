@@ -1,4 +1,5 @@
 {% extends "citizens-charter-base.html" %}
+{% load mathfilters %}
 {% block content %}
 {% for service in services %}
  <section class="service">
@@ -9,24 +10,26 @@
 
   <table class="service__table--top">
    <tr class="table--top__item">
-    <td class="
+    <th class="
      table--header
      table--header--top
      "
     >
      Departamento o Opisina
-    </td>
+    </th>
+
     <td>{{ office_name }}</td>
    </tr>
 
    <tr class="table--top__item">
-    <td class="
+    <th class="
      table--header
      table--header--top
      "
     >
      Klasipikasyon
-    </td>
+    </th>
+
     <td class="table--header__classifications">
      <ul>
       {% for classification in service.classification_types %}
@@ -48,13 +51,14 @@
    </tr>
 
    <tr class="table--top__item">
-    <td class="
+    <th class="
      table--header
      table--header--top
      "
     >
      Uri ng Transaksyon
-    </td>
+    </th>
+
     <td>
      {% if service.transaction == 'simple' %}
       Simple
@@ -67,13 +71,14 @@
    </tr>
 
    <tr class="table--top__item">
-    <td class="
+    <th class="
      table--header
      table--header--top
      "
     >
      Sino ang pwede kumuha:
-    </td>
+    </th>
+
     <td>{{ service.availers }}</td>
    </tr>
 
@@ -87,6 +92,7 @@
     ">
      TSEKLIST NG MGA KINAKAILANGAN:
     </th>
+
     <th class="
      table--header
      table--header--requirements
@@ -101,12 +107,84 @@
      <td class="table--middle__item">{{ requirement.where_to_secure }}</td>
     </tr>
    {% endfor %}
+   {% with dummy_requirements=4|sub:service.total_requirement %}
+    {% for _ in ""|ljust:dummy_requirements %}
+     <tr class="table--middle">
+      <td class="table--middle__dummy"></td>
+      <td class="table--middle__dummy"></td>
+     </tr>
+    {% endfor %}
+   {% endwith %}
    <tr class="spacer"><td></td></tr>
   </table>
 
-  <footer>
-   <p>QMS-QMR-002 Rev 03 2024.02.08</p>
-  </footer>
+  <table class="service__table--steps" cellspacing="0" cellpadding="3">
+   <tr class="table--bottom">
+    <th class="
+     table--header--bottom
+     table--header--step
+    ">
+     HAKBANG NG KLIYENTE
+    </th>
+
+    <th class="
+     table--header--bottom
+     table--header--action
+    ">
+     AKSYON NG AHENSIYA
+    </th>
+
+    <th class="
+     table--header--bottom
+     table--header--fee
+    ">
+     BAYARIN
+    </th>
+
+    <th class="
+     table--header--bottom
+     table--header--legal-basis
+    ">
+     BASEHANG LEGAL
+    </th>
+
+    <th class="
+     table--header--bottom
+     table--header--processing-time
+    ">
+     HABA NG PROSESO
+    </th>
+
+    <th class="
+     table--header--bottom
+     table--header--position
+    ">
+     TAONG RESPONSABLE
+    </th>
+   </tr>
+
+   {% for step in service.steps.all %}
+    <tr class="table--bottom">
+     <td>{{ step.name }}</td>
+     <td>{{ step.action }}</td>
+     <td>{{ step.fee }}</td>
+     <td>{{ step.legal_basis }}</td>
+     <td>{{ step.processing_time }}</td>
+     <td>
+      {% for position in step.position.all %}
+       {{ position }}
+      {% endfor %}
+     </td>
+    </tr>
+   {% endfor %}
+
+   <tr>
+    <td class="table--bottom--total" colspan="2">TOTAL</td>
+    <td>
+     {{ service.total_fee }}
+    </td>
+   </tr>
+  </table>
  </section>
 {% endfor %}
 {% endblock %}

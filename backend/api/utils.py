@@ -1,4 +1,4 @@
-from django.db.models import Sum
+from django.db.models import OuterRef, Subquery, Sum, Count
 from weasyprint import HTML, CSS
 from .models import Office, Service, Requirement, Step
 
@@ -90,10 +90,18 @@ def create_citizens_charter(request, pk=None):
         )
         return (office_name, service)
     else: 
+        step_queryset = Step.objects.filter(
+            service=OuterRef('pk')
+        ).values('service').annotate(
+            total_fee=Sum('fee')
+        )
         services = Service.objects.filter(
             office_id=request.user.office_id
         ).prefetch_related(
             'requirements',
             'steps'
+        ).annotate(
+            total_requirement=Count('requirements'),
+            total_fee=Subquery(step_queryset.values('total_fee'))
         )
         return (office_name, services)

@@ -3,7 +3,12 @@
   /* A4 size (210mm × 297mm) scaled by 1.5x */
   /* size: 315mm 445.5mm; */
   size: 297mm 210mm;
-  margin: 16mm;
+  margin: 16mm 16mm 26mm;
+
+  @bottom-left {
+    content: "QMS-QMR-002 Rev 03 2024.02.08";
+    font-size: 1.3rem;
+  }
 }
 
 /* TYPOGRAPHY */
@@ -13,7 +18,7 @@ html {
 
 /* FOOTER */
 footer {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
@@ -21,12 +26,13 @@ footer {
 
 /* SECTION */
 section {
-    break-before: always;
+  break-before: always;
 }
 
 table {
   border-collapse: collapse;
   font-size: 1.3rem;
+  break-inside: always;
 }
 
 table td, th {
@@ -88,6 +94,11 @@ table td, th {
   text-align: center;
 }
 
+.table--middle__dummy {
+  border: 1px solid black;
+  padding: 10px;
+}
+
 .spacer {
   width: 100%;
   border: 1px solid black;
@@ -95,4 +106,35 @@ table td, th {
 
 .spacer td {
   padding: 10px;
+}
+
+.service__table--steps {
+  width: 100%;
+}
+
+.table--bottom {
+  width: 100%;
+}
+
+.table--header--bottom {
+  background-color: white;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.table--bottom td {
+  border: 1px solid black;
+  text-align: center;
+}
+
+/* .table--header--step {
+  width: 23%;
+}
+
+.table--header--action {
+  width: 24%;
+} */
+
+.table--bottom--total {
+  text-align: right;
 }

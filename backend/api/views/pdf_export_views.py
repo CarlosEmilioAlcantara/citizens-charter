@@ -43,7 +43,6 @@ class ExportCitizensCharterView(APIView):
             office_name, service = create_citizens_charter(request, service_id)
         
         office_name, services = create_citizens_charter(request)
-
         html = render_to_string(
             'documents/citizens-charter.html', 
             context={'office_name': office_name, 'services': services}

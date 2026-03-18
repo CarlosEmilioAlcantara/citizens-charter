@@ -30,6 +30,7 @@ class OfficeAnalyticsListView(ListAPIView):
         total_requirement=Count('id')
     )
     queryset = Service.objects.annotate(
+        # TODO; Replace with just calling the related name
         total_requirement=Subquery(requirement_queryset.values(
             'total_requirement'
         )),
