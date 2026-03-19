@@ -5,7 +5,9 @@
  {% for service in services %}
   <section class="service">
    <div class="service__title">
-    <p>{{ forloop.counter }}) {{ service.name }}</p>
+    <p class="service__title--number">
+     {{ service.number|floatformat }}) {{ service.name }}
+    </p>
     <p>{{ service.description }}</p>
    </div>
 

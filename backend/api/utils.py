@@ -34,7 +34,7 @@ def create_total_time(total_time):
             total_time // 86400 == 1 and "1 Day" or f"{total_time // 86400} Days"
 
     if remaining_time < 60:
-        remaining_time = f"{total_time} Seconds"
+        remaining_time = f"{remaining_time} Seconds"
     elif remaining_time < 3600:
         remaining_time = \
             remaining_time // 60 == 1 and "1 Minute" or f"{remaining_time // 60} Minutes"
@@ -45,7 +45,8 @@ def create_total_time(total_time):
         remaining_time = \
             remaining_time // 86400 == 1 and "1 Day" or f"{remaining_time // 86400} Days"
 
-    total_time = f"{total_time} and {remaining_time}"
+    total_time = remaining_time and f"{total_time} and {remaining_time}" or \
+        total_time
     return total_time
 
 def create_office_report(request):
@@ -129,7 +130,7 @@ def create_citizens_charter_whole(request, pk=None):
         total_requirement=Count('requirements'),
         total_fee=Subquery(step_queryset.values('total_fee')),
         total_time=Subquery(step_queryset.values('total_time'))
-    ).order_by('created_at')
+    ).order_by('number')
 
     for service in services:
         service.total_time = create_total_time(service.total_time)

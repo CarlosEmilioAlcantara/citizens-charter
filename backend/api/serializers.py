@@ -189,6 +189,7 @@ class ServiceSerializer(serializers.ModelSerializer):
         model = Service
         fields = [
             'id',
+            'number',
             'name', 
             'description', 
             'transaction', 
@@ -198,6 +199,13 @@ class ServiceSerializer(serializers.ModelSerializer):
             'office',
         ]
         extra_kwargs = {'office': {'read_only': True}}
+
+    def validate(self, data):
+        if data.get('is_subservice') and not isinstance(data['number'], float):
+            raise serializers.ValidationError(
+                'Subservices must follow their parent service.'
+            )
+        return data
 
 class ServiceBulkUpdateSerializer(serializers.ModelSerializer):
     pk = serializers.IntegerField()
@@ -209,6 +217,7 @@ class ServiceBulkUpdateSerializer(serializers.ModelSerializer):
         model = Service
         fields = [
             'pk',
+            'number',
             'name', 
             'description', 
             'transaction', 
@@ -219,6 +228,19 @@ class ServiceBulkUpdateSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {'office': {'read_only': True}}
         list_serializer_class = BaseBulkUpdateSerializer
+
+    def validate(self, data):
+        # TODO; Fix data validation of subservice
+        # has_decimal = 
+        if data.get('is_subservice') and not isinstance(data['number'], float):
+            raise serializers.ValidationError(
+                'Subservices must follow their parent service.'
+            )
+        if not data.get('is_subservice') and isinstance(data['number'], float):
+            raise serializers.ValidationError(
+                'Subservices must follow their parent service.'
+            )
+        return data
 
 class RequirementSerializer(serializers.ModelSerializer):
     class Meta:
@@ -250,15 +272,16 @@ class StepSerializer(serializers.ModelSerializer):
             'fee',
             'legal_basis',
             'processing_time',
+            'is_substep',
             'service',
             'position',
         ]
         extra_kwargs = {'service': {'read_only': True}}
 
-    # def validate_position(self, value):
-    #     if not value.position or len(value.position) == 0:
-    #         raise serializers.ValidationError('Position is required.')
-    #     return value
+    def validate(self, data):
+        if data.get('is_substep') and data['name']:
+            raise serializers.ValidationError('Cannot name a substep.')
+        return data
 
 class StepBulkUpdateSerializer(serializers.ModelSerializer):
     pk = serializers.IntegerField()
@@ -291,6 +314,7 @@ class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
         model = Service
         fields = [
             'id',
+            'number',
             'name', 
             'office',
             'total_requirement',

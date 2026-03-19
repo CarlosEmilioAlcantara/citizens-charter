@@ -87,6 +87,7 @@ class Position(models.Model):
         return self.name
 
 class Service(models.Model):
+    number = models.DecimalField(max_digits=9, decimal_places=1)
     name = models.CharField(max_length=180)
     description = models.CharField(max_length=255) 
 
@@ -144,11 +145,13 @@ class Requirement(models.Model):
         return self.name
 
 class Step(models.Model):
-    name = models.CharField(max_length=180)
+    name = models.CharField(max_length=180, blank=True, null=True)
     action = models.CharField(max_length=180)
-    fee = models.DecimalField(max_digits=9, decimal_places=2)
-    legal_basis = models.CharField(max_length=180)
+    fee = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    legal_basis = models.CharField(max_length=180, default="None")
     processing_time = models.BigIntegerField()
+
+    is_substep = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
