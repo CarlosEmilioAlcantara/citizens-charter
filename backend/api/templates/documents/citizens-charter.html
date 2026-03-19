@@ -1,7 +1,194 @@
 {% extends "citizens-charter-base.html" %}
 {% load mathfilters %}
 {% block content %}
-{% for service in services %}
+{% if services|length > 0 %}
+ {% for service in services %}
+  <section class="service">
+   <div class="service__title">
+    <p>{{ forloop.counter }}) {{ service.name }}</p>
+    <p>{{ service.description }}</p>
+   </div>
+
+   <table class="service__table--top">
+    <tr class="table--top__item">
+     <th class="
+      table--header
+      table--header--top
+      "
+     >
+      Departamento o Opisina
+     </th>
+
+     <td>{{ office_name }}</td>
+    </tr>
+
+    <tr class="table--top__item">
+     <th class="
+      table--header
+      table--header--top
+      "
+     >
+      Klasipikasyon
+     </th>
+
+     <td class="table--header__classifications">
+      <ul>
+       {% for classification in service.classification_types %}
+        {% if classification == 'g2b' %}
+         <li>G2B - Government to Business</li>
+        {% endif %}
+        {% if classification == 'g2c' %}
+         <li>G2C - Government to Client</li>
+        {% endif %}
+        {% if classification == 'g2e' %}
+         <li>G2E - Government to Employee</li>
+        {% endif %}
+        {% if classification == 'g2g' %}
+         <li>G2G - Government to Government</li>
+        {% endif %}
+       {% endfor %}
+      </ul>
+     </td>
+    </tr>
+
+    <tr class="table--top__item">
+     <th class="
+      table--header
+      table--header--top
+      "
+     >
+      Uri ng Transaksyon
+     </th>
+
+     <td>
+      {% if service.transaction == 'simple' %}
+       Simple
+      {% elif service.transaction == 'complicated' %}
+       Komplikado
+      {% elif service.transaction == 'technical' %}
+       Lubhang Teknikal
+      {% endif %}
+     </td>
+    </tr>
+
+    <tr class="table--top__item">
+     <th class="
+      table--header
+      table--header--top
+      "
+     >
+      Sino ang pwede kumuha:
+     </th>
+
+     <td>{{ service.availers }}</td>
+    </tr>
+   </table>
+
+   <table class="service__table--requirements">
+    <tr class="table--middle">
+     <th class="
+      table--header
+      table--header--requirements
+     ">
+      TSEKLIST NG MGA KINAKAILANGAN:
+     </th>
+
+     <th class="
+      table--header
+      table--header--requirements
+     ">
+      SAAN MATATAGPUAN:
+     </th>
+    </tr>
+
+    {% for requirement in service.requirements.all %}
+     <tr class="table--middle">
+      <td class="table--middle__item">{{ requirement.name }}</td>
+      <td class="table--middle__item">{{ requirement.where_to_secure }}</td>
+     </tr>
+    {% endfor %}
+    {% with dummy_requirements=4|sub:service.total_requirement %}
+     {% for _ in ""|ljust:dummy_requirements %}
+      <tr class="table--middle">
+       <td class="table--middle__dummy"></td>
+       <td class="table--middle__dummy"></td>
+      </tr>
+     {% endfor %}
+    {% endwith %}
+    <tr class="spacer"><td></td></tr>
+   </table>
+
+   <table class="service__table--steps" cellspacing="0" cellpadding="3">
+    <tr class="table--bottom">
+     <th class="
+      table--header--bottom
+      table--header--step
+     ">
+      HAKBANG NG KLIYENTE
+     </th>
+
+     <th class="
+      table--header--bottom
+      table--header--action
+     ">
+      AKSYON NG AHENSIYA
+     </th>
+
+     <th class="
+      table--header--bottom
+      table--header--fee
+     ">
+      BAYARIN
+     </th>
+
+     <th class="
+      table--header--bottom
+      table--header--legal-basis
+     ">
+      BASEHANG LEGAL
+     </th>
+
+     <th class="
+      table--header--bottom
+      table--header--processing-time
+     ">
+      HABA NG PROSESO
+     </th>
+
+     <th class="
+      table--header--bottom
+      table--header--position
+     ">
+      TAONG RESPONSABLE
+     </th>
+    </tr>
+
+    {% for step in service.steps.all %}
+     <tr class="table--bottom">
+      <td>{{ step.name }}</td>
+      <td>{{ step.action }}</td>
+      <td>{{ step.fee }}</td>
+      <td>{{ step.legal_basis }}</td>
+      <td>{{ step.processing_time }}</td>
+      <td>
+       {% for position in step.position.all %}
+        {{ position }}
+       {% endfor %}
+      </td>
+     </tr>
+    {% endfor %}
+
+    <tr class="table--bottom" nobr="True">
+     <td class="table--bottom--total" colspan="2">TOTAL</td>
+     <td>{{ service.total_fee }}</td>
+     <td></td>
+     <td>{{ service.total_time }}</td>
+     <td></td>
+    </tr>
+   </table>
+  </section>
+ {% endfor %}
+{% else %}
  <section class="service">
   <div class="service__title">
    <p>{{ service.id }}) {{ service.name }}</p>
@@ -81,7 +268,6 @@
 
     <td>{{ service.availers }}</td>
    </tr>
-
   </table>
 
   <table class="service__table--requirements">
@@ -178,13 +364,14 @@
     </tr>
    {% endfor %}
 
-   <tr>
+   <tr class="table--bottom" nobr="True">
     <td class="table--bottom--total" colspan="2">TOTAL</td>
-    <td>
-     {{ service.total_fee }}
-    </td>
+    <td>{{ service.total_fee }}</td>
+    <td></td>
+    <td>{{ service.total_time }}</td>
+    <td></td>
    </tr>
   </table>
  </section>
-{% endfor %}
+{% endif %}
 {% endblock %}

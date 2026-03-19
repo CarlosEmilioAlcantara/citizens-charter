@@ -77,31 +77,66 @@ def create_office_report(request):
 
     return data
 
-def create_citizens_charter(request, pk=None):
+def create_citizens_charter_single(request, pk):
+    office = Office.objects.get(pk=request.user.office_id) 
+    office_name = office.name
+
+    step_queryset = Step.objects.filter(
+        service=OuterRef('pk')
+    ).values('service').annotate(
+        total_fee=Sum('fee'),
+        total_time=Sum('processing_time')
+    )
+    service = Service.objects.filter(
+        pk=pk
+    ).prefetch_related(
+        'requirements',
+        'steps'
+    ).annotate(
+        total_requirement=Count('requirements'),
+        total_fee=Subquery(step_queryset.values('total_fee')),
+        total_time=Subquery(step_queryset.values('total_time'))
+    ).first()
+
+    for step in service.steps.all():
+        step.processing_time = create_total_time(
+            step.processing_time
+        )
+
+    return (office_name, service)
+
+def create_citizens_charter_whole(request, pk=None):
     office = Office.objects.get(pk=request.user.office_id) 
     office_name = office.name
 
     if pk:
-        service = Service.objects.filter(
-            pk=pk
-        ).prefetch_related(
-            'requirements',
-            'steps'
-        )
-        return (office_name, service)
-    else: 
-        step_queryset = Step.objects.filter(
-            service=OuterRef('pk')
-        ).values('service').annotate(
-            total_fee=Sum('fee')
-        )
-        services = Service.objects.filter(
-            office_id=request.user.office_id
-        ).prefetch_related(
-            'requirements',
-            'steps'
-        ).annotate(
-            total_requirement=Count('requirements'),
-            total_fee=Subquery(step_queryset.values('total_fee'))
-        )
-        return (office_name, services)
+        office_id = pk
+    else:
+        office_id = request.user.office.id
+        
+    step_queryset = Step.objects.filter(
+        service=OuterRef('pk')
+    ).values('service').annotate(
+        total_fee=Sum('fee'),
+        total_time=Sum('processing_time')
+    )
+    services = Service.objects.filter(
+        office_id=office_id
+    ).prefetch_related(
+        'requirements',
+        'steps'
+    ).annotate(
+        total_requirement=Count('requirements'),
+        total_fee=Subquery(step_queryset.values('total_fee')),
+        total_time=Subquery(step_queryset.values('total_time'))
+    ).order_by('created_at')
+
+    for service in services:
+        service.total_time = create_total_time(service.total_time)
+
+        for step in service.steps.all():
+            step.processing_time = create_total_time(
+                step.processing_time
+            )
+
+    return (office_name, services)

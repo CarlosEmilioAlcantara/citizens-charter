@@ -4,10 +4,15 @@ from django.template.loader import render_to_string
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from ..renderers import PDFRenderer
 from ..permissions import IsSuperuser
-from ..utils import pdf_chunks, create_office_report, create_citizens_charter
+from ..utils import (
+    create_citizens_charter_single,
+    create_citizens_charter_whole,
+    pdf_chunks,
+    create_office_report, 
+)
 
 class ExportOfficeReportView(APIView):
     permission_classes = [IsAuthenticated]
@@ -37,15 +42,74 @@ class ExportCitizensCharterView(APIView):
     permission_classes = [IsAuthenticated]
     renderer_classes = [PDFRenderer]
     
-    def get(self, request):
-        service_id = self.kwargs.get('pk')
-        if service_id:
-            office_name, service = create_citizens_charter(request, service_id)
-        
-        office_name, services = create_citizens_charter(request)
+    def get(self, request, pk):
+        office_name, service = create_citizens_charter_single(request, pk)
         html = render_to_string(
             'documents/citizens-charter.html', 
-            context={'office_name': office_name, 'services': services}
+            context={
+                'office_name': office_name, 
+                'service': service
+            }
+        )
+
+        return StreamingHttpResponse(
+            pdf_chunks(
+                html, 
+                request, 
+                stylesheets=[
+                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
+                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
+                ]
+            ),
+            content_type='application/pdf',
+            headers={
+                'Content-Disposition': 
+                    f"attachment; filename={office_name}-report.pdf"
+            }
+        )
+
+class ExportCitizensCharterWholeView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [PDFRenderer]
+    
+    def get(self, request):
+        office_name, services = create_citizens_charter_whole(request)
+        html = render_to_string(
+            'documents/citizens-charter.html', 
+            context={
+                'office_name': office_name, 
+                'services': services
+            }
+        )
+
+        return StreamingHttpResponse(
+            pdf_chunks(
+                html, 
+                request, 
+                stylesheets=[
+                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
+                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
+                ]
+            ),
+            content_type='application/pdf',
+            headers={
+                'Content-Disposition': 
+                    f"attachment; filename={office_name}-report.pdf"
+            }
+        )
+
+class ExportCitizensCharterOfficeView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    renderer_classes = [PDFRenderer]
+    
+    def get(self, request, pk):
+        office_name, services = create_citizens_charter_whole(request, pk)
+        html = render_to_string(
+            'documents/citizens-charter.html', 
+            context={
+                'office_name': office_name, 
+                'services': services
+            }
         )
 
         return StreamingHttpResponse(

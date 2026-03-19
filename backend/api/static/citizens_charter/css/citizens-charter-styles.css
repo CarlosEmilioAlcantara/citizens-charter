@@ -30,8 +30,10 @@ section {
 }
 
 table {
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 1.3rem;
+  overflow-wrap: break-word;
   break-inside: always;
 }
 
@@ -136,5 +138,9 @@ table td, th {
 } */
 
 .table--bottom--total {
-  text-align: right;
+  text-align: right !important;
+}
+
+.table--bottom {
+  text-align: center;
 }
