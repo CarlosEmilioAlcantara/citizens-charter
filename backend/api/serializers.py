@@ -1,3 +1,4 @@
+import decimal
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Office, Position, Requirement, Service, Step, User 
@@ -201,9 +202,14 @@ class ServiceSerializer(serializers.ModelSerializer):
         extra_kwargs = {'office': {'read_only': True}}
 
     def validate(self, data):
-        if data.get('is_subservice') and not isinstance(data['number'], float):
+        has_decimal = data['number'] % 1
+        if data.get('is_subservice') and not has_decimal:
             raise serializers.ValidationError(
-                'Subservices must follow their parent service.'
+                'Subservices must be a decimal, incrementing after each subservice/parent service.'
+            )
+        if not data.get('is_subservice') and has_decimal:
+            raise serializers.ValidationError(
+                'Services must not be a decimal.'
             )
         return data
 
@@ -230,15 +236,14 @@ class ServiceBulkUpdateSerializer(serializers.ModelSerializer):
         list_serializer_class = BaseBulkUpdateSerializer
 
     def validate(self, data):
-        # TODO; Fix data validation of subservice
-        # has_decimal = 
-        if data.get('is_subservice') and not isinstance(data['number'], float):
+        has_decimal = data['number'] % 1
+        if data.get('is_subservice') and not has_decimal:
             raise serializers.ValidationError(
-                'Subservices must follow their parent service.'
+                'Subservices must be a decimal, incrementing after each subservice/parent service.'
             )
-        if not data.get('is_subservice') and isinstance(data['number'], float):
+        if not data.get('is_subservice') and has_decimal:
             raise serializers.ValidationError(
-                'Subservices must follow their parent service.'
+                'Services must not be a decimal.'
             )
         return data
 
@@ -272,18 +277,28 @@ class StepSerializer(serializers.ModelSerializer):
             'fee',
             'legal_basis',
             'processing_time',
-            'is_substep',
+            'is_subaction',
             'service',
             'position',
         ]
         extra_kwargs = {'service': {'read_only': True}}
 
     def validate(self, data):
-        if data.get('is_substep') and data['name']:
-            raise serializers.ValidationError('Cannot name a substep.')
+        if data.get('is_subaction') and data['name']:
+            raise serializers.ValidationError(
+                'Subaction assigns to specific step.'
+            )
+        if not data.get('is_subaction') and not data['name']:
+            raise serializers.ValidationError('Must name a step.')
+        if len(data.get('position')) == 0:
+            raise serializers.ValidationError('Must have atleast one position.')
         return data
 
 class StepBulkUpdateSerializer(serializers.ModelSerializer):
+    position = serializers.PrimaryKeyRelatedField(
+        queryset=Position.objects.all(),
+        many=True
+    )
     pk = serializers.IntegerField()
 
     class Meta:
@@ -295,11 +310,25 @@ class StepBulkUpdateSerializer(serializers.ModelSerializer):
             'fee',
             'legal_basis',
             'processing_time',
+            'is_subaction',
             'service',
             'position',
         ]
-        extra_kwargs = {'service': {'read_only': True}}
+        # extra_kwargs = {'service': {'read_only': True}}
         list_serializer_class = BaseBulkUpdateSerializer
+        
+    def validate(self, data):
+        # first_step = Service.objects.get(pk=data.get('service'))
+        # print(first_step)
+        if data.get('is_subaction') and data.get('name'):
+            raise serializers.ValidationError(
+                'Subaction assigns to specific step.'
+            )
+        if not data.get('is_subaction') and not data.get('name'):
+            raise serializers.ValidationError('Must name a step.')
+        if len(data.get('position')) == 0:
+            raise serializers.ValidationError('Must have atleast one position.')
+        return data
 
 class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
     total_requirement = serializers.IntegerField(read_only=True)

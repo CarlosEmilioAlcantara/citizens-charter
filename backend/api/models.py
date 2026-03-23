@@ -151,7 +151,7 @@ class Step(models.Model):
     legal_basis = models.CharField(max_length=180, default="None")
     processing_time = models.BigIntegerField()
 
-    is_substep = models.BooleanField(default=False)
+    is_subaction = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
