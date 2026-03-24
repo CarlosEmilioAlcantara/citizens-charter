@@ -24,19 +24,19 @@ class BaseBulkUpdateSerializer(serializers.ListSerializer):
             return super().to_internal_value(data)
 
         instance_map = {
-            obj.pk: obj for obj in self.instance
+            obj.id: obj for obj in self.instance
         }
 
         ret = []
         errors = []
 
         for item in data:
-            pk = item.get('pk')
-            instance = instance_map.get(pk)
+            id = item.get('id')
+            instance = instance_map.get(id)
 
             if not instance:
                 errors.append(
-                    {'pk': f"Object with pk={pk} does not exist."}
+                    {'pk': f"Object with id={id} does not exist."}
                 )
                 continue
 
@@ -52,21 +52,21 @@ class BaseBulkUpdateSerializer(serializers.ListSerializer):
             raise serializers.ValidationError(errors)
 
         return ret
-    
+
     def update(self, queryset, validated_data):
         model = self.child.Meta.model
 
-        instance_map = {obj.pk: obj for obj in queryset}
-        data_map = {item['pk']: item for item in validated_data}
+        instance_map = {obj.id: obj for obj in queryset}
+        data_map = {item['id']: item for item in validated_data}
 
         update_fields = set()
         instances = []
 
-        for pk, data in data_map.items():
-            instance = instance_map[pk]
+        for id, data in data_map.items():
+            instance = instance_map[id]
 
             for attr, value in data.items():
-                if attr == 'pk':
+                if attr == 'id':
                     continue
                 if attr == 'position':
                     instance.position.set(value)
@@ -89,11 +89,12 @@ class OfficeSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'service_count', 'user_count', 'position_count']
 
 class OfficeBulkUpdateSerializer(serializers.ModelSerializer):
-    pk = serializers.IntegerField()
+    # pk = serializers.IntegerField()
+    id = serializers.IntegerField(required=False)
 
     class Meta:
         model = Office
-        fields = ['pk', 'name']        
+        fields = ['id', 'name']        
         list_serializer_class = BaseBulkUpdateSerializer
 
 class UserSerializer(serializers.ModelSerializer):
@@ -170,14 +171,15 @@ class PositionSerializer(serializers.ModelSerializer):
         extra_kwargs = {'office': {'read_only': True}}
 
 class PositionBulkUpdateSerializer(serializers.ModelSerializer):
-    pk = serializers.IntegerField()
+    # pk = serializers.IntegerField()
     office = serializers.PrimaryKeyRelatedField(
         queryset=Office.objects.all()
     )
+    id = serializers.IntegerField(required=False)
 
     class Meta:
         model = Position
-        fields = ['pk', 'name', 'office']
+        fields = ['id', 'name', 'office']
         extra_kwargs = {'office': {'read_only': True}}
         list_serializer_class = BaseBulkUpdateSerializer
 
@@ -214,15 +216,16 @@ class ServiceSerializer(serializers.ModelSerializer):
         return data
 
 class ServiceBulkUpdateSerializer(serializers.ModelSerializer):
-    pk = serializers.IntegerField()
+    # pk = serializers.IntegerField()
     classification_types = serializers.MultipleChoiceField(
         choices = Service.CLASSIFICATION_CHOICES
     )
+    id = serializers.IntegerField(required=False)
 
     class Meta:
         model = Service
         fields = [
-            'pk',
+            'id',
             'number',
             'name', 
             'description', 
@@ -254,11 +257,12 @@ class RequirementSerializer(serializers.ModelSerializer):
         extra_kwargs = {'service': {'read_only': True}}
 
 class RequirementBulkUpdateSerializer(serializers.ModelSerializer):
-    pk = serializers.IntegerField()
+    # pk = serializers.IntegerField()
+    id = serializers.IntegerField(required=False)
 
     class Meta:
         model = Requirement
-        fields = ['pk', 'name', 'where_to_secure', 'service']
+        fields = ['id', 'name', 'where_to_secure', 'service']
         extra_kwargs = {'service': {'read_only': True}}
         list_serializer_class = BaseBulkUpdateSerializer
 
@@ -285,6 +289,12 @@ class StepSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         parent = data.get('service')
+        step = Step.objects.get(pk=data.get('id'))
+        if parent.pk != step.service_id:
+            raise serializers.ValidationError(
+                "Cannot change a step's parent service."
+            )
+
         first_step = parent.steps.all().first()
         if not first_step and data.get('is_subaction'):
             raise serializers.ValidationError(
@@ -313,6 +323,8 @@ class StepBulkUpdateSerializer(serializers.ModelSerializer):
         many=True
     )
     # pk = serializers.IntegerField()
+    # Hack to get around django making id read_only by default
+    id = serializers.IntegerField(required=False)
 
     class Meta:
         model = Step
@@ -332,13 +344,19 @@ class StepBulkUpdateSerializer(serializers.ModelSerializer):
         
     def validate(self, data):
         parent = data.get('service')
+        step = Step.objects.get(pk=data.get('id'))
+        if parent.pk != step.service_id:
+            raise serializers.ValidationError(
+                "Cannot change a step's parent service."
+            )
+
         first_step = parent.steps.all().first()
         if not first_step and data.get('is_subaction'):
             raise serializers.ValidationError(
                 'Must have a step first before a subaction.'
             )
         elif first_step and first_step.pk == data.get(
-            'pk'
+            'id'
         ) and data.get('is_subaction'):
             raise serializers.ValidationError(
                 'Must have a step first before a subaction.'
