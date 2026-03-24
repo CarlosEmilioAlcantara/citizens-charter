@@ -281,14 +281,27 @@ class StepSerializer(serializers.ModelSerializer):
             'service',
             'position',
         ]
-        extra_kwargs = {'service': {'read_only': True}}
+        # extra_kwargs = {'service': {'read_only': True}}
 
     def validate(self, data):
-        if data.get('is_subaction') and data['name']:
+        parent = data.get('service')
+        first_step = parent.steps.all().first()
+        if not first_step and data.get('is_subaction'):
+            raise serializers.ValidationError(
+                'Must have a step first before a subaction.'
+            )
+        elif first_step and first_step.pk == data.get(
+            'id'
+        ) and data.get('is_subaction'):
+            raise serializers.ValidationError(
+                'Must have a step first before a subaction.'
+            )
+
+        if data.get('is_subaction') and data.get('name'):
             raise serializers.ValidationError(
                 'Subaction assigns to specific step.'
             )
-        if not data.get('is_subaction') and not data['name']:
+        if not data.get('is_subaction') and not data.get('name'):
             raise serializers.ValidationError('Must name a step.')
         if len(data.get('position')) == 0:
             raise serializers.ValidationError('Must have atleast one position.')
@@ -299,12 +312,12 @@ class StepBulkUpdateSerializer(serializers.ModelSerializer):
         queryset=Position.objects.all(),
         many=True
     )
-    pk = serializers.IntegerField()
+    # pk = serializers.IntegerField()
 
     class Meta:
         model = Step
         fields = [
-            'pk',
+            'id',
             'name', 
             'action',
             'fee',
@@ -318,8 +331,19 @@ class StepBulkUpdateSerializer(serializers.ModelSerializer):
         list_serializer_class = BaseBulkUpdateSerializer
         
     def validate(self, data):
-        # first_step = Service.objects.get(pk=data.get('service'))
-        # print(first_step)
+        parent = data.get('service')
+        first_step = parent.steps.all().first()
+        if not first_step and data.get('is_subaction'):
+            raise serializers.ValidationError(
+                'Must have a step first before a subaction.'
+            )
+        elif first_step and first_step.pk == data.get(
+            'pk'
+        ) and data.get('is_subaction'):
+            raise serializers.ValidationError(
+                'Must have a step first before a subaction.'
+            )
+
         if data.get('is_subaction') and data.get('name'):
             raise serializers.ValidationError(
                 'Subaction assigns to specific step.'

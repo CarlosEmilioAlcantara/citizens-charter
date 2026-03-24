@@ -15,10 +15,13 @@ class CreateStepView(APIView):
     def post(self, request, pk):
         service = get_object_or_404(Service, pk=pk)
         self.check_object_permissions(request, service)
+
+        data = request.data
+        data['service'] = service.pk
         serializer = StepSerializer(data=request.data)
         
         if serializer.is_valid():
-            serializer.save(service=service)
+            serializer.save()
         else:
             return Response(
                 serializer.errors,
