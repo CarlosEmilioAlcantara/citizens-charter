@@ -18,7 +18,7 @@ class CreateStepView(APIView):
 
         data = request.data
         data['service'] = service.pk
-        serializer = StepSerializer(data=request.data)
+        serializer = StepSerializer(data=data)
         
         if serializer.is_valid():
             serializer.save()
@@ -45,7 +45,10 @@ class StepView(APIView):
     def put(self, request, pk):
         step = get_object_or_404(Step, pk=pk)
         self.check_object_permissions(request, step.service)
-        serializer = StepSerializer(step, data=request.data)
+
+        data = request.data
+        data['service'] = step.service_id
+        serializer = StepSerializer(step, data=data)
 
         if serializer.is_valid():
             serializer.save()

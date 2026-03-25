@@ -201,9 +201,27 @@ class ServiceSerializer(serializers.ModelSerializer):
             'is_subservice',
             'office',
         ]
-        extra_kwargs = {'office': {'read_only': True}}
+        # extra_kwargs = {'office': {'read_only': True}}
 
     def validate(self, data):
+        parent = data.get('office')
+        first_service = parent.services.all().first()
+        if not first_service and data.get('is_subservice'):
+            raise serializers.ValidationError(
+                'Must have a service first before a subservice.'
+            )
+        elif first_service and first_service.pk == data.get(
+            'id'
+        ) and data.get('is_subservice'):
+            raise serializers.ValidationError(
+                'Must have a service first before a subservice.'
+            )
+
+        if parent.services.filter(number=data.get('number')).exists():
+            raise serializers.ValidationError(
+                'Service with number already exists.'
+            )
+
         has_decimal = data['number'] % 1
         if data.get('is_subservice') and not has_decimal:
             raise serializers.ValidationError(
@@ -213,6 +231,7 @@ class ServiceSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Services must not be a decimal.'
             )
+
         return data
 
 class ServiceBulkUpdateSerializer(serializers.ModelSerializer):
@@ -235,12 +254,35 @@ class ServiceBulkUpdateSerializer(serializers.ModelSerializer):
             'is_subservice',
             'office',
         ]
-        extra_kwargs = {'office': {'read_only': True}}
+        # extra_kwargs = {'office': {'read_only': True}}
         list_serializer_class = BaseBulkUpdateSerializer
 
     def validate(self, data):
-        # TODO; Do not allow adding subservice if no previous service
-        # TODO; Do not allow similar service numbers per office
+        parent = data.get('office')
+        if Service.objects.filter(pk=data.get('id')).exists():
+            service = Service.objects.get(pk=data.get('id'))
+            if parent.pk != service.office_id:
+                raise serializers.ValidationError(
+                    "Cannot change a service's parent office."
+                )
+
+        if parent.services.filter(number=data.get('number')).exists():
+            raise serializers.ValidationError(
+                'Service with number already exists.'
+            )
+
+        first_service = parent.services.all().first()
+        if not first_service and data.get('is_subservice'):
+            raise serializers.ValidationError(
+                'Must have a service first before a subservice.'
+            )
+        elif first_service and first_service.pk == data.get(
+            'id'
+        ) and data.get('is_subservice'):
+            raise serializers.ValidationError(
+                'Must have a service first before a subservice.'
+            )
+
         has_decimal = data['number'] % 1
         if data.get('is_subservice') and not has_decimal:
             raise serializers.ValidationError(
@@ -250,6 +292,7 @@ class ServiceBulkUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Services must not be a decimal.'
             )
+        
         return data
 
 class RequirementSerializer(serializers.ModelSerializer):
@@ -291,14 +334,12 @@ class StepSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         parent = data.get('service')
-        try:
+        if Step.objects.filter(pk=data.get('id')).exists():
             step = Step.objects.get(pk=data.get('id'))
             if parent.pk != step.service_id:
                 raise serializers.ValidationError(
                     "Cannot change a step's parent service."
                 )
-        except Step.DoesNotExist:
-            ...
 
         first_step = parent.steps.all().first()
         if not first_step and data.get('is_subaction'):
@@ -349,11 +390,12 @@ class StepBulkUpdateSerializer(serializers.ModelSerializer):
         
     def validate(self, data):
         parent = data.get('service')
-        step = Step.objects.get(pk=data.get('id'))
-        if parent.pk != step.service_id:
-            raise serializers.ValidationError(
-                "Cannot change a step's parent service."
-            )
+        if Step.objects.filter(pk=data.get('id')).exists():
+            step = Step.objects.get(pk=data.get('id'))
+            if parent.pk != step.service_id:
+                raise serializers.ValidationError(
+                    "Cannot change a step's parent service."
+                )
 
         first_step = parent.steps.all().first()
         if not first_step and data.get('is_subaction'):

@@ -14,10 +14,13 @@ class ServiceView(APIView):
 
     def post(self, request):
         office = get_object_or_404(Office, pk=self.request.user.office_id)
-        serializer = ServiceSerializer(data=request.data)
+
+        data = request.data
+        data['office'] = office.pk
+        serializer = ServiceSerializer(data=data)
 
         if serializer.is_valid():
-            serializer.save(office=office)
+            serializer.save()
         else:
             return Response(
                 serializer.errors,
@@ -34,8 +37,12 @@ class ServiceView(APIView):
 
     def put(self, request, pk):
         service = get_object_or_404(Service, pk=pk)
+        office = get_object_or_404(Office, pk=self.request.user.office_id)
+        data = request.data
+        data['office'] = office.pk
+
         self.check_object_permissions(request, service)
-        serializer = ServiceSerializer(service, data=request.data)
+        serializer = ServiceSerializer(service, data=data)
 
         if serializer.is_valid():
             serializer.save()

@@ -24,18 +24,9 @@ class OfficeAnalyticsListView(ListAPIView):
         total_price=Sum('fee'),
         total_time=Sum('processing_time')
     )
-    requirement_queryset = Requirement.objects.filter(
-        service=OuterRef('pk')
-    ).values('service').annotate(
-        total_requirement=Count('id')
-    )
     queryset = Service.objects.prefetch_related(
         'requirements'
     ).annotate(
-        # TODO; Replace with just calling the related name
-        # total_requirement=Subquery(requirement_queryset.values(
-        #     'total_requirement'
-        # )),
         total_requirement=Count('requirements'),
         total_step=Subquery(step_queryset.values('total_step')),
         total_price=Subquery(step_queryset.values('total_price')),
