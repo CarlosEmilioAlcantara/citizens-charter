@@ -239,6 +239,8 @@ class ServiceBulkUpdateSerializer(serializers.ModelSerializer):
         list_serializer_class = BaseBulkUpdateSerializer
 
     def validate(self, data):
+        # TODO; Do not allow adding subservice if no previous service
+        # TODO; Do not allow similar service numbers per office
         has_decimal = data['number'] % 1
         if data.get('is_subservice') and not has_decimal:
             raise serializers.ValidationError(
@@ -289,11 +291,14 @@ class StepSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         parent = data.get('service')
-        step = Step.objects.get(pk=data.get('id'))
-        if parent.pk != step.service_id:
-            raise serializers.ValidationError(
-                "Cannot change a step's parent service."
-            )
+        try:
+            step = Step.objects.get(pk=data.get('id'))
+            if parent.pk != step.service_id:
+                raise serializers.ValidationError(
+                    "Cannot change a step's parent service."
+                )
+        except Step.DoesNotExist:
+            ...
 
         first_step = parent.steps.all().first()
         if not first_step and data.get('is_subaction'):

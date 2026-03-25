@@ -147,9 +147,14 @@ class Requirement(models.Model):
 class Step(models.Model):
     name = models.CharField(max_length=180, blank=True, null=True)
     action = models.CharField(max_length=180)
-    fee = models.DecimalField(max_digits=9, decimal_places=2, default=0)
-    legal_basis = models.CharField(max_length=180, default="None")
-    processing_time = models.BigIntegerField()
+    fee = models.DecimalField(
+        max_digits=9, 
+        decimal_places=2, 
+        blank=True,
+        null=True
+    )
+    legal_basis = models.CharField(max_length=180, blank=True, null=True)
+    processing_time = models.BigIntegerField(blank=True, null=True)
 
     is_subaction = models.BooleanField(default=False)
 

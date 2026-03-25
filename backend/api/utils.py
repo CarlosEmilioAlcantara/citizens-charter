@@ -1,3 +1,4 @@
+import re
 from django.db.models import OuterRef, Subquery, Sum, Count
 from weasyprint import HTML, CSS
 from .models import Office, Service, Requirement, Step
@@ -45,8 +46,10 @@ def create_total_time(total_time):
         remaining_time = \
             remaining_time // 86400 == 1 and "1 Day" or f"{remaining_time // 86400} Days"
 
-    total_time = remaining_time and f"{total_time} and {remaining_time}" or \
-        total_time
+    check = re.search(r'\d+', remaining_time)
+    if int(check.group()) > 1:
+        total_time = f"{total_time} and {remaining_time}"
+        
     return total_time
 
 def create_office_report(request):

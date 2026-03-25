@@ -133,6 +133,22 @@ table td, th {
   text-align: center;
 }
 
+.table--bottom__positions ul {
+  list-style: none;
+}
+
+.table--bottom__positions li {
+  display: inline;
+}
+
+.table--bottom__positions li:after {
+  content: ", ";
+}
+
+.table--bottom__positions li:last-child:after {
+  content: "";
+}
+
 /* .table--header--step {
   width: 23%;
 }

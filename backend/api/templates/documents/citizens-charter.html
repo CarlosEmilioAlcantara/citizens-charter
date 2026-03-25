@@ -1,3 +1,4 @@
+{% comment %} Remove total row if everything at the bottom is empty? {% endcomment %}
 {% extends "citizens-charter-base.html" %}
 {% load mathfilters %}
 {% block content %}
@@ -167,30 +168,56 @@
 
     {% for step in service.steps.all %}
      <tr class="table--bottom">
-      <td>{{ step.name }}</td>
-      <td>{{ step.action }}</td>
-      <td>{{ step.fee }}</td>
-      <td>{{ step.legal_basis }}</td>
-      <td>{{ step.processing_time }}</td>
       <td>
+       {% if step.name%}
+        {{ step.name }}
+       {% endif %}
+      </td>
+      <td>{{ step.action }}</td>
+      <td>
+       {% if step.fee %}
+        {{ step.fee }}
+       {% endif %}
+      </td>
+      <td>
+       {% if step.legal_basis %}
+        {{ step.legal_basis }}
+       {% endif %}
+      </td>
+      <td>
+       {% if step.processing_time %}
+        {{ step.processing_time }}
+       {% endif %}
+      </td>
+      <td class="table--bottom__positions">
+       <ul>
        {% for position in step.position.all %}
-        {{ position }}
+        <li>{{ position }}</li>
        {% endfor %}
+       </ul>
       </td>
      </tr>
     {% endfor %}
 
     <tr class="table--bottom" nobr="True">
      <td class="table--bottom--total" colspan="2">TOTAL</td>
-     <td>{{ service.total_fee }}</td>
+     <td>
+      {% if service.total_fee %}
+       {{ service.total_fee }}
+      {% endif %}
+     </td>
      <td></td>
-     <td>{{ service.total_time }}</td>
+     <td>
+      {% if service.total_time%}
+       {{ service.total_time }}
+      {% endif %}
+     </td>
      <td></td>
     </tr>
    </table>
   </section>
  {% endfor %}
-{% else %}
+{% elif service %}
  <section class="service">
   <div class="service__title">
    <p>{{ service.id }}) {{ service.name }}</p>
@@ -353,11 +380,27 @@
 
    {% for step in service.steps.all %}
     <tr class="table--bottom">
-     <td>{{ step.name }}</td>
+     <td>
+       {% if step.name%}
+        {{ step.name }}
+       {% endif %}
+     </td>
      <td>{{ step.action }}</td>
-     <td>{{ step.fee }}</td>
-     <td>{{ step.legal_basis }}</td>
-     <td>{{ step.processing_time }}</td>
+     <td>
+      {% if step.fee %}
+       {{ step.fee }}
+      {% endif %}
+     </td>
+     <td>
+      {% if step.legal_basis %}
+       {{ step.legal_basis }}
+      {% endif %}
+     </td>
+     <td>
+      {% if step.processing_time %}
+       {{ step.processing_time }}
+      {% endif %}
+     </td>
      <td>
       {% for position in step.position.all %}
        {{ position }}
@@ -368,9 +411,17 @@
 
    <tr class="table--bottom" nobr="True">
     <td class="table--bottom--total" colspan="2">TOTAL</td>
-    <td>{{ service.total_fee }}</td>
+    <td>
+     {% if service.total_fee %}
+      {{ service.total_fee }}
+     {% endif %}
+    </td>
     <td></td>
-    <td>{{ service.total_time }}</td>
+    <td>
+     {% if service.total_time%}
+      {{ service.total_time }}
+     {% endif %}
+    </td>
     <td></td>
    </tr>
   </table>
