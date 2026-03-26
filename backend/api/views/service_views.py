@@ -8,6 +8,7 @@ from ..models import Office, Service
 from ..serializers import ServiceBulkUpdateSerializer, ServiceSerializer
 from ..permissions import IsInOffice
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
+from ..utils.view_utils import audit_save, audit_delete
 
 class ServiceView(APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
@@ -19,20 +20,13 @@ class ServiceView(APIView):
         data['office'] = office.pk
         serializer = ServiceSerializer(data=data)
 
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+        audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, pk):
         service = get_object_or_404(Service, pk=pk)
         self.check_object_permissions(request, service)
-        service.delete()
+        audit_delete(service, request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, pk):
@@ -44,14 +38,7 @@ class ServiceView(APIView):
         self.check_object_permissions(request, service)
         serializer = ServiceSerializer(service, data=data)
 
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+        audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class DeleteServiceView(BulkDeleteMixin, APIView):

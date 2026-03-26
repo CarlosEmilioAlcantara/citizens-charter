@@ -1,17 +1,18 @@
 from django.conf import settings
 from django.http import StreamingHttpResponse
 from django.template.loader import render_to_string
-from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from ..renderers import PDFRenderer
-from ..permissions import IsSuperuser
-from ..utils import (
+from ..utils.citizens_charter_utils import (
     create_citizens_charter_single,
     create_citizens_charter_whole,
+)
+from ..utils.pdf_utils import (
     pdf_chunks,
-    create_office_report, 
+)
+from ..utils.report_utils import (
+    create_office_report
 )
 
 class ExportOfficeReportView(APIView):

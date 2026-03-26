@@ -1,8 +1,8 @@
-import decimal
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from auditlog.models import LogEntry
 from .models import Office, Position, Requirement, Service, Step, User 
-from .utils import create_total_time
+from .utils.time_utils import create_total_time
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -441,3 +441,21 @@ class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
             'total_time',
         ]
         extra_kwargs = {'office': {'read_only': True}}
+
+class AuditLogSerializer(serializers.ModelSerializer):
+    content_type_model = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LogEntry
+        fields = [
+            'id',
+            'content_type_model',
+            'action',
+            'changes',
+            'actor',
+            'timestamp'
+        ]
+
+    def get_content_type_model(self, obj):
+        content_type_model = str(obj.content_type.model)
+        return content_type_model

@@ -8,6 +8,7 @@ from ..models import Service, Step
 from ..serializers import StepBulkUpdateSerializer, StepSerializer
 from ..permissions import IsInOffice
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
+from ..utils.view_utils import audit_save, audit_delete
 
 class CreateStepView(APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
@@ -20,18 +21,8 @@ class CreateStepView(APIView):
         data['service'] = service.pk
         serializer = StepSerializer(data=data)
         
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        return Response(
-            serializer.data, 
-            status=status.HTTP_200_OK
-        )
+        audit_save(serializer, request)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class StepView(APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
@@ -39,7 +30,7 @@ class StepView(APIView):
     def delete(self, request, pk):
         step = get_object_or_404(Step, pk=pk)
         self.check_object_permissions(request, step.service)
-        step.delete()
+        audit_delete(step, request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, pk):
@@ -50,14 +41,7 @@ class StepView(APIView):
         data['service'] = step.service_id
         serializer = StepSerializer(step, data=data)
 
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+        audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class DeleteStepView(BulkDeleteMixin, APIView):

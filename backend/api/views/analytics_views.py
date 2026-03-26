@@ -7,7 +7,8 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from ..serializers import OfficeAnalyticsListSerializer
 from ..permissions import IsInOffice
 from ..models import Service, Requirement, Step, Office
-from ..utils import create_office_report, create_total_time
+from ..utils.report_utils import create_office_report
+from ..utils.time_utils import create_total_time
 
 class OfficeAnalyticsView(APIView):
     permission_classes = [IsAuthenticated, IsInOffice]

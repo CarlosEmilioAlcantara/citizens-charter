@@ -59,6 +59,7 @@ from .views.pdf_export_views import (
     ExportCitizensCharterWholeView,
     ExportCitizensCharterOfficeView,
 )
+from .views.audit_log_views import AuditLogListView, SuperadminAuditLogListView
 
 urlpatterns = [
     # Auth Tokens
@@ -222,4 +223,12 @@ urlpatterns = [
         ExportCitizensCharterOfficeView.as_view(), 
         name='export_citizen_charter_whole_pdf'
     ),
+
+    # Audit logs
+    path('audit-logs', AuditLogListView.as_view(), name='fetch_audit_logs'),
+    path(
+        'admin-audit-logs', 
+        SuperadminAuditLogListView.as_view(), 
+        name='fetch_audit_logs'
+    )
 ]

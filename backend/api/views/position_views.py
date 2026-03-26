@@ -7,40 +7,25 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from ..models import Position
 from ..serializers import PositionBulkUpdateSerializer, PositionSerializer
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
+from ..utils.view_utils import audit_save, audit_delete
 
 class PositionView(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def post(self, request):
         serializer = PositionSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+        audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, pk):
         position = get_object_or_404(Position, pk=pk)
-        position.delete()
+        audit_delete(position, request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, pk):
         position = get_object_or_404(Position, pk=pk)
         serializer = PositionSerializer(position, data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+        audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class DeletePositionView(BulkDeleteMixin, APIView):

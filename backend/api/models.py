@@ -3,6 +3,7 @@ from django.db.models import UniqueConstraint
 from multiselectfield import MultiSelectField
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from auditlog.registry import auditlog
 
 # Create your models here.
 class UserManager(BaseUserManager):
@@ -192,3 +193,10 @@ class StepPosition(models.Model):
 
     def __str__(self):
         return f"{self.step} - {self.position}"
+
+auditlog.register(Office)
+auditlog.register(User, exclude_fields=['password'])
+auditlog.register(Position)
+auditlog.register(Service)
+auditlog.register(Requirement)
+auditlog.register(Step, m2m_fields={"position"})

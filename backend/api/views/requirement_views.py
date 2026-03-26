@@ -8,6 +8,7 @@ from ..models import Requirement, Service
 from ..serializers import RequirementBulkUpdateSerializer, RequirementSerializer
 from ..permissions import IsInOffice
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
+from ..utils.view_utils import audit_save, audit_delete
 
 class CreateRequirementView(APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
@@ -16,16 +17,8 @@ class CreateRequirementView(APIView):
         service = get_object_or_404(Service, pk=pk)
         self.check_object_permissions(request, service)
         serializer = RequirementSerializer(data=request.data)
-        
-        if serializer.is_valid():
-            serializer.save(service=service)
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        audit_save(serializer, request)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class RequirementView(APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
@@ -33,22 +26,14 @@ class RequirementView(APIView):
     def delete(self, request, pk):
         requirement = get_object_or_404(Requirement, pk=pk)
         self.check_object_permissions(request, requirement.service)
-        requirement.delete()
+        audit_delete(requirement, request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, pk):
         requirement = get_object_or_404(Requirement, pk=pk)
         self.check_object_permissions(request, requirement.service)
         serializer = RequirementSerializer(requirement, data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+        audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class DeleteRequirementView(BulkDeleteMixin, APIView):

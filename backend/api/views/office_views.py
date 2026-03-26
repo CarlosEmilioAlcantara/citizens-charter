@@ -9,40 +9,25 @@ from ..models import Office
 from ..serializers import OfficeBulkUpdateSerializer, OfficeSerializer
 from ..permissions import IsSuperuser
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
+from ..utils.view_utils import audit_save, audit_delete
 
 class OfficeView(APIView):
     permission_classes = [IsAuthenticated, IsSuperuser]
 
     def post(self, request):
         serializer = OfficeSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+        audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def delete(self, request, pk=None):
         office = get_object_or_404(Office, pk=pk)
-        office.delete()
+        audit_delete(office, request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, pk):
         office = get_object_or_404(Office, pk=pk)
         serializer = OfficeSerializer(office, data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+        audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class DeleteOfficeView(BulkDeleteMixin, APIView):
