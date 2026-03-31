@@ -17,6 +17,7 @@ class CreateRequirementView(APIView):
         service = get_object_or_404(Service, pk=pk)
         self.check_object_permissions(request, service)
         serializer = RequirementSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -33,6 +34,7 @@ class RequirementView(APIView):
         requirement = get_object_or_404(Requirement, pk=pk)
         self.check_object_permissions(request, requirement.service)
         serializer = RequirementSerializer(requirement, data=request.data)
+        serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

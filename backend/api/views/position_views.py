@@ -14,6 +14,7 @@ class PositionView(APIView):
 
     def post(self, request):
         serializer = PositionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -25,6 +26,7 @@ class PositionView(APIView):
     def put(self, request, pk):
         position = get_object_or_404(Position, pk=pk)
         serializer = PositionSerializer(position, data=request.data)
+        serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

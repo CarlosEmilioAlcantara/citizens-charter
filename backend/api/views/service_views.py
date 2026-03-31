@@ -20,6 +20,7 @@ class ServiceView(APIView):
         data['office'] = office.pk
         serializer = ServiceSerializer(data=data)
 
+        serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -38,6 +39,7 @@ class ServiceView(APIView):
         self.check_object_permissions(request, service)
         serializer = ServiceSerializer(service, data=data)
 
+        serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

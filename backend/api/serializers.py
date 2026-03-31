@@ -111,6 +111,7 @@ class UserSerializer(serializers.ModelSerializer):
             'password', 
             'is_staff', 
             'is_superuser', 
+            'is_active',
             'office',
         ]
         extra_kwargs = {

@@ -21,6 +21,7 @@ class CreateStepView(APIView):
         data['service'] = service.pk
         serializer = StepSerializer(data=data)
         
+        serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -41,6 +42,7 @@ class StepView(APIView):
         data['service'] = step.service_id
         serializer = StepSerializer(step, data=data)
 
+        serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

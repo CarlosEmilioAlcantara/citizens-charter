@@ -198,6 +198,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-migration_backups/
 
+migration_backups/
 utils-backup.py
+backend/api/middleware.py

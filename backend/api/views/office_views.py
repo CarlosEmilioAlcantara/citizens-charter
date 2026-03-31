@@ -16,6 +16,7 @@ class OfficeView(APIView):
 
     def post(self, request):
         serializer = OfficeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
@@ -27,6 +28,7 @@ class OfficeView(APIView):
     def put(self, request, pk):
         office = get_object_or_404(Office, pk=pk)
         serializer = OfficeSerializer(office, data=request.data)
+        serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

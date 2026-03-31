@@ -15,6 +15,7 @@ class UserView(APIView):
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -26,6 +27,7 @@ class UserView(APIView):
     def put(self, request, pk):
         user = get_object_or_404(User, pk=pk)
         serializer = UserSerializer(user, data=request.data)
+        serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
