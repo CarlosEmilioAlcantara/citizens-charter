@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import UniqueConstraint
 from multiselectfield import MultiSelectField
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, FileExtensionValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from auditlog.registry import auditlog
 
@@ -195,6 +195,24 @@ class StepPosition(models.Model):
 
     def __str__(self):
         return f"{self.step} - {self.position}"
+
+class CitizensCharter(models.Model):
+    charter = models.FileField(
+        upload_to='api/media/',
+        validators=[FileExtensionValidator(allowed_extensions=['pdf'])]
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    office = models.ForeignKey(
+        Office,
+        on_delete=models.CASCADE,
+        related_name='charters'
+    )
+
+    def __str__(self):
+        return self.charter.name
 
 auditlog.register(Office)
 auditlog.register(User, exclude_fields=['password'])

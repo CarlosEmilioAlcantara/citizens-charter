@@ -3,6 +3,7 @@ from django.http import StreamingHttpResponse
 from django.template.loader import render_to_string
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from ..models import Office, CitizensCharter
 from ..renderers import PDFRenderer
 from ..utils.citizens_charter_utils import (
     create_citizens_charter_single,
@@ -128,3 +129,33 @@ class ExportCitizensCharterOfficeView(APIView):
                     f"attachment; filename={office_name}-report.pdf"
             }
         )
+
+class CreateCitizensCharterPdfsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    renderer_classes = [PDFRenderer]
+    
+    def put(self, request):
+        offices = Office.objects.all().values('id').order_by('id')
+
+        for office in offices:
+            office_name, services = create_citizens_charter_whole(
+                request, office.pk
+            )
+            html = render_to_string(
+                'documents/citizens-charter.html', 
+                context={
+                    'office_name': office_name, 
+                    'services': services
+                }
+            )
+
+            charter = pdf_chunks(
+                html, 
+                request, 
+                stylesheets=[
+                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
+                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
+                ]
+            )
+
+            

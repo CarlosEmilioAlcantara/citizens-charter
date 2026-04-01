@@ -18,6 +18,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
 
+# TODO; Add audit logging for bulk actions
 class BaseBulkUpdateSerializer(serializers.ListSerializer):
     def to_internal_value(self, data):
         if self.instance is None:
@@ -454,9 +455,17 @@ class AuditLogSerializer(serializers.ModelSerializer):
             'action',
             'changes',
             'actor',
-            'timestamp'
+            'timestamp',
         ]
 
     def get_content_type_model(self, obj):
         content_type_model = str(obj.content_type.model)
         return content_type_model
+
+class CitizensCharterSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = [
+            'id',
+            'charter',
+            'office',
+        ]
