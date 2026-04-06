@@ -199,7 +199,7 @@ class StepPosition(models.Model):
 
 class CitizensCharter(models.Model):
     name = models.CharField(max_length=180)
-    charter = models.FileField(
+    pdf = models.FileField(
         upload_to='pdfs/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf'])],
         storage=FileSystemStorage(allow_overwrite=True)
@@ -215,7 +215,7 @@ class CitizensCharter(models.Model):
     )
 
     def __str__(self):
-        return self.charter.name
+        return self.name
 
 auditlog.register(Office)
 auditlog.register(User, exclude_fields=['password'])
@@ -223,3 +223,4 @@ auditlog.register(Position)
 auditlog.register(Service)
 auditlog.register(Requirement)
 auditlog.register(Step, m2m_fields={"position"})
+auditlog.register(CitizensCharter)

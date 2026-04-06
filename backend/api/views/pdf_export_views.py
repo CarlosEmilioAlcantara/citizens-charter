@@ -1,5 +1,6 @@
 import io
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from django.http import StreamingHttpResponse
 from django.core.files import File
 from django.template.loader import render_to_string
@@ -132,7 +133,7 @@ class ExportCitizensCharterOfficeView(APIView):
 
 class CreateCitizensCharterPdfsView(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
-    renderer_classes = [PDFRenderer]
+    # renderer_classes = [PDFRenderer]
     
     def put(self, request):
         offices = Office.objects.all().order_by('id')
@@ -166,7 +167,7 @@ class CreateCitizensCharterPdfsView(APIView):
                     office=office
                 )
 
-            charter.charter.save(
+            charter.pdf.save(
                 name=f"{office.name}.pdf",
                 content=File(io.BytesIO(pdf)),
                 save=True
@@ -176,13 +177,22 @@ class CreateCitizensCharterPdfsView(APIView):
 
 class DownloadCitizensCharterPdfView(APIView):
     def get(self, request, pk):
-        instance = CitizensCharter.objects.get(pk=pk)
+        instance = get_object_or_404(CitizensCharter, pk=pk)
 
         return StreamingHttpResponse(
-            create_chunks(instance.charter, True),
+            create_chunks(instance.pdf, True),
             content_type='application/pdf',
             headers={
                 'Content-Disposition': 
                     f"attachment; filename={instance.office.name}.pdf"
             }
         )
+
+class DeleteCitizensCharterPdfView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def delete(self, request, pk):
+        charter = get_object_or_404(CitizensCharter, pk=pk)
+        charter.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
