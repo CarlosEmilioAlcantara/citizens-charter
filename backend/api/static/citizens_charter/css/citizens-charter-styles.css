@@ -5,10 +5,10 @@
   size: 297mm 210mm;
   margin: 16mm 16mm 26mm;
 
-  @bottom-left {
+  /* @bottom-left {
     content: "QMS-QMR-002 Rev 03 2024.02.08";
     font-size: 1.3rem;
-  }
+  } */
 }
 
 /* TYPOGRAPHY */

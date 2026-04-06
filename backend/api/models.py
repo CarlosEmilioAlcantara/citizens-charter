@@ -1,8 +1,9 @@
 from django.db import models
 from django.db.models import UniqueConstraint
-from multiselectfield import MultiSelectField
 from django.core.validators import RegexValidator, FileExtensionValidator
+from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from multiselectfield import MultiSelectField
 from auditlog.registry import auditlog
 
 # Create your models here.
@@ -197,9 +198,11 @@ class StepPosition(models.Model):
         return f"{self.step} - {self.position}"
 
 class CitizensCharter(models.Model):
+    name = models.CharField(max_length=180)
     charter = models.FileField(
-        upload_to='api/media/',
-        validators=[FileExtensionValidator(allowed_extensions=['pdf'])]
+        upload_to='pdfs/',
+        validators=[FileExtensionValidator(allowed_extensions=['pdf'])],
+        storage=FileSystemStorage(allow_overwrite=True)
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

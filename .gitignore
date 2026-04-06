@@ -202,3 +202,4 @@ dist-ssr
 migration_backups/
 utils-backup.py
 backend/api/middleware.py
+backend/api/media

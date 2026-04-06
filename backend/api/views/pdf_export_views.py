@@ -1,7 +1,11 @@
+import io
 from django.conf import settings
 from django.http import StreamingHttpResponse
+from django.core.files import File
 from django.template.loader import render_to_string
+from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from ..models import Office, CitizensCharter
 from ..renderers import PDFRenderer
@@ -11,6 +15,7 @@ from ..utils.citizens_charter_utils import (
 )
 from ..utils.pdf_utils import (
     pdf_chunks,
+    pdf_whole,
 )
 from ..utils.report_utils import (
     create_office_report
@@ -135,7 +140,7 @@ class CreateCitizensCharterPdfsView(APIView):
     renderer_classes = [PDFRenderer]
     
     def put(self, request):
-        offices = Office.objects.all().values('id').order_by('id')
+        offices = Office.objects.all().order_by('id')
 
         for office in offices:
             office_name, services = create_citizens_charter_whole(
@@ -149,7 +154,7 @@ class CreateCitizensCharterPdfsView(APIView):
                 }
             )
 
-            charter = pdf_chunks(
+            pdf = pdf_whole(
                 html, 
                 request, 
                 stylesheets=[
@@ -158,4 +163,18 @@ class CreateCitizensCharterPdfsView(APIView):
                 ]
             )
 
-            
+            if CitizensCharter.objects.filter(office=office).exists():
+                charter = CitizensCharter.objects.get(office=office)
+            else:
+                charter = CitizensCharter.objects.create(
+                    name=f"{office.name}.pdf",
+                    office=office
+                )
+
+            charter.charter.save(
+                name=f"{office.name}.pdf",
+                content=File(io.BytesIO(pdf)),
+                save=True
+            )
+
+        return Response(status=status.HTTP_200_OK)
