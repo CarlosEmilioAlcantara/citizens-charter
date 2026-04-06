@@ -59,6 +59,7 @@ from .views.pdf_export_views import (
     ExportCitizensCharterWholeView,
     ExportCitizensCharterOfficeView,
     CreateCitizensCharterPdfsView,
+    DownloadCitizensCharterPdfView,
 )
 from .views.audit_log_views import AuditLogListView, SuperadminAuditLogListView
 
@@ -228,6 +229,11 @@ urlpatterns = [
         'pdf/generate',
         CreateCitizensCharterPdfsView.as_view(),
         name='create_citizens_charter_pdfs'
+    ),
+    path(
+        'pdf/<int:pk>',
+        DownloadCitizensCharterPdfView.as_view(),
+        name='download_citizens_charter_pdfs'
     ),
 
     # Audit logs

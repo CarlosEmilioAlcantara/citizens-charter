@@ -13,13 +13,8 @@ from ..utils.citizens_charter_utils import (
     create_citizens_charter_single,
     create_citizens_charter_whole,
 )
-from ..utils.pdf_utils import (
-    pdf_chunks,
-    pdf_whole,
-)
-from ..utils.report_utils import (
-    create_office_report
-)
+from ..utils.pdf_utils import pdf_chunks, create_pdf, create_chunks
+from ..utils.report_utils import create_office_report
 
 class ExportOfficeReportView(APIView):
     permission_classes = [IsAuthenticated]
@@ -154,7 +149,7 @@ class CreateCitizensCharterPdfsView(APIView):
                 }
             )
 
-            pdf = pdf_whole(
+            pdf = create_pdf(
                 html, 
                 request, 
                 stylesheets=[
@@ -178,3 +173,16 @@ class CreateCitizensCharterPdfsView(APIView):
             )
 
         return Response(status=status.HTTP_200_OK)
+
+class DownloadCitizensCharterPdfView(APIView):
+    def get(self, request, pk):
+        instance = CitizensCharter.objects.get(pk=pk)
+
+        return StreamingHttpResponse(
+            create_chunks(instance.charter, True),
+            content_type='application/pdf',
+            headers={
+                'Content-Disposition': 
+                    f"attachment; filename={instance.office.name}.pdf"
+            }
+        )
