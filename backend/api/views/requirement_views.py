@@ -63,8 +63,9 @@ class RequirementListView(ListAPIView):
     search_fields = ['name']
 
     def get_queryset(self):
+        service = get_object_or_404(Service, pk=self.kwargs.get('pk'))
         excluded_queryset = self.queryset.filter(
-            service_id=self.kwargs.get('pk'),
-            service__office_id=self.request.user.office_id
+            service_id=service.id,
         ).order_by('id')
+        self.check_object_permissions(self.request, service)
         return excluded_queryset

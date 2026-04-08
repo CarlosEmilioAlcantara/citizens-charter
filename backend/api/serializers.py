@@ -1,8 +1,19 @@
+from django.db import transaction
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from auditlog.models import LogEntry
-from .models import Office, Position, Requirement, Service, Step, User 
+from .models import (
+    CitizensCharter,
+    Office,
+    Position,
+    Requirement,
+    Service,
+    Step,
+    User,
+)
 from .utils.time_utils import create_total_time
+from .utils.log_utils import serialize_value
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -77,7 +88,39 @@ class BaseBulkUpdateSerializer(serializers.ListSerializer):
 
             instances.append(instance)
 
-        model.objects.bulk_update(instances, list(update_fields), batch_size=10)
+        with transaction.atomic():
+            old_values = [
+                {
+                    field.name: serialize_value(getattr(
+                        obj, field.name
+                    )) for field in obj._meta.fields
+                } for obj in instances
+            ]
+
+            model.objects.bulk_update(
+                instances,
+                list(update_fields),
+                batch_size=10
+            )
+            model_name = str(queryset.model.__name__)
+
+            match model_name:
+                case "Office":
+                    content_type_id = ContentType.objects.get_for_model(Office).id
+
+            LogEntry.objects.create(
+                action=LogEntry.Action.UPDATE,
+                actor_id=self.context['request'].user.id,
+                content_type_id=content_type_id,
+                changes={
+                    'type': 'bulk_update',
+                    'model': model_name,
+                    'old': old_values,
+                    # TODO; Only name shows why?
+                    'new': list(update_fields),
+                }
+            )
+
         return instances
 
 class OfficeSerializer(serializers.ModelSerializer):
@@ -219,10 +262,10 @@ class ServiceSerializer(serializers.ModelSerializer):
                 'Must have a service first before a subservice.'
             )
 
-        if parent.services.filter(number=data.get('number')).exists():
-            raise serializers.ValidationError(
-                'Service with number already exists.'
-            )
+        # if parent.services.filter(number=data.get('number')).exists():
+        #     raise serializers.ValidationError(
+        #         'Service with number already exists.'
+        #     )
 
         has_decimal = data['number'] % 1
         if data.get('is_subservice') and not has_decimal:
@@ -268,10 +311,10 @@ class ServiceBulkUpdateSerializer(serializers.ModelSerializer):
                     "Cannot change a service's parent office."
                 )
 
-        if parent.services.filter(number=data.get('number')).exists():
-            raise serializers.ValidationError(
-                'Service with number already exists.'
-            )
+        # if parent.services.filter(number=data.get('number')).exists():
+        #     raise serializers.ValidationError(
+        #         'Service with number already exists.'
+        #     )
 
         first_service = parent.services.all().first()
         if not first_service and data.get('is_subservice'):
@@ -464,8 +507,10 @@ class AuditLogSerializer(serializers.ModelSerializer):
 
 class CitizensCharterSerializer(serializers.ModelSerializer):
     class Meta:
+        model = CitizensCharter
         fields = [
             'id',
-            'charter',
+            'name',
+            'pdf',
             'office',
         ]

@@ -4,10 +4,12 @@ from django.shortcuts import get_object_or_404
 from django.http import StreamingHttpResponse
 from django.core.files import File
 from django.template.loader import render_to_string
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from auditlog.context import set_actor
 from ..models import Office, CitizensCharter
 from ..renderers import PDFRenderer
 from ..utils.citizens_charter_utils import (
@@ -16,6 +18,7 @@ from ..utils.citizens_charter_utils import (
 )
 from ..utils.pdf_utils import pdf_chunks, create_pdf, create_chunks
 from ..utils.report_utils import create_office_report
+from ..serializers import CitizensCharterSerializer
 
 class ExportOfficeReportView(APIView):
     permission_classes = [IsAuthenticated]
@@ -167,11 +170,14 @@ class CreateCitizensCharterPdfsView(APIView):
                     office=office
                 )
 
-            charter.pdf.save(
-                name=f"{office.name}.pdf",
-                content=File(io.BytesIO(pdf)),
-                save=True
-            )
+            # TODO; 
+            # Should we still log actions on citizen's charter pdf generation
+            with set_actor(request.user):
+                charter.pdf.save(
+                    name=f"{office.name}.pdf",
+                    content=File(io.BytesIO(pdf)),
+                    save=True
+                )
 
         return Response(status=status.HTTP_200_OK)
 
@@ -193,6 +199,18 @@ class DeleteCitizensCharterPdfView(APIView):
 
     def delete(self, request, pk):
         charter = get_object_or_404(CitizensCharter, pk=pk)
-        charter.delete()
+        with set_actor(request.user):
+            charter.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class CitizensCharterListView(ListAPIView):
+    queryset = CitizensCharter.objects.all().order_by('id')
+    serializer_class = CitizensCharterSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['office']
+
+    def get_queryset(self):
+        return self.queryset
+
+# TODO; export single pdf of all charters

@@ -99,11 +99,13 @@ class BulkUpdateMixin:
             )
 
         serializer_class = self.get_serializer_class()
-        
+        context = self.get_serializer_context()
+
         serializer = serializer_class(
             queryset.filter(id__in=existing),
             data=request.data,
-            many=True
+            many=True,
+            context=context
         )
 
         if serializer.is_valid():

@@ -58,6 +58,7 @@ class UpdateServiceView(BulkUpdateMixin, APIView):
     def get_serializer_class(self):
         return ServiceBulkUpdateSerializer
 
+# TODO; Superadmin should be able to access and edit other offices charters
 class ServiceListView(ListAPIView):
     queryset = Service.objects.all().order_by('id')
     permission_classes = [IsAuthenticated, IsInOffice]
@@ -68,5 +69,5 @@ class ServiceListView(ListAPIView):
     def get_queryset(self):
         excluded_queryset = self.queryset.filter(
             office_id=self.request.user.office_id
-        ).order_by('id')
+        ).order_by('number')
         return excluded_queryset

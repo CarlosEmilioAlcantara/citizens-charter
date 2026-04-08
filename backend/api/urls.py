@@ -61,6 +61,7 @@ from .views.pdf_export_views import (
     CreateCitizensCharterPdfsView,
     DownloadCitizensCharterPdfView,
     DeleteCitizensCharterPdfView,
+    CitizensCharterListView,
 )
 from .views.audit_log_views import AuditLogListView, SuperadminAuditLogListView
 
@@ -240,6 +241,11 @@ urlpatterns = [
         'pdf/citizens-charter/delete/<int:pk>',
         DeleteCitizensCharterPdfView.as_view(),
         name='delete_citizens_charter_pdfs'
+    ),
+    path(
+        'pdf/citizens-charters',
+        CitizensCharterListView.as_view(),
+        name='fetch_citizens_charters'
     ),
 
     # Audit logs
