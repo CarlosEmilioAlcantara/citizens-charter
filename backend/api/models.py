@@ -214,6 +214,15 @@ class CitizensCharter(models.Model):
         related_name='charters'
     )
 
+    def save(self, *args, **kwargs):
+        try:
+            old = CitizensCharter.objects.get(pk=self.pk)
+            if old.pdf and old.pdf != self.pdf:
+                old.pdf.delete(save=False)
+        except CitizensCharter.DoesNotExist:
+            pass
+        return super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 

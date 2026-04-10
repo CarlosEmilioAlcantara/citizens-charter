@@ -170,8 +170,6 @@ class CreateCitizensCharterPdfsView(APIView):
                     office=office
                 )
 
-            # TODO; 
-            # Should we still log actions on citizen's charter pdf generation
             with set_actor(request.user):
                 charter.pdf.save(
                     name=f"{office.name}.pdf",
@@ -194,6 +192,8 @@ class DownloadCitizensCharterPdfView(APIView):
             }
         )
 
+# TODO; We won't need this anymore, deletion is now done by the model
+# after each update if a pdf already exists
 class DeleteCitizensCharterPdfView(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
@@ -214,3 +214,4 @@ class CitizensCharterListView(ListAPIView):
         return self.queryset
 
 # TODO; export single pdf of all charters
+# Needs new model Sector where offices belong to

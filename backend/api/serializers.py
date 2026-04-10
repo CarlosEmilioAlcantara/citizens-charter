@@ -385,7 +385,6 @@ class RequirementBulkUpdateSerializer(serializers.ModelSerializer):
         extra_kwargs = {'service': {'read_only': True}}
         list_serializer_class = BaseBulkUpdateSerializer
 
-# TODO; Make name null if updated into a subaction
 class StepSerializer(serializers.ModelSerializer):
     position = serializers.PrimaryKeyRelatedField(
         queryset=Position.objects.all(),
