@@ -436,6 +436,9 @@ class StepSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Must name a step.')
         if len(data.get('position')) == 0:
             raise serializers.ValidationError('Must have atleast one position.')
+
+        if data.get('is_subaction'):
+            data['name'] = None
         return data
 
 class StepBulkUpdateSerializer(serializers.ModelSerializer):
@@ -492,6 +495,9 @@ class StepBulkUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Must name a step.')
         if len(data.get('position')) == 0:
             raise serializers.ValidationError('Must have atleast one position.')
+
+        if data.get('is_subaction'):
+            data['name'] = None
         return data
 
 class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
