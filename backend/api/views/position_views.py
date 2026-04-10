@@ -45,6 +45,9 @@ class UpdatePositionView(BulkUpdateMixin, APIView):
     def get_serializer_class(self):
         return PositionBulkUpdateSerializer
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
 class PositionListView(ListAPIView):
     queryset = Position.objects.all().order_by('id')
     permission_classes = [IsAuthenticated, IsAdminUser]

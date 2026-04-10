@@ -63,6 +63,9 @@ class UpdateStepView(BulkUpdateMixin, APIView):
     def get_serializer_class(self):
         return StepBulkUpdateSerializer
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
 class StepListView(ListAPIView):
     queryset = Step.objects.all().order_by('id')
     permission_classes = [IsAuthenticated, IsInOffice]

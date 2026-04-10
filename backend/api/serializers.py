@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from auditlog.models import LogEntry
@@ -14,6 +13,7 @@ from .models import (
 )
 from .utils.time_utils import create_total_time
 from .utils.log_utils import serialize_value
+from .utils.content_type_utils import get_content_type_id
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -29,7 +29,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
 
-# TODO; Add audit logging for bulk actions
+# TODO; Add audit logging for bulk delete
 class BaseBulkUpdateSerializer(serializers.ListSerializer):
     def to_internal_value(self, data):
         if self.instance is None:
@@ -74,6 +74,22 @@ class BaseBulkUpdateSerializer(serializers.ListSerializer):
         update_fields = set()
         instances = []
 
+        old_values = {
+            id: {
+                field: (
+                    sorted(
+                        list(instance_map[id].position.values_list(
+                            'id', flat=True
+                        ))
+                    )
+                    if field == 'position'
+                    else getattr(instance_map[id], field)
+                )
+                for field in data_map[id].keys()
+                if field != 'id'
+            } for id in data_map
+        }
+
         for id, data in data_map.items():
             instance = instance_map[id]
 
@@ -89,24 +105,39 @@ class BaseBulkUpdateSerializer(serializers.ListSerializer):
             instances.append(instance)
 
         with transaction.atomic():
-            old_values = [
-                {
-                    field.name: serialize_value(getattr(
-                        obj, field.name
-                    )) for field in obj._meta.fields
-                } for obj in instances
-            ]
+            changes = {}
+            for id, data in data_map.items():
+                instance = instance_map[id]
+                obj_changes = {}
+
+                for field in data.keys():
+                    if field == 'id':
+                        continue
+                    
+                    old = old_values[id].get(field)
+                    if field == 'position':
+                        new = sorted(list(
+                            instance.position.values_list('id', flat=True)
+                        ))
+                    else:
+                        new = getattr(instance, field)
+
+                    if old != new:
+                        obj_changes[field] = {
+                            'old': serialize_value(old),
+                            'new': serialize_value(new),
+                        }
+
+                if obj_changes:
+                    changes[id] = obj_changes
 
             model.objects.bulk_update(
                 instances,
                 list(update_fields),
                 batch_size=10
             )
-            model_name = str(queryset.model.__name__)
-
-            match model_name:
-                case "Office":
-                    content_type_id = ContentType.objects.get_for_model(Office).id
+            model_name = queryset.model.__name__
+            content_type_id = get_content_type_id(model_name)
 
             LogEntry.objects.create(
                 action=LogEntry.Action.UPDATE,
@@ -115,9 +146,7 @@ class BaseBulkUpdateSerializer(serializers.ListSerializer):
                 changes={
                     'type': 'bulk_update',
                     'model': model_name,
-                    'old': old_values,
-                    # TODO; Only name shows why?
-                    'new': list(update_fields),
+                    'changes': changes,
                 }
             )
 
@@ -356,6 +385,7 @@ class RequirementBulkUpdateSerializer(serializers.ModelSerializer):
         extra_kwargs = {'service': {'read_only': True}}
         list_serializer_class = BaseBulkUpdateSerializer
 
+# TODO; Make name null if updated into a subaction
 class StepSerializer(serializers.ModelSerializer):
     position = serializers.PrimaryKeyRelatedField(
         queryset=Position.objects.all(),

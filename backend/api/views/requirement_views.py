@@ -55,6 +55,9 @@ class UpdateRequirementView(BulkUpdateMixin, APIView):
     def get_serializer_class(self):
         return RequirementBulkUpdateSerializer
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
 class RequirementListView(ListAPIView):
     queryset = Requirement.objects.all().order_by('id')
     permission_classes = [IsAuthenticated, IsInOffice]
