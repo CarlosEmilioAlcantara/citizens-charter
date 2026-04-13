@@ -9,6 +9,8 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from auditlog.models import LogEntry
+from auditlog.context import disable_auditlog
 from auditlog.context import set_actor
 from ..models import Office, CitizensCharter
 from ..renderers import PDFRenderer
@@ -18,6 +20,8 @@ from ..utils.citizens_charter_utils import (
 )
 from ..utils.pdf_utils import pdf_chunks, create_pdf, create_chunks
 from ..utils.report_utils import create_office_report
+from ..utils.log_utils import serialize_value
+from ..utils.content_type_utils import get_content_type_id
 from ..serializers import CitizensCharterSerializer
 
 class ExportOfficeReportView(APIView):
@@ -139,7 +143,13 @@ class CreateCitizensCharterPdfsView(APIView):
     # renderer_classes = [PDFRenderer]
     
     def put(self, request):
-        offices = Office.objects.all().order_by('id')
+        offices = list(Office.objects.all().order_by('id'))
+
+        existing_charters = {
+            charter.office_id: charter
+            for charter in CitizensCharter.objects.filter(office__in=offices)
+        }
+        new_charters = []
 
         for office in offices:
             office_name, services = create_citizens_charter_whole(
@@ -162,14 +172,45 @@ class CreateCitizensCharterPdfsView(APIView):
                 ]
             )
 
-            if CitizensCharter.objects.filter(office=office).exists():
-                charter = CitizensCharter.objects.get(office=office)
+            charter = existing_charters.get(office.id)
+            if charter:
+                with set_actor(request.user):
+                    charter.pdf.save(
+                        name=f"{office.name}.pdf",
+                        content=File(io.BytesIO(pdf)),
+                        save=True
+                    )
             else:
-                charter = CitizensCharter.objects.create(
-                    name=f"{office.name}.pdf",
-                    office=office
+                new_charters.append(
+                    CitizensCharter(
+                        name=f"{office.name}.pdf",
+                        office=office
+                    )
                 )
 
+        created = CitizensCharter.objects.bulk_create(new_charters)
+        for charter in created:
+            office_name, services = create_citizens_charter_whole(
+                request, office.pk
+            )
+            html = render_to_string(
+                'documents/citizens-charter.html', 
+                context={
+                    'office_name': office_name, 
+                    'services': services
+                }
+            )
+
+            pdf = create_pdf(
+                html, 
+                request, 
+                stylesheets=[
+                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
+                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
+                ]
+            )
+
+            office = charter.office
             with set_actor(request.user):
                 charter.pdf.save(
                     name=f"{office.name}.pdf",
@@ -177,6 +218,41 @@ class CreateCitizensCharterPdfsView(APIView):
                     save=True
                 )
 
+        return Response(status=status.HTTP_201_CREATED)
+
+class CreateCitizensCharterSinglePdfView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def put(self, request, pk):
+        office_name, services = create_citizens_charter_whole(
+            request, pk
+        )
+        html = render_to_string(
+            'documents/citizens-charter.html', 
+            context={
+                'office_name': office_name, 
+                'services': services
+            }
+        )
+
+        pdf = create_pdf(
+            html, 
+            request, 
+            stylesheets=[
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
+            ]
+        )
+
+        charter = CitizensCharter.objects.get(office_id=pk)
+
+        with set_actor(request.user):
+            charter.pdf.save(
+                name=f"{charter.office.name}.pdf",
+                content=File(io.BytesIO(pdf)),
+                save=True
+            )
+        
         return Response(status=status.HTTP_200_OK)
 
 class DownloadCitizensCharterPdfView(APIView):

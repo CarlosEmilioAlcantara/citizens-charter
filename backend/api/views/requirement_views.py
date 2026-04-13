@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..models import Requirement, Service
 from ..serializers import RequirementBulkUpdateSerializer, RequirementSerializer
-from ..permissions import IsInOffice
+from ..permissions import IsInOffice, IsSuperuser
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
 from ..utils.view_utils import audit_save, audit_delete
 
@@ -63,15 +63,27 @@ class UpdateRequirementView(BulkUpdateMixin, APIView):
 
 class RequirementListView(ListAPIView):
     queryset = Requirement.objects.all().order_by('id')
-    permission_classes = [IsAuthenticated, IsInOffice]
+    permission_classes = [IsAuthenticated]
     serializer_class = RequirementSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
     def get_queryset(self):
-        service = get_object_or_404(Service, pk=self.kwargs.get('pk'))
         excluded_queryset = self.queryset.filter(
-            service_id=service.id,
+            service_id=self.kwargs.get('pk'),
+            service__office_id=self.request.user.office_id
         ).order_by('id')
-        self.check_object_permissions(self.request, service)
+        return excluded_queryset
+
+class OfficeRequirementListView(ListAPIView):
+    queryset = Requirement.objects.all().order_by('id')
+    permission_classes = [IsAuthenticated, IsSuperuser]
+    serializer_class = RequirementSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
+
+    def get_queryset(self):
+        excluded_queryset = self.queryset.filter(
+            service_id=self.kwargs.get('pk'),
+        ).order_by('id')
         return excluded_queryset

@@ -24,6 +24,7 @@ from .views.service_views import (
     DeleteServiceView, 
     UpdateServiceView,
     ServiceListView,
+    OfficeServiceListView,
 )
 from .views.requirement_views import (
     CreateRequirementView,
@@ -31,6 +32,7 @@ from .views.requirement_views import (
     UpdateRequirementView, 
     RequirementView, 
     RequirementListView,
+    OfficeRequirementListView,
 )
 from .views.step_views import (
     CreateStepView, 
@@ -38,6 +40,7 @@ from .views.step_views import (
     UpdateStepView,
     StepView, 
     StepListView,
+    OfficeStepListView,
 )
 from .views.analytics_views import (
     OfficeAnalyticsView, 
@@ -54,6 +57,7 @@ from .views.csv_export_views import (
     ExportStepPositionCsvView,
 )
 from .views.pdf_export_views import (
+    CreateCitizensCharterSinglePdfView,
     ExportOfficeReportView,
     ExportCitizensCharterView,
     ExportCitizensCharterWholeView,
@@ -113,6 +117,11 @@ urlpatterns = [
     path('service/delete', DeleteServiceView.as_view(), name='delete_service'),
     path('service/update', UpdateServiceView.as_view(), name='update_service'),
     path('services', ServiceListView.as_view(), name='fetch_services'),
+    path(
+        'office/<int:pk>/services',
+        OfficeServiceListView.as_view(),
+        name='fetch_office_services'
+    ),
 
     # Requirement Urls
     path(
@@ -140,6 +149,10 @@ urlpatterns = [
         RequirementListView.as_view(),
         name='fetch_services'
     ),
+    path('office/service/<int:pk>/requirements',
+        OfficeRequirementListView.as_view(),
+        name='fetch_office_services'
+    ),
 
     # Step Urls
     path(
@@ -151,6 +164,10 @@ urlpatterns = [
     path('step/delete', DeleteStepView.as_view(), name='delete_step'),
     path('step/update', UpdateStepView.as_view(), name='update_step'),
     path('service/<int:pk>/steps', StepListView.as_view(), name='fetch_steps'),
+    path('office/service/<int:pk>/steps',
+         OfficeStepListView.as_view(),
+         name='fetch_office_steps'
+    ),
 
     # Analytics Urls
     path(
@@ -231,6 +248,11 @@ urlpatterns = [
         'pdf/citizens-charter/generate',
         CreateCitizensCharterPdfsView.as_view(),
         name='create_citizens_charter_pdfs'
+    ),
+    path(
+        'pdf/citizens-charter/regenerate/<int:pk>',
+        CreateCitizensCharterSinglePdfView.as_view(),
+        name='update_citizens_charter_pdfs'
     ),
     path(
         'pdf/citizens-charter/download/<int:pk>',

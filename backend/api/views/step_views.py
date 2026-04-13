@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..models import Service, Step
 from ..serializers import StepBulkUpdateSerializer, StepSerializer
-from ..permissions import IsInOffice
+from ..permissions import IsInOffice, IsSuperuser
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
 from ..utils.view_utils import audit_save, audit_delete
 
@@ -71,7 +71,7 @@ class UpdateStepView(BulkUpdateMixin, APIView):
 
 class StepListView(ListAPIView):
     queryset = Step.objects.all().order_by('id')
-    permission_classes = [IsAuthenticated, IsInOffice]
+    permission_classes = [IsAuthenticated]
     serializer_class = StepSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
@@ -80,5 +80,18 @@ class StepListView(ListAPIView):
         excluded_queryset = self.queryset.filter(
             service_id=self.kwargs.get('pk'),
             service__office_id=self.request.user.office_id
+        ).order_by('id')
+        return excluded_queryset
+
+class OfficeStepListView(ListAPIView):
+    queryset = Step.objects.all().order_by('id')
+    permission_classes = [IsAuthenticated, IsSuperuser]
+    serializer_class = StepSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
+
+    def get_queryset(self):
+        excluded_queryset = self.queryset.filter(
+            service_id=self.kwargs.get('pk')
         ).order_by('id')
         return excluded_queryset
