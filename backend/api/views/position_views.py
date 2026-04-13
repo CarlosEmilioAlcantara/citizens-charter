@@ -35,6 +35,9 @@ class DeletePositionView(BulkDeleteMixin, APIView):
 
     def get_queryset(self):
         return Position.objects.all()
+
+    def get_serializer_context(self):
+        return {'request': self.request}
     
 class UpdatePositionView(BulkUpdateMixin, APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]

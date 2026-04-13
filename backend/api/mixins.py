@@ -2,6 +2,10 @@ from django.db import transaction
 from django.http import StreamingHttpResponse
 from rest_framework import status
 from rest_framework.response import Response
+from auditlog.models import LogEntry
+from auditlog.context import disable_auditlog
+from .utils.log_utils import serialize_value
+from .utils.content_type_utils import get_content_type_id
 
 class BulkDeleteMixin:
     service_child = False
@@ -52,8 +56,37 @@ class BulkDeleteMixin:
                 self.service_child and obj.service or obj
             )
 
+
         with transaction.atomic():
-            queryset.filter(id__in=existing).delete()
+            existing_values = list(queryset.filter(id__in=existing).values())
+            changes = {}
+            for obj in existing_values:
+                obj_id = str(obj['id'])
+                changes[obj_id] = {}
+
+                for field, value in obj.items():
+                    if field == "id":
+                        continue
+
+                    changes[obj_id][field] = {'old': serialize_value(value)}
+
+            model_name = queryset.model.__name__
+            content_type_id = get_content_type_id(model_name)
+            context = self.get_serializer_context()
+
+            LogEntry.objects.create(
+                action=LogEntry.Action.DELETE,
+                actor_id=context['request'].user.id,
+                content_type_id=content_type_id,
+                changes={
+                    'type': 'bulk_delete',
+                    'model': model_name,
+                    'changes': changes,
+                }
+            )
+
+            with disable_auditlog():
+                queryset.filter(id__in=existing).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class BulkUpdateMixin:

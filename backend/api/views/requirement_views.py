@@ -44,6 +44,9 @@ class DeleteRequirementView(BulkDeleteMixin, APIView):
 
     def get_queryset(self):
         return Requirement.objects.all()
+
+    def get_serializer_context(self):
+        return {'request': self.request}
     
 class UpdateRequirementView(BulkUpdateMixin, APIView):
     permission_classes = [IsAuthenticated, IsInOffice]

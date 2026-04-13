@@ -37,6 +37,9 @@ class DeleteUserView(BulkDeleteMixin, APIView):
     def get_queryset(self):
         return User.objects.all()
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
 # class UpdateUserView(APIView):
 #     permission_classes = [IsAuthenticated, IsSuperuser]
 

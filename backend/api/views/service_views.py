@@ -48,6 +48,9 @@ class DeleteServiceView(BulkDeleteMixin, APIView):
 
     def get_queryset(self):
         return Service.objects.all()
+
+    def get_serializer_context(self):
+        return {'request': self.request}
     
 class UpdateServiceView(BulkUpdateMixin, APIView):
     permission_classes = [IsAuthenticated, IsInOffice]
