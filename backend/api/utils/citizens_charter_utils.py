@@ -3,7 +3,8 @@ from ..models import Office, Service, Step
 from .time_utils import create_total_time
 
 def create_citizens_charter_single(request, pk):
-    office = Office.objects.get(pk=request.user.office_id) 
+    service = Service.objects.get(pk=pk)
+    office = Office.objects.get(pk=service.office_id) 
     office_name = office.name
 
     step_queryset = Step.objects.filter(

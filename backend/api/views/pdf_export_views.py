@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from auditlog.context import set_actor
 from pypdf import PdfWriter
-from weasyprint import HTML, CSS
+from weasyprint import HTML
 from ..models import Office, Service, CitizensCharter
 from ..renderers import PDFRenderer
 from ..utils.citizens_charter_utils import (
@@ -317,7 +317,10 @@ class CitizensCharterListView(ListAPIView):
         return self.queryset
 
 class CreateCitizensCharterCompilationView(APIView):
-    charters = CitizensCharter.objects.all().values_list('pdf', flat=True).order_by('id')
+    charters = CitizensCharter.objects.all().values_list(
+        'pdf',
+        flat=True
+    ).order_by('id')
     merger = PdfWriter()
 
     def get(self, request):
