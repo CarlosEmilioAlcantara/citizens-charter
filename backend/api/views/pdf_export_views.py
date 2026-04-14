@@ -9,20 +9,19 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from auditlog.models import LogEntry
-from auditlog.context import disable_auditlog
 from auditlog.context import set_actor
-from ..models import Office, CitizensCharter
+from pypdf import PdfWriter
+from weasyprint import HTML, CSS
+from ..models import Office, Service, CitizensCharter
 from ..renderers import PDFRenderer
 from ..utils.citizens_charter_utils import (
     create_citizens_charter_single,
     create_citizens_charter_whole,
 )
-from ..utils.pdf_utils import pdf_chunks, create_pdf, create_chunks
+from ..utils.pdf_utils import create_pdf
 from ..utils.report_utils import create_office_report
-from ..utils.log_utils import serialize_value
-from ..utils.content_type_utils import get_content_type_id
 from ..serializers import CitizensCharterSerializer
+from ..permissions import IsInOffice
 
 class ExportOfficeReportView(APIView):
     permission_classes = [IsAuthenticated]
@@ -32,15 +31,21 @@ class ExportOfficeReportView(APIView):
         data = create_office_report(request)
         html = render_to_string('documents/office-report.html', context=data)
 
+        buffer = io.BytesIO()
+        HTML(
+            string=html,
+            base_url=request.build_absolute_uri('/api/')
+        ).write_pdf(
+            buffer,
+            stylesheets=[
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/report-styles.css",
+            ]
+        )
+        buffer.seek(0)
+
         return StreamingHttpResponse(
-            pdf_chunks(
-                html, 
-                request, 
-                stylesheets=[
-                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
-                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/report-styles.css",
-                ]
-            ),
+            buffer,
             content_type='application/pdf',
             headers={
                 'Content-Disposition': 
@@ -49,10 +54,12 @@ class ExportOfficeReportView(APIView):
         )
 
 class ExportCitizensCharterView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsInOffice]
     renderer_classes = [PDFRenderer]
     
     def get(self, request, pk):
+        service = get_object_or_404(Service, pk=pk)
+        self.check_object_permissions(request, service) 
         office_name, service = create_citizens_charter_single(request, pk)
         html = render_to_string(
             'documents/citizens-charter.html', 
@@ -62,15 +69,21 @@ class ExportCitizensCharterView(APIView):
             }
         )
 
+        buffer = io.BytesIO()
+        HTML(
+            string=html,
+            base_url=request.build_absolute_uri('/api/')
+        ).write_pdf(
+            buffer,
+            stylesheets=[
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
+            ]
+        )
+        buffer.seek(0)
+
         return StreamingHttpResponse(
-            pdf_chunks(
-                html, 
-                request, 
-                stylesheets=[
-                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
-                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
-                ]
-            ),
+            buffer,
             content_type='application/pdf',
             headers={
                 'Content-Disposition': 
@@ -92,15 +105,21 @@ class ExportCitizensCharterWholeView(APIView):
             }
         )
 
+        buffer = io.BytesIO()
+        HTML(
+            string=html, 
+            base_url=request.build_absolute_uri('/api/')
+        ).write_pdf(
+            buffer,
+            stylesheets=[
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
+            ]
+        )
+        buffer.seek(0)
+
         return StreamingHttpResponse(
-            pdf_chunks(
-                html, 
-                request, 
-                stylesheets=[
-                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
-                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
-                ]
-            ),
+            buffer,
             content_type='application/pdf',
             headers={
                 'Content-Disposition': 
@@ -122,15 +141,21 @@ class ExportCitizensCharterOfficeView(APIView):
             }
         )
 
+        buffer = io.BytesIO()
+        HTML(
+            string=html, 
+            base_url=request.build_absolute_uri('/api/')
+        ).write_pdf(
+            buffer,
+            stylesheets=[
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
+            ]
+        )
+        buffer.seek(0)
+
         return StreamingHttpResponse(
-            pdf_chunks(
-                html, 
-                request, 
-                stylesheets=[
-                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
-                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
-                ]
-            ),
+            buffer,
             content_type='application/pdf',
             headers={
                 'Content-Disposition': 
@@ -258,9 +283,13 @@ class CreateCitizensCharterSinglePdfView(APIView):
 class DownloadCitizensCharterPdfView(APIView):
     def get(self, request, pk):
         instance = get_object_or_404(CitizensCharter, pk=pk)
+        
+        with instance.pdf.open('rb') as pdf:
+            buffer = io.BytesIO(pdf.read())
+            buffer.seek(0)
 
         return StreamingHttpResponse(
-            create_chunks(instance.pdf, True),
+            buffer,
             content_type='application/pdf',
             headers={
                 'Content-Disposition': 
@@ -268,8 +297,6 @@ class DownloadCitizensCharterPdfView(APIView):
             }
         )
 
-# TODO; We won't need this anymore, deletion is now done by the model
-# after each update if a pdf already exists
 class DeleteCitizensCharterPdfView(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
@@ -289,5 +316,26 @@ class CitizensCharterListView(ListAPIView):
     def get_queryset(self):
         return self.queryset
 
-# TODO; export single pdf of all charters
-# Needs new model Sector where offices belong to
+class CreateCitizensCharterCompilationView(APIView):
+    charters = CitizensCharter.objects.all().values_list('pdf', flat=True).order_by('id')
+    merger = PdfWriter()
+
+    def get(self, request):
+        # print(self.charters)
+        for pdf in self.charters:
+            self.merger.append(f"{settings.MEDIA_ROOT}/{pdf}")
+
+        buffer = io.BytesIO()
+        self.merger.write(buffer)
+        self.merger.close()
+        buffer.seek(0)
+
+        return StreamingHttpResponse(
+            buffer,
+            content_type='application/pdf',
+            headers={
+                'Content-Disposition': 
+                    'attachment; filename=compilation.pdf'
+            }
+        )
+        # return Response(status=status.HTTP_200_OK)

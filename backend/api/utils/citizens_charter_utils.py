@@ -31,13 +31,14 @@ def create_citizens_charter_single(request, pk):
     return (office_name, service)
 
 def create_citizens_charter_whole(request, pk=None):
-    office = Office.objects.get(pk=request.user.office_id) 
-    office_name = office.name
-
     if pk:
+        office = Office.objects.get(pk=pk) 
         office_id = pk
     else:
+        office = Office.objects.get(pk=request.user.office_id) 
         office_id = request.user.office.id
+
+    office_name = office.name
         
     step_queryset = Step.objects.filter(
         service=OuterRef('pk')

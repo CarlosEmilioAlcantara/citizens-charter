@@ -64,6 +64,7 @@ from .views.pdf_export_views import (
     ExportCitizensCharterOfficeView,
     CreateCitizensCharterPdfsView,
     DownloadCitizensCharterPdfView,
+    CreateCitizensCharterCompilationView,
     DeleteCitizensCharterPdfView,
     CitizensCharterListView,
 )
@@ -258,6 +259,11 @@ urlpatterns = [
         'pdf/citizens-charter/download/<int:pk>',
         DownloadCitizensCharterPdfView.as_view(),
         name='download_citizens_charter_pdfs'
+    ),
+    path(
+        'pdf/citizens-charter/compile',
+        CreateCitizensCharterCompilationView.as_view(),
+        name='compile_citizens_charter_pdfs'
     ),
     path(
         'pdf/citizens-charter/delete/<int:pk>',

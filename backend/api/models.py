@@ -29,10 +29,24 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         return self._create_user(name, password, office, **extra_fields)
 
+# class Sector(models.Model):
+#     name = models.CharField(max_length=180, unique=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+
+#     def __str__(self):
+#         return self.name
+
 class Office(models.Model):
     name = models.CharField(max_length=180, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # sector = models.ForeignKey(
+    #     Sector,
+    #     on_delete=models.CASCADE,
+    #     related_name='offices'
+    # )
 
     def __str__(self):
         return self.name
