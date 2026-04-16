@@ -204,3 +204,4 @@ utils-backup.py
 backend/api/middleware.py
 backend/media/pdfs/*
 !backend/media/pdfs/.gitkeep
+uninstall.txt

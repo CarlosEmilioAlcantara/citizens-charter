@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from auditlog.models import LogEntry
 from .models import (
+    Sector,
     CitizensCharter,
     Office,
     Position,
@@ -151,6 +152,20 @@ class BaseBulkUpdateSerializer(serializers.ListSerializer):
             )
 
         return instances
+
+class SectorSerializer(serializers.ModelSerializer):
+    office_count = serializers.IntegerField(read_only=True)
+    class Meta:
+        model = Sector
+        fields = ['id', 'name', 'is_subsector', 'office_count']
+
+class SectorBulkUpdateSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = Sector
+        fields = ['id', 'name', 'is_subsector']        
+        list_serializer_class = BaseBulkUpdateSerializer
 
 class OfficeSerializer(serializers.ModelSerializer):
     service_count = serializers.IntegerField(read_only=True)

@@ -1,6 +1,12 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views.token_views import MyTokenObtainPairView
+from .views.sector_views import (
+    SectorView,
+    DeleteSectorView,
+    UpdateSectorView,
+    SectorListView,
+)
 from .views.office_views import (
     OfficeView,
     DeleteOfficeView,
@@ -74,6 +80,13 @@ urlpatterns = [
     # Auth Tokens
     path('token', MyTokenObtainPairView.as_view(), name='get_token'),
     path('token/refresh', TokenRefreshView.as_view(), name='refresh_token'),
+
+    # Sector Urls
+    path('sector/create', SectorView.as_view(), name='create_sector'),
+    path('sector/<int:pk>', SectorView.as_view(), name='update_delete_sector'),
+    path('sector/delete', DeleteSectorView.as_view(), name='delete_sector'),
+    path('sector/update', UpdateSectorView.as_view(), name='update_sector'),
+    path('sectors', SectorListView.as_view(), name='fetch_sectors'),
 
     # Office Urls
     path('office/create', OfficeView.as_view(), name='create_office'),
