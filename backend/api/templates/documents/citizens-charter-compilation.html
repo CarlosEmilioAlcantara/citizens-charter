@@ -24,38 +24,66 @@
 
 {% block table_of_contents %}
 <section class="toc">
- <h1>TABLE OF CONTENTS</h1>
+ <header>
+  <span></span>
+  <h1>TABLE OF CONTENTS</h1>
+  <img 
+   src="{% static 'citizens_charter/images/san-pablo-city-seal.svg' %}"
+   alt="San Pablo City Seal"
+  >
+ </header>
 
  <div class="tables">
   <div class="table__header">
    <h2>Part I</h2>
+   <span></span>
    <h2>Page</h2>
   </div>
 
   <table class="contents__table">
-   <tr>
-    <th>Introduction</th>
-    <td>1</td>
+   <tr class="content">
+    <td class="name">
+     <span>Introduction</span>
+     <span class="dots"></span>
+    </td>
+
+    <td class="number">1</td>
    </tr>
 
-   <tr>
-    <th>Messages</th>
-    <td>2-3</td>
+   <tr class="content">
+    <td class="name">
+     <span>Messages</span>
+     <span class="dots"></span>
+    </td>
+
+    <td class="number">2-3</td>
    </tr>
 
-   <tr>
-    <th>Vision and Mission</th>
-    <td>4</td>
+   <tr class="content">
+    <td class="name">
+     <span>Vision and Mission</span>
+     <span class="dots"></span>
+    </td>
+
+    <td class="number">4</td>
    </tr>
 
-   <tr>
-    <th>Pledge of Service Performance Commitment</th>
-    <td>4</td>
+   <tr class="content">
+    <td class="name">
+     <span>Pledge of Service Performance Commitment</span>
+     <span class="dots"></span>
+    </td>
+
+    <td class="number">4</td>
    </tr>
 
-   <tr>
-    <th>Our 15-Point Service Standards for Clients</th>
-    <td>5</td>
+   <tr class="content">
+    <td class="name">
+     <span>Our 15-Point Service Standards for Clients</span>
+     <span class="dots"></span>
+    </td>
+
+    <td class="number">5</td>
    </tr>
   </table>
 
