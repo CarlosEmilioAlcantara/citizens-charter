@@ -1,7 +1,6 @@
 /* PAGE */
 @page {
-  /* A4 size (210mm × 297mm) scaled by 1.5x */
-  /* size: 315mm 445.5mm; */
+  /* A4 size (297mm × 210mm) Landscape */
   size: 297mm 210mm;
   margin: 16mm 16mm 26mm;
 

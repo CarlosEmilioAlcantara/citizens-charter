@@ -1,4 +1,5 @@
 import io
+from datetime import datetime
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.http import StreamingHttpResponse
@@ -317,20 +318,52 @@ class CitizensCharterListView(ListAPIView):
         return self.queryset
 
 class CreateCitizensCharterCompilationView(APIView):
-    charters = CitizensCharter.objects.all().values_list(
-        'pdf',
-        flat=True
-    ).order_by('id')
-    merger = PdfWriter()
+    # charters = CitizensCharter.objects.all().values_list(
+    #     'pdf',
+    #     flat=True
+    # ).order_by('id')
+    # merger = PdfWriter()
+
+    # def get(self, request):
+    #     # print(self.charters)
+    #     for pdf in self.charters:
+    #         self.merger.append(f"{settings.MEDIA_ROOT}/{pdf}")
+
+    #     buffer = io.BytesIO()
+    #     self.merger.write(buffer)
+    #     self.merger.close()
+    #     buffer.seek(0)
+
+    #     return StreamingHttpResponse(
+    #         buffer,
+    #         content_type='application/pdf',
+    #         headers={
+    #             'Content-Disposition': 
+    #                 'attachment; filename=compilation.pdf'
+    #         }
+    #     )
+    #     # return Response(status=status.HTTP_200_OK)
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get(self, request):
-        # print(self.charters)
-        for pdf in self.charters:
-            self.merger.append(f"{settings.MEDIA_ROOT}/{pdf}")
+        html = render_to_string(
+            'documents/citizens-charter-compilation.html',
+            context={
+                'year': datetime.now().year,
+            }
+        )
 
         buffer = io.BytesIO()
-        self.merger.write(buffer)
-        self.merger.close()
+        HTML(
+            string=html, 
+            base_url=request.build_absolute_uri('/api/')
+        ).write_pdf(
+            buffer,
+            stylesheets=[
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-compilation-styles.css",
+            ]
+        )
         buffer.seek(0)
 
         return StreamingHttpResponse(
@@ -338,7 +371,6 @@ class CreateCitizensCharterCompilationView(APIView):
             content_type='application/pdf',
             headers={
                 'Content-Disposition': 
-                    'attachment; filename=compilation.pdf'
+                    'attachment; filename=citizens_charter_compilation.pdf'
             }
         )
-        # return Response(status=status.HTTP_200_OK)

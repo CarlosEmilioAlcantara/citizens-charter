@@ -1,0 +1,79 @@
+{% extends "citizens-charter-compilation-base.html" %}
+{% load static %}
+
+{% block opener %}
+<section class="title__page">
+ <div class="title__page--logo-and-title">
+  <img 
+   src="{% static 'citizens_charter/images/san-pablo-city-seal.svg' %}"
+   alt="San Pablo City Seal"
+  >
+  <h1>Pamahalaang Lungsod ng San Pablo</h1>
+ </div>
+
+ <footer class="title__page--footer">
+  <h2>
+   <span>KARTA NG MAMAMAYAN</span>
+   <span>(CITIZEN'S CHARTER)</span>
+  </h2>
+
+  <h3>{{ year }} (Unang Limbag)</h3>
+ </footer>
+</section>
+{% endblock %}
+
+{% block table_of_contents %}
+<section class="toc">
+ <h1>TABLE OF CONTENTS</h1>
+
+ <div class="tables">
+  <div class="table__header">
+   <h2>Part I</h2>
+   <h2>Page</h2>
+  </div>
+
+  <table class="contents__table">
+   <tr>
+    <th>Introduction</th>
+    <td>1</td>
+   </tr>
+
+   <tr>
+    <th>Messages</th>
+    <td>2-3</td>
+   </tr>
+
+   <tr>
+    <th>Vision and Mission</th>
+    <td>4</td>
+   </tr>
+
+   <tr>
+    <th>Pledge of Service Performance Commitment</th>
+    <td>4</td>
+   </tr>
+
+   <tr>
+    <th>Our 15-Point Service Standards for Clients</th>
+    <td>5</td>
+   </tr>
+  </table>
+
+  <h4>Feedback and Redress Mechanisms</h4>
+
+  <table class="contents__table">
+   <tr>
+    <th>Redress and Feedback Mechanism</th>
+    <td>6-7</td>
+   </tr>
+
+   <tr>
+    <th class="content--subcontent">
+     Sample of an Evaluations/Feedback Form
+    </th>
+    <td>8-9</td>
+   </tr>
+  </table>
+ </div>
+</section>
+{% endblock %}

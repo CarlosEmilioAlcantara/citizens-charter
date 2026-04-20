@@ -1,0 +1,67 @@
+/* PAGE */
+@page {
+  /* A4 size (210mm × 297mm) Portrait */
+  size: 210mm 297mm;
+  margin: 16mm 16mm 26mm;
+
+  /* @bottom-left {
+    content: "QMS-QMR-002 Rev 03 2024.02.08";
+    font-size: 1.3rem;
+  } */
+}
+
+:root {
+  --green: #008007;
+}
+
+/* FOOTER */
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* SECTION */
+section {
+  break-after: always;
+}
+
+/* TITLE PAGE */
+.title__page {
+  color: var(--green);
+}
+
+.title__page--logo-and-title {
+  position: absolute;
+  top: 30%;
+  right: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+}
+
+.title__page--logo-and-title img {
+  width: 170px;
+}
+
+.title__page--logo-and-title h1 {
+  font-size: 3.2rem;
+}
+
+.title__page--footer {
+  position: absolute;
+  bottom: 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+}
+
+.title__page--footer h2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

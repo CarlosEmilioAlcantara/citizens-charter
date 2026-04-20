@@ -157,32 +157,75 @@ class SectorSerializer(serializers.ModelSerializer):
     office_count = serializers.IntegerField(read_only=True)
     class Meta:
         model = Sector
-        fields = ['id', 'name', 'is_subsector', 'office_count']
+        fields = ['id', 'number', 'name', 'is_subsector', 'office_count']
+    
+    def validate(self, data):
+        first_sector = Sector.objects.all().first()
+        if not first_sector and data.get('is_subsector'):
+            raise serializers.ValidationError(
+                'Must have a sector first before a subsector.'
+            )
+        elif first_sector and first_sector.pk == data.get(
+            'id'
+        ) and data.get('is_subsector'):
+            raise serializers.ValidationError(
+                'Must have a sector first before a subsector.'
+            )
+    
+        return data
 
 class SectorBulkUpdateSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
 
     class Meta:
         model = Sector
-        fields = ['id', 'name', 'is_subsector']        
+        fields = ['id', 'number', 'name', 'is_subsector']        
         list_serializer_class = BaseBulkUpdateSerializer
+
+    def validate(self, data):
+        first_sector = Sector.objects.all().first()
+        if not first_sector and data.get('is_subsector'):
+            raise serializers.ValidationError(
+                'Must have a sector first before a subsector.'
+            )
+        elif first_sector and first_sector.pk == data.get(
+            'id'
+        ) and data.get('is_subsector'):
+            raise serializers.ValidationError(
+                'Must have a sector first before a subsector.'
+            )
+    
+        return data
 
 class OfficeSerializer(serializers.ModelSerializer):
     service_count = serializers.IntegerField(read_only=True)
     user_count = serializers.IntegerField(read_only=True)
     position_count = serializers.IntegerField(read_only=True)
+    sector = serializers.PrimaryKeyRelatedField(
+        queryset=Sector.objects.all()
+    )
 
     class Meta:
         model = Office
-        fields = ['id', 'name', 'service_count', 'user_count', 'position_count']
+        fields = [
+            'id',
+            'name',
+            'sector',
+            'service_count',
+            'user_count',
+            'position_count',
+        ]
 
 class OfficeBulkUpdateSerializer(serializers.ModelSerializer):
     # pk = serializers.IntegerField()
     id = serializers.IntegerField(required=False)
+    sector = serializers.PrimaryKeyRelatedField(
+        queryset=Sector.objects.all()
+    )
 
     class Meta:
         model = Office
-        fields = ['id', 'name']        
+        fields = ['id', 'name', 'sector']        
         list_serializer_class = BaseBulkUpdateSerializer
 
 class UserSerializer(serializers.ModelSerializer):
