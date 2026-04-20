@@ -98,17 +98,20 @@ section {
 
 .table__header {
   display: flex;
-  justify-content: space-between;
-  width: 85%;
-  padding-right: 1em;
+  gap: 22em;
+  width: 80%;
+  margin-right: 7em;
+}
+
+.table__header h2 {
   font-size: 1.6rem;
 }
 
 .contents__table {
   width: 70%;
   border-collapse: collapse;
-  margin-top: 2em;
-  font-size: 1.3rem;
+  margin-top: 4em;
+  font-size: 1.4rem;
 }
 
 .contents__table td {
@@ -129,4 +132,5 @@ section {
 
 .contents__table .content .number {
   border: 1px solid black;
+  padding-right: 2em;
 }
