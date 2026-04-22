@@ -1,6 +1,45 @@
 {% extends "citizens-charter-compilation-base.html" %}
 {% load static %}
 
+{% block cover %}
+<section class="cover__page">
+ <img
+  src="{% static 'citizens_charter/images/vectors/shape1.svg'%}"
+  class="shape1"
+  alt="shape-1"
+ >
+ <img
+  src="{% static 'citizens_charter/images/vectors/shape2.svg'%}"
+  class="shape2"
+  alt="shape-2"
+ >
+
+ <img
+  src="{% static 'citizens_charter/images/vectors/shape3.svg'%}"
+  class="shape3"
+  alt="shape-3"
+ >
+
+ <img
+  src="{% static 'citizens_charter/images/san-pablo-city-seal.svg' %}"
+  class="logo"
+  alt="San Pablo City Seal"
+ >
+
+ <img
+  src="{% static 'citizens_charter/images/vectors/shape4.svg' %}"
+  class="publisher"
+  alt="Publisher"
+ >
+
+ <img 
+  src="{% static 'citizens_charter/images/vectors/shape5.png' %}"
+  class="title"
+  alt="Title"
+ >
+</section>
+{% endblock %}
+
 {% block opener %}
 <section class="title__page">
  <div class="title__page--logo-and-title">

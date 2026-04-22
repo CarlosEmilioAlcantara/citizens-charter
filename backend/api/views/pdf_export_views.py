@@ -1,3 +1,4 @@
+import os
 import io
 from datetime import datetime
 from django.conf import settings
@@ -12,7 +13,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from auditlog.context import set_actor
 from pypdf import PdfWriter
-from weasyprint import HTML
+from weasyprint import HTML, CSS
+from weasyprint.text.fonts import FontConfiguration
 from ..models import Office, Service, CitizensCharter
 from ..renderers import PDFRenderer
 from ..utils.citizens_charter_utils import (
