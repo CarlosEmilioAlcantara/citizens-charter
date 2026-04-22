@@ -4,6 +4,31 @@
 <head>
  <meta charset="utf-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <style>
+  @font-face {
+    font-family: 'Lato Black';
+    src: url(
+            {% static 'citizens_charter/fonts/Lato-Black.ttf' %}
+          )
+          format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Cormorant Bold Italic';
+    src: url(
+            {% static 'citizens_charter/fonts/Cormorant-BoldItalic.ttf' %}
+          )
+          format('truetype');
+  }
+
+  @font-face {
+    font-family: 'EB Garamond Bold';
+    src: url(
+            {% static 'citizens_charter/fonts/EBGaramond-Bold.ttf' %}
+          )
+          format('truetype');
+  }
+ </style>
 </head>
  <body>
   {% block cover %}{% endblock %}

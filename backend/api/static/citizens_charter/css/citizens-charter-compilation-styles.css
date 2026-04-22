@@ -83,12 +83,13 @@ section {
 }
 
 .title__page--logo-and-title h1 {
-  font-size: 3.2rem;
+  font-family: 'EB Garamond Bold';
+  font-size: 3.8rem;
 }
 
 .title__page--footer {
   position: absolute;
-  bottom: 2.5%;
+  bottom: 13%;
   display: flex;
   flex-direction: column;
   align-items: center;
