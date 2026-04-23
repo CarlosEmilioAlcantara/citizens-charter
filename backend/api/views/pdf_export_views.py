@@ -4,6 +4,7 @@ from datetime import datetime
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.http import StreamingHttpResponse
+from django.db.models import Prefetch
 from django.core.files import File
 from django.template.loader import render_to_string
 from rest_framework import status, filters
@@ -15,7 +16,7 @@ from auditlog.context import set_actor
 from pypdf import PdfWriter
 from weasyprint import HTML, CSS
 from weasyprint.text.fonts import FontConfiguration
-from ..models import Office, Service, CitizensCharter
+from ..models import Office, Service, CitizensCharter, Sector
 from ..renderers import PDFRenderer
 from ..utils.citizens_charter_utils import (
     create_citizens_charter_single,
@@ -348,10 +349,20 @@ class CreateCitizensCharterCompilationView(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get(self, request):
+        # sectors
+        # subsectors
+        # offices
+        # 
+
+        sectors = Sector.objects.all().prefetch_related(
+            Prefetch('offices', queryset=Office.objects.order_by('name'))
+        ).order_by('number')
+
         html = render_to_string(
             'documents/citizens-charter-compilation.html',
             context={
                 'year': datetime.now().year,
+                'sectors': sectors,
             }
         )
 

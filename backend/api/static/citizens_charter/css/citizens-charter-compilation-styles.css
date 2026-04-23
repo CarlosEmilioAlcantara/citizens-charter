@@ -128,7 +128,7 @@ section {
 .toc .tables {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   padding-top: 14em;
 }
 
@@ -136,7 +136,7 @@ section {
   display: flex;
   gap: 22em;
   width: 80%;
-  margin-right: 7em;
+  margin-left: 3.5em;
   margin-bottom: 4em;
 }
 
@@ -144,11 +144,16 @@ section {
   font-size: 1.6rem;
 }
 
+.toc .tables .table__wrapper {
+  display: flex;
+  justify-content: center;
+}
+
 .toc .tables .contents__table {
   width: 70%;
   border-collapse: collapse;
   font-size: 1.4rem;
-  margin-bottom: 2em;
+  break-inside: auto;
 }
 
 .toc .tables .contents__table td {
@@ -173,9 +178,9 @@ section {
 }
 
 .toc .tables .subchapter--no-number {
-  margin-right: 15em;
+  margin-left: 5.5em;
   margin-bottom: 2em;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 700;
 }
 
@@ -187,4 +192,16 @@ section {
   content: "\2B24";
   font-size: 0.5em;
   margin-right: 2em;
+}
+
+.toc .tables .chapter {
+  font-size: 1.4rem;
+  margin-bottom: 2em;
+  margin-left: 4em;
+}
+
+.toc .tables .subchapter {
+  font-size: 1.4rem;
+  margin-bottom: 2em;
+  margin-left: 6em;
 }

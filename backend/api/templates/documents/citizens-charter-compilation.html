@@ -79,76 +79,111 @@
    <h2>Page</h2>
   </div>
 
-  <table class="contents__table">
-   <tr class="content">
-    <td class="name">
-     <span>Introduction</span>
-     <span class="dots"></span>
-    </td>
+  <div class="table__wrapper">
+   <table class="contents__table">
+    <tr class="content">
+     <td class="name">
+      <span>Introduction</span>
+      <span class="dots"></span>
+     </td>
 
-    <td class="number">1</td>
-   </tr>
+     <td class="number">1</td>
+    </tr>
 
-   <tr class="content">
-    <td class="name">
-     <span>Messages</span>
-     <span class="dots"></span>
-    </td>
+    <tr class="content">
+     <td class="name">
+      <span>Messages</span>
+      <span class="dots"></span>
+     </td>
 
-    <td class="number">2-3</td>
-   </tr>
+     <td class="number">2-3</td>
+    </tr>
 
-   <tr class="content">
-    <td class="name">
-     <span>Vision and Mission</span>
-     <span class="dots"></span>
-    </td>
+    <tr class="content">
+     <td class="name">
+      <span>Vision and Mission</span>
+      <span class="dots"></span>
+     </td>
 
-    <td class="number">4</td>
-   </tr>
+     <td class="number">4</td>
+    </tr>
 
-   <tr class="content">
-    <td class="name">
-     <span>Pledge of Service Performance Commitment</span>
-     <span class="dots"></span>
-    </td>
+    <tr class="content">
+     <td class="name">
+      <span>Pledge of Service Performance Commitment</span>
+      <span class="dots"></span>
+     </td>
 
-    <td class="number">4</td>
-   </tr>
+     <td class="number">4</td>
+    </tr>
 
-   <tr class="content">
-    <td class="name">
-     <span>Our 15-Point Service Standards for Clients</span>
-     <span class="dots"></span>
-    </td>
+    <tr class="content">
+     <td class="name">
+      <span>Our 15-Point Service Standards for Clients</span>
+      <span class="dots"></span>
+     </td>
 
-    <td class="number">5</td>
-   </tr>
-  </table>
+     <td class="number">5</td>
+    </tr>
+   </table>
+  </div>
 
   <h4 class="subchapter--no-number">Feedback and Redress Mechanisms</h4>
 
-  <table class="contents__table">
-   <tr class="content">
-    <td class="name">
-     <span>Redress and Feedback Mechanism</span>
-     <span class="dots"></span>
-    </td>
+  <div class="table__wrapper">
+   <table class="contents__table">
+    <tr class="content">
+     <td class="name">
+      <span>Redress and Feedback Mechanism</span>
+      <span class="dots"></span>
+     </td>
 
-    <td>6-7</td>
-   </tr>
+     <td>6-7</td>
+    </tr>
 
-   <tr class="content">
-    <td class="name">
-     <span class="subcontent">
-      Sample of an Evaluations/Feedback Form
-     </span>
-     <span class="dots"></span>
-    </td>
+    <tr class="content">
+     <td class="name">
+      <span class="subcontent">
+       Sample of an Evaluations/Feedback Form
+      </span>
+      <span class="dots"></span>
+     </td>
 
-    <td>8-9</td>
-   </tr>
-  </table>
+     <td>8-9</td>
+    </tr>
+   </table>
+  </div>
+
+  <div class="table__header">
+   <h2>Part II City Government Services</h2>
+  </div>
+
+  {% for sector in sectors %}
+   {% if sector.is_subsector %}
+    <h3 class="subchapter">
+     {{ sector.number|floatformat }}. {{ sector.name }}
+    </h3>
+   {% else %}
+    <h3 class="chapter">
+     {{ sector.number|floatformat }}. {{ sector.name }}
+    </h3>
+   {% endif %}
+
+   <div class="table__wrapper">
+    <table class="contents__table">
+     {% for office in sector.offices.all %}
+      <tr class="content">
+       <td class="name">
+        <span>{{ office.name }}</span>
+        <span class="dots"></span>
+       </td>
+
+       <td></td>
+      </tr>
+     {% endfor %}
+    </table>
+   </div>
+  {% endfor %}
  </div>
 </section>
 {% endblock %}
