@@ -125,48 +125,66 @@ section {
   width: 80px;
 }
 
-.tables {
+.toc .tables {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-top: 14em;
 }
 
-.table__header {
+.toc .tables .table__header {
   display: flex;
   gap: 22em;
   width: 80%;
   margin-right: 7em;
+  margin-bottom: 4em;
 }
 
-.table__header h2 {
+.toc .tables .table__header h2 {
   font-size: 1.6rem;
 }
 
-.contents__table {
+.toc .tables .contents__table {
   width: 70%;
   border-collapse: collapse;
-  margin-top: 4em;
   font-size: 1.4rem;
+  margin-bottom: 2em;
 }
 
-.contents__table td {
+.toc .tables .contents__table td {
   border: 1px solid black;
   padding: 0.1em 0.6em;
 }
 
-.contents__table .content .name {
+.toc .tables .contents__table .content .name {
   display: flex;
   align-items: baseline;
 }
 
-.contents__table .content .dots {
+.toc .tables .contents__table .content .dots {
   flex: 1;
   border-bottom: 2px dotted black;
   transform: translateY(-2px);
 }
 
-.contents__table .content .number {
+.toc .tables .contents__table .content .number {
   border: 1px solid black;
   padding-right: 2em;
+}
+
+.toc .tables .subchapter--no-number {
+  margin-right: 15em;
+  margin-bottom: 2em;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.toc .tables .contents__table .content .subcontent {
+  margin-left: 1em;
+}
+
+.toc .tables .contents__table .content .subcontent::before {
+  content: "\2B24";
+  font-size: 0.5em;
+  margin-right: 2em;
 }
