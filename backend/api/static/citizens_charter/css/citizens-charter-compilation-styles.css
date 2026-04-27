@@ -213,3 +213,152 @@ section {
   margin-bottom: 2em;
   margin-left: 6em;
 }
+
+/* CONTENT */
+.service {
+  page: landscape;
+  font-weight: 700;
+}
+
+@page landscape {
+  transform: rotate(-90deg);
+  size: 297mm 210mm;
+  margin: 16mm 16mm 26mm;
+}
+
+.service__table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 1.3rem;
+  overflow-wrap: break-word;
+  break-inside: always;
+}
+
+.service__table td, th {
+  padding: 0.3em;
+}
+
+.service__title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  margin-bottom: 1em;
+}
+
+.service__title--number {
+  display: flex;
+}
+
+.service__table--top {
+  font-size: 1.3rem;
+}
+
+.table--top {
+  width: 100%;
+}
+
+.table--header {
+  background-color: #c9ddfc;
+  border: 1px solid black;
+}
+
+.table--header--top {
+  width: 40%;
+}
+
+.table--header__classifications ul {
+  list-style: none;
+}
+
+.table--header__classifications li {
+  display: inline;
+}
+
+.table--header__classifications li:after {
+  content: ", ";
+}
+
+.table--header__classifications li:last-child:after {
+  content: "";
+}
+
+.service__table--requirements {
+  width: 100%;
+  font-size: 1.3rem;
+}
+
+.table--header--requirements {
+  width: 50%;
+  text-align: center;
+}
+
+.table--middle__item {
+  border: 1px solid black;
+  text-align: center;
+}
+
+.table--middle__dummy {
+  border: 1px solid black;
+  padding: 10px;
+}
+
+.spacer {
+  width: 100%;
+  border: 1px solid black;
+}
+
+.spacer td {
+  padding: 10px;
+}
+
+.service__table--steps {
+  width: 100%;
+}
+
+.table--bottom {
+  width: 100%;
+  height: 100%;
+}
+
+.table--header--bottom {
+  background-color: white;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.table--bottom td {
+  border: 1px solid black;
+  text-align: center;
+}
+
+.table--bottom__positions ul {
+  list-style: none;
+}
+
+.table--bottom__positions li {
+  display: inline;
+}
+
+.table--bottom__positions li:after {
+  content: ", ";
+}
+
+.table--bottom__positions li:last-child:after {
+  content: "";
+}
+
+/* .table--header--step {
+  width: 23%;
+}
+
+.table--header--action {
+  width: 24%;
+} */
+
+.table--bottom--total {
+  text-align: right !important;
+}
+
+.table--bottom {
+  text-align: center;
+}
