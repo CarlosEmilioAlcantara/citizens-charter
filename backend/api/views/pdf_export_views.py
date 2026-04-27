@@ -4,7 +4,7 @@ from datetime import datetime
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.http import StreamingHttpResponse
-from django.db.models import Prefetch
+from django.db.models import Prefetch, OuterRef, Sum, Count, Subquery
 from django.core.files import File
 from django.template.loader import render_to_string
 from rest_framework import status, filters
@@ -16,7 +16,7 @@ from auditlog.context import set_actor
 from pypdf import PdfWriter
 from weasyprint import HTML, CSS
 from weasyprint.text.fonts import FontConfiguration
-from ..models import Office, Service, CitizensCharter, Sector
+from ..models import Office, Service, CitizensCharter, Sector, Step
 from ..renderers import PDFRenderer
 from ..utils.citizens_charter_utils import (
     create_citizens_charter_single,
@@ -24,6 +24,7 @@ from ..utils.citizens_charter_utils import (
 )
 from ..utils.pdf_utils import create_pdf
 from ..utils.report_utils import create_office_report
+from ..utils.time_utils import create_total_time
 from ..serializers import CitizensCharterSerializer
 from ..permissions import IsInOffice
 
@@ -354,9 +355,35 @@ class CreateCitizensCharterCompilationView(APIView):
         # offices
         # 
 
+        step_queryset = Step.objects.filter(
+            service=OuterRef('pk')
+        ).values('service').annotate(
+            total_fee=Sum('fee'),
+            total_time=Sum('processing_time')
+        )
         sectors = Sector.objects.all().prefetch_related(
-            Prefetch('offices', queryset=Office.objects.order_by('name'))
+            Prefetch('offices',
+                queryset=Office.objects.prefetch_related(
+                    Prefetch('services', Service.objects.prefetch_related(
+                        'requirements',
+                        'steps'
+                    ).annotate(
+                        total_requirement=Count('requirements'),
+                        total_fee=Subquery(step_queryset.values('total_fee')),
+                        total_time=Subquery(step_queryset.values('total_time'))
+                    ).order_by('number'))
+            ).order_by('name'))
         ).order_by('number')
+
+        for sector in sectors:
+            for office in sector.offices.all():
+                for service in office.services.all():
+                    service.total_time = create_total_time(service.total_time)
+
+                    for step in service.steps.all():
+                        step.processing_time = create_total_time(
+                            step.processing_time
+                        )
 
         html = render_to_string(
             'documents/citizens-charter-compilation.html',
