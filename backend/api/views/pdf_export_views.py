@@ -347,19 +347,27 @@ class CreateCitizensCharterCompilationView(APIView):
 
         office_pdfs = []
         offices = Office.objects.all().order_by('sector__number')
-        for office in offices:
+
+        def printer(office, previous_sector):
             office_name, services = create_citizens_charter_whole(
                 request, office.pk
             )
-            html = render_to_string(
-                'documents/citizens-charter.html', 
-                context={
-                    'office_name': office_name, 
-                    'services': services
-                }
-            )
+
+            if previous_sector != office.sector:
+                sector_name = office.sector.name.split(' ')
+            else:
+                sector_name = None
 
             if len(services) != 0:
+                html = render_to_string(
+                    'documents/citizens-charter.html', 
+                    context={
+                        'office_name': office_name, 
+                        'services': services,
+                        'sector': sector_name,
+                    }
+                )
+
                 pdf = create_pdf(
                     html, 
                     request, 
@@ -370,6 +378,11 @@ class CreateCitizensCharterCompilationView(APIView):
                 )
 
                 office_pdfs.append(pdf)
+                return office.sector
+
+        previous_sector = None
+        for office in offices:
+            previous_sector = printer(office, previous_sector)
 
         writer = PdfWriter()
         writer.append(PdfReader(io.BytesIO(preliminary_pdf)))

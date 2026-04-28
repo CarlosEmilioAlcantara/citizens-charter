@@ -3,6 +3,16 @@
 {% load mathfilters %}
 {% block content %}
 {% if services|length > 0 %}
+ {% if sector %}
+  <section class="sector__name">
+   <div>
+    {% for name in sector %}
+     <h1>{{ name }}</h1>
+    {% endfor %}
+   </div>
+  </section>
+ {% endif %}
+
  {% for service in services %}
   <section class="service">
    <div class="service__title">
@@ -169,7 +179,7 @@
     {% for step in service.steps.all %}
      <tr class="table--bottom">
       <td>
-       {% if step.name%}
+       {% if step.name %}
         {{ step.name }}
        {% endif %}
       </td>
@@ -208,7 +218,7 @@
      </td>
      <td></td>
      <td>
-      {% if service.total_time%}
+      {% if service.total_time %}
        {{ service.total_time }}
       {% endif %}
      </td>
@@ -418,7 +428,7 @@
     </td>
     <td></td>
     <td>
-     {% if service.total_time%}
+     {% if service.total_time %}
       {{ service.total_time }}
      {% endif %}
     </td>
