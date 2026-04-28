@@ -1,0 +1,119 @@
+{% load static %}
+<section class="toc">
+ <header>
+  <span></span>
+  <h1>TABLE OF CONTENTS</h1>
+  {% comment %} <img 
+   src="{% static 'citizens_charter/images/san-pablo-city-seal.svg' %}"
+   alt="San Pablo City Seal"
+  > {% endcomment %}
+ </header>
+
+ <div class="tables">
+  <div class="table__header">
+   <h2>Part I</h2>
+   <span></span>
+   <h2>Page</h2>
+  </div>
+
+  <table class="contents__table">
+   <tr class="content">
+    <td class="name">
+     <span>Introduction</span>
+     <span class="dots"></span>
+    </td>
+
+    <td class="number">1</td>
+   </tr>
+
+   <tr class="content">
+    <td class="name">
+     <span>Messages</span>
+     <span class="dots"></span>
+    </td>
+
+    <td class="number">2-3</td>
+   </tr>
+
+   <tr class="content">
+    <td class="name">
+     <span>Vision and Mission</span>
+     <span class="dots"></span>
+    </td>
+
+    <td class="number">4</td>
+   </tr>
+
+   <tr class="content">
+    <td class="name">
+     <span>Pledge of Service Performance Commitment</span>
+     <span class="dots"></span>
+    </td>
+
+    <td class="number">4</td>
+   </tr>
+
+   <tr class="content">
+    <td class="name">
+     <span>Our 15-Point Service Standards for Clients</span>
+     <span class="dots"></span>
+    </td>
+
+    <td class="number">5</td>
+   </tr>
+  </table>
+
+  <h4 class="subchapter--no-number">Feedback and Redress Mechanisms</h4>
+
+  <table class="contents__table">
+   <tr class="content">
+    <td class="name">
+     <span>Redress and Feedback Mechanism</span>
+     <span class="dots"></span>
+    </td>
+
+    <td class="number">6-7</td>
+   </tr>
+
+   <tr class="content">
+    <td class="name">
+     <span class="subcontent">
+      Sample of an Evaluations/Feedback Form
+     </span>
+     <span class="dots"></span>
+    </td>
+
+    <td class="number">8-9</td>
+   </tr>
+  </table>
+
+  <div class="table__header">
+   <h2>Part II City Government Services</h2>
+  </div>
+
+  {% for sector in sectors %}
+   {% if sector.is_subsector %}
+    <h3 class="chapter subchapter">
+     {{ sector.number|floatformat }}. {{ sector.name }}
+    </h3>
+   {% else %}
+    <h3 class="chapter">
+     {{ sector.number|floatformat }}. {{ sector.name }}
+    </h3>
+   {% endif %}
+
+   <table class="contents__table">
+    {% for office in sector.offices.all %}
+     <tr class="content">
+      <td class="name">
+       <span>{{ office.name }}</span>
+       <span class="dots"></span>
+      </td>
+
+      <td class="number"></td>
+     </tr>
+    {% endfor %}
+   </table>
+  {% endfor %}
+ </div>
+</section>
