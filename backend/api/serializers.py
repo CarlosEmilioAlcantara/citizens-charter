@@ -30,7 +30,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
 
-# TODO; Add audit logging for bulk delete
 class BaseBulkUpdateSerializer(serializers.ListSerializer):
     def to_internal_value(self, data):
         if self.instance is None:

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from import_export import resources
 from .models import (
+    Sector,
     Office,
     User,
     Position,
@@ -11,6 +12,10 @@ from .models import (
 )
 
 # Register your models here.
+class SectorResource(resources.ModelResource):
+    class Meta:
+        model = Sector
+
 class OfficeResource(resources.ModelResource):
     class Meta:
         model = Office

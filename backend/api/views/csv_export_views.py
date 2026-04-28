@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from ..models import (
+    Sector,
     Office,
     StepPosition,
     User,
@@ -10,6 +11,7 @@ from ..models import (
     Step,
 )
 from ..admin import (
+    SectorResource,
     OfficeResource,
     StepPositionResource, 
     UserResource,
@@ -20,6 +22,16 @@ from ..admin import (
 )
 from ..permissions import IsSuperuser
 from ..mixins import ExportCsvMixin
+
+class ExportSectorCsvView(ExportCsvMixin, APIView):
+    model = 'sector'
+    permission_classes = [IsAuthenticated, IsSuperuser]
+
+    def get_queryset(self):
+        return Sector.objects.all()
+
+    def get_resource(self):
+        return SectorResource()
 
 class ExportOfficeCsvView(ExportCsvMixin, APIView):
     model = 'office'

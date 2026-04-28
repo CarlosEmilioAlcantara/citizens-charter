@@ -54,6 +54,7 @@ from .views.analytics_views import (
     CitizensCharterAnalyticsView,
 )
 from .views.csv_export_views import (
+    ExportSectorCsvView,
     ExportOfficeCsvView,
     ExportUserCsvView,
     ExportPositionCsvView,
@@ -201,6 +202,11 @@ urlpatterns = [
     ),
 
     # Csv Urls
+    path(
+        'csv/sector', 
+        ExportSectorCsvView.as_view(), 
+        name='export_sector_csv'
+    ),
     path(
         'csv/office', 
         ExportOfficeCsvView.as_view(), 
