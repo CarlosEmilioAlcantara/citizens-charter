@@ -243,10 +243,15 @@ class CitizensCharter(models.Model):
     def __str__(self):
         return self.name
 
-auditlog.register(Office)
-auditlog.register(User, exclude_fields=['password'])
-auditlog.register(Position)
-auditlog.register(Service)
-auditlog.register(Requirement)
-auditlog.register(Step, m2m_fields={"position"})
-auditlog.register(CitizensCharter)
+auditlog.register(Sector, exclude_fields=['created_at', 'updated_at'])
+auditlog.register(Office, exclude_fields=['created_at', 'updated_at'])
+auditlog.register(User, exclude_fields=['created_at', 'updated_at'])
+auditlog.register(Position, exclude_fields=['created_at', 'updated_at'])
+auditlog.register(Service, exclude_fields=['created_at', 'updated_at'])
+auditlog.register(Requirement, exclude_fields=['created_at', 'updated_at'])
+auditlog.register(
+    Step,
+    m2m_fields={"position"},
+    exclude_fields=['created_at', 'updated_at'],
+)
+auditlog.register(CitizensCharter, exclude_fields=['created_at', 'updated_at'])

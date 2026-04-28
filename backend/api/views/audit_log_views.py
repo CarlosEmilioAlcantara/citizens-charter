@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from ..permissions import IsSuperuser
 from ..serializers import AuditLogSerializer
 
-content_types = [6, 7, 12]
+content_types = [6, 7, 12, 17]
 
 class AuditLogListView(ListAPIView):
     queryset = LogEntry.objects.exclude(
