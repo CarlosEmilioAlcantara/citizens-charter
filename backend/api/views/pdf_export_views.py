@@ -13,7 +13,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from auditlog.context import set_actor
-from pypdf import PdfWriter
+from pypdf import PdfWriter, PdfReader
 from weasyprint import HTML, CSS
 from weasyprint.text.fonts import FontConfiguration
 from ..models import Office, Service, CitizensCharter, Sector, Step
@@ -44,7 +44,7 @@ class ExportOfficeReportView(APIView):
             buffer,
             stylesheets=[
                 f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
-                f"{settings.BASE_DIR}/api/static/citizens_charter/css/report-styles.css",
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/office-report-styles.css",
             ]
         )
         buffer.seek(0)
@@ -170,7 +170,6 @@ class ExportCitizensCharterOfficeView(APIView):
 
 class CreateCitizensCharterPdfsView(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
-    # renderer_classes = [PDFRenderer]
     
     def put(self, request):
         offices = list(Office.objects.all().order_by('id'))
@@ -322,88 +321,68 @@ class CitizensCharterListView(ListAPIView):
         return self.queryset
 
 class CreateCitizensCharterCompilationView(APIView):
-    # charters = CitizensCharter.objects.all().values_list(
-    #     'pdf',
-    #     flat=True
-    # ).order_by('id')
-    # merger = PdfWriter()
-
-    # def get(self, request):
-    #     # print(self.charters)
-    #     for pdf in self.charters:
-    #         self.merger.append(f"{settings.MEDIA_ROOT}/{pdf}")
-
-    #     buffer = io.BytesIO()
-    #     self.merger.write(buffer)
-    #     self.merger.close()
-    #     buffer.seek(0)
-
-    #     return StreamingHttpResponse(
-    #         buffer,
-    #         content_type='application/pdf',
-    #         headers={
-    #             'Content-Disposition': 
-    #                 'attachment; filename=compilation.pdf'
-    #         }
-    #     )
-    #     # return Response(status=status.HTTP_200_OK)
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get(self, request):
-        # sectors
-        # subsectors
-        # offices
-        # 
-
-        step_queryset = Step.objects.filter(
-            service=OuterRef('pk')
-        ).values('service').annotate(
-            total_fee=Sum('fee'),
-            total_time=Sum('processing_time')
-        )
         sectors = Sector.objects.all().prefetch_related(
-            Prefetch('offices',
-                queryset=Office.objects.prefetch_related(
-                    Prefetch('services', Service.objects.prefetch_related(
-                        'requirements',
-                        'steps'
-                    ).annotate(
-                        total_requirement=Count('requirements'),
-                        total_fee=Subquery(step_queryset.values('total_fee')),
-                        total_time=Subquery(step_queryset.values('total_time'))
-                    ).order_by('number'))
-            ).order_by('name'))
+            Prefetch('offices', queryset=Office.objects.order_by('name'))
         ).order_by('number')
 
-        for sector in sectors:
-            for office in sector.offices.all():
-                for service in office.services.all():
-                    service.total_time = create_total_time(service.total_time)
-
-                    for step in service.steps.all():
-                        step.processing_time = create_total_time(
-                            step.processing_time
-                        )
-
-        html = render_to_string(
-            'documents/citizens-charter-compilation.html',
+        preliminary_html = render_to_string(
+            'documents/compilation-preliminary.html',
             context={
                 'year': datetime.now().year,
                 'sectors': sectors,
             }
         )
 
-        buffer = io.BytesIO()
-        HTML(
-            string=html, 
-            base_url=request.build_absolute_uri('/api/')
-        ).write_pdf(
-            buffer,
+        preliminary_pdf = create_pdf(
+            preliminary_html, 
+            request, 
             stylesheets=[
                 f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
-                f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-compilation-styles.css",
+                f"{settings.BASE_DIR}/api/static/citizens_charter/css/compilation-preliminary-styles.css",
             ]
         )
+
+        office_pdfs = []
+        offices = Office.objects.all().order_by('sector__number')
+        for office in offices:
+            office_name, services = create_citizens_charter_whole(
+                request, office.pk
+            )
+            html = render_to_string(
+                'documents/citizens-charter.html', 
+                context={
+                    'office_name': office_name, 
+                    'services': services
+                }
+            )
+
+            if len(services) != 0:
+                pdf = create_pdf(
+                    html, 
+                    request, 
+                    stylesheets=[
+                        f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
+                        f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
+                    ]
+                )
+
+                office_pdfs.append(pdf)
+
+        writer = PdfWriter()
+        writer.append(PdfReader(io.BytesIO(preliminary_pdf)))
+
+        for pdf in office_pdfs:
+            reader = PdfReader(io.BytesIO(pdf))
+
+            for page in reader.pages:
+                page.rotate(-90)
+                writer.add_page(page)
+
+        buffer = io.BytesIO()
+        writer.write(buffer)
         buffer.seek(0)
 
         return StreamingHttpResponse(
