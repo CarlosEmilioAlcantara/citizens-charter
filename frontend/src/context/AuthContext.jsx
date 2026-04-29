@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: loginData.username,
+          name: loginData.name,
           password: loginData.password,
         }),
       });
@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
         setAuthTokens(data);
         setUser(jwtDecode(data.access));
         localStorage.setItem("authTokens", JSON.stringify(data));
-        navigate("/");
+        navigate("/dashboard");
       } else {
         alert("Login Unsuccessful");
       }
