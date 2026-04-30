@@ -11,7 +11,6 @@ export default function Footer() {
         p-1
         px-2
         bg-confirm-hover
-        text-background
         md:p-2
         md:px-12
       ">
@@ -24,6 +23,7 @@ export default function Footer() {
           text-xs 
           items-center 
           font-bold 
+          text-background
           tracking-wider 
           md:flex-row
           md:text-lg

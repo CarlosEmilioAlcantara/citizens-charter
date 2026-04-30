@@ -1,7 +1,8 @@
 import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
-import Footer from "../components/Footer";
+import Overlay from "../components/Overlay";
 import Input from "../components/Input";
+import Footer from "../components/Footer";
 
 export default function Login() {
   const [value, setValue] = useState({
@@ -10,7 +11,8 @@ export default function Login() {
   })
   const { loginUser } = useContext(AuthContext);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     const loginData = {
       name: value.name,
       password: value.password,
@@ -30,17 +32,10 @@ export default function Login() {
         bg-cover 
         bg-center
       ">
-      <div
-        className="
-        fixed
-        inset-0
-        w-screen 
-        h-screen 
-        bg-black/60
-      ">
-      </div>
+      <Overlay/>
 
-      <div 
+      <form
+        onSubmit={handleLogin}
         className="
           flex 
           flex-col 
@@ -80,21 +75,20 @@ export default function Login() {
         </div>
 
         <button 
-          onClick={handleLogin}
           className="
-            w-1/3
+            w-auto
             p-2
             rounded-sm
             bg-accent 
             text-md
             hover:bg-confirm-hover
             text-background 
-            md:w-1/4
+            cursor-pointer
             md:text-xl
           ">
             Pumasok
           </button>
-      </div>
+      </form>
       <Footer/>
     </div>
   );
