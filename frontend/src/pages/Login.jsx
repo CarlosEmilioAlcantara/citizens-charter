@@ -1,16 +1,19 @@
 import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import Footer from "../components/Footer";
+import Input from "../components/Input";
 
 export default function Login() {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+  const [value, setValue] = useState({
+    name: '',
+    password: '',
+  })
   const { loginUser } = useContext(AuthContext);
 
   const handleLogin = async () => {
     const loginData = {
-      name: name,
-      password: password,
+      name: value.name,
+      password: value.password,
     };
     loginUser(loginData);
   };
@@ -57,45 +60,23 @@ export default function Login() {
         <div className="flex flex-col items-start w-full gap-5">
           <p className="text-2xl font-bold text-accent md:text-4xl">Login</p>
 
-          <div 
-            className="
-              flex 
-              flex-col 
-              w-full
-              p-2
-              border 
-              border-foreground 
-              rounded-sm
-            ">
-            <label className="text-[8px] md:text-[10px]">Username</label>
-            <input
-              type="text"
-              placeholder="Username..."
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="text-md focus:outline-none md:text-xl"
-            />
-          </div>
+          <Input 
+            label="Username" 
+            type="text" 
+            placeholder="Username..."
+            name="name"
+            value={value.name}
+            setValue={setValue}
+          />
 
-          <div 
-            className="
-              flex 
-              flex-col 
-              w-full
-              p-2
-              border 
-              border-foreground 
-              rounded-sm
-            ">
-            <label className="text-[8px] md:text-[10px]">Password</label>
-            <input
-              type="password"
-              placeholder="Password..."
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="text-md focus:outline-none md:text-xl"
-            />
-          </div>
+          <Input 
+            label="Password" 
+            type="password" 
+            placeholder="Password..."
+            name="password"
+            value={value.password}
+            setValue={setValue}
+          />
         </div>
 
         <button 
