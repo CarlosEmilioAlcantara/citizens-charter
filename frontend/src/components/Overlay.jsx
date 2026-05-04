@@ -1,12 +1,12 @@
 export default function Overlay({ show }) {
   return(
     <div
-      style={{ transition: "all 1s ease, all 1s ease" }} 
+      style={{ transition: "opacity 0.5s ease, opacity 0.5s ease" }} 
       className={`
-        ${show ? 'fixed': 'hidden'}
+        fixed
         inset-0
-        w-screen 
-        h-screen 
+        ${show ? 'w-screen' : 'w-0'}
+        ${show ? 'h-screen' : 'h-0'}
         bg-black/60
         transform 
         transition-transform

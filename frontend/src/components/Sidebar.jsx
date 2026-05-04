@@ -120,7 +120,11 @@ export default function Sidebar() {
           fixed
           top-0
           ${show ? 'right-0' : 'right-[-55%]'}
+          flex
+          flex-col
+          justify-between
           w-[55%]
+          h-screen 
           pt-1
           bg-accent 
           text-xl
@@ -130,43 +134,54 @@ export default function Sidebar() {
           ${show ? 'opacity-100' : 'opacity-0'}
         `}
       >
-        <ul className="flex flex-col items-end gap-4 h-screen p-2">
-          <li
-            onClick={showToggle}
-            className="mb-2 text-3xl"
-          >
-            <i><FaXmark /></i>
-          </li>
-          <hr className="w-full h-0.5 mb-2 rounded-[0.1px] bg-background"/>
-          {Object.entries(links).map(([key, value]) => (
-            !value.staff && !value.superuser && (
-              <li key={key} className="flex items-center gap-2">
-                <span><Link to={value.link}>{key}</Link></span>
-                <span><i>{value.icon}</i></span>
-              </li>
-            )
-          ))}
+        <div className="p-2">
+          <div className="flex flex-col items-end">
+            <span
+              onClick={showToggle}
+              className="mb-3 text-3xl cursor-pointer"
+            >
+              <i><FaXmark /></i>
+            </span>
+            <hr className="w-full h-0.5 mb-2 rounded-[0.1px] bg-background"/>
+          </div>
 
-          {Object.entries(links).map(([key, value]) => (
-            (user.is_staff && user.is_superuser) && 
-            (!user.is_superuser && !value.superuser) && (
-              <li key={key} className="flex items-center gap-2">
-                <span><Link to={value.link}>{key}</Link></span>
-                <span><i>{value.icon}</i></span>
-              </li>
-            )
-          ))}
+          <ul className="flex flex-col items-end gap-4 ">
+            {Object.entries(links).map(([key, value]) => (
+              !value.staff && !value.superuser && (
+                <li key={key} className="flex items-center gap-2">
+                  <span><Link to={value.link}>{key}</Link></span>
+                  <span><i>{value.icon}</i></span>
+                </li>
+              )
+            ))}
 
-          {Object.entries(links).map(([key, value]) => (
-            (user.is_staff && user.is_superuser) && 
-            (user.is_superuser && value.superuser) && (
-              <li key={key} className="flex items-center gap-2">
-                <span><Link to={value.link}>{key}</Link></span>
-                <span><i>{value.icon}</i></span>
-              </li>
-            )
-          ))}
-        </ul>
+            {Object.entries(links).map(([key, value]) => (
+              (user.is_staff && user.is_superuser) && 
+              (!user.is_superuser && !value.superuser) && (
+                <li key={key} className="flex items-center gap-2">
+                  <span><Link to={value.link}>{key}</Link></span>
+                  <span><i>{value.icon}</i></span>
+                </li>
+              )
+            ))}
+
+            {Object.entries(links).map(([key, value]) => (
+              (user.is_staff && user.is_superuser) && 
+              (user.is_superuser && value.superuser) && (
+                <li key={key} className="flex items-center gap-2">
+                  <span><Link to={value.link}>{key}</Link></span>
+                  <span><i>{value.icon}</i></span>
+                </li>
+              )
+            ))}
+          </ul>
+        </div>
+
+        <p 
+          className="text-[8px] text-right p-2"
+        >
+          Brought to you by CMO - MISO
+        </p>
       </div>
     </div>
   );
