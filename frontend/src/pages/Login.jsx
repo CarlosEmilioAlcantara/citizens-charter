@@ -32,7 +32,7 @@ export default function Login() {
         bg-cover 
         bg-center
       ">
-      <Overlay/>
+      <Overlay show={true} />
 
       <form
         onSubmit={handleLogin}

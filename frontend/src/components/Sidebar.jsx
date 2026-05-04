@@ -1,9 +1,82 @@
 import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
+import { Link } from "react-router-dom"
 import { GiHamburgerMenu } from "react-icons/gi";
+import { 
+  FaHome, 
+  FaChartBar, 
+  FaUsers, 
+  FaUser, 
+  FaDatabase 
+} from "react-icons/fa";
+import { FaXmark, FaClipboardUser } from "react-icons/fa6"
+import { IoDocumentTextSharp } from "react-icons/io5";
+import { HiBuildingOffice, HiBuildingOffice2 } from "react-icons/hi2";
+import { TbWritingFilled } from "react-icons/tb";
+import Overlay from "./Overlay";
 
-export default function Sidebar({show}) {
+export default function Sidebar() {
   const { user } = useContext(AuthContext);
+  const [show, setShow] = useState(false);
+
+  const showToggle = () => {show ? setShow(false) : setShow(true)};
+
+  const [links, setLinks] = useState({
+    "Dashboard": {
+      "link": "/dashboard",
+      "icon": <FaHome />,
+      "staff": false,
+      "superuser": false,
+    },
+    "Charter": {
+      "link": "/charter",
+      "icon": <IoDocumentTextSharp />,
+      "staff": false,
+      "superuser": false,
+    },
+    "Analytics": {
+      "link": "/analytics",
+      "icon": <FaChartBar />,
+      "staff": true,
+      "superuser": false,
+    },
+    "Sectors": {
+      "link": "/sectors",
+      "icon": <HiBuildingOffice2 />,
+      "staff": true,
+      "superuser": true,
+    },
+    "Offices": {
+      "link": "/offices",
+      "icon": <HiBuildingOffice />,
+      "staff": true,
+      "superuser": true,
+    },
+    "Users": {
+      "link": "/users",
+      "icon": <FaUsers />,
+      "staff": true,
+      "superuser": true,
+    },
+    "Charter Audit": {
+      "link": "/charter-audit",
+      "icon": <TbWritingFilled />,
+      "staff": true,
+      "superuser": true,
+    },
+    "Admin Audit": {
+      "link": "/staff-audit",
+      "icon": <FaClipboardUser />,
+      "staff": true,
+      "superuser": true,
+    },
+    "Data Backup": {
+      "link": "/data-backup",
+      "icon": <FaDatabase />,
+      "staff": true,
+      "superuser": true,
+    },
+  });
 
   return(
     <div className="bg-accent">
@@ -24,23 +97,75 @@ export default function Sidebar({show}) {
               md:text-lg
               md:gap-1
               lg:text-xl
-            ">
+          ">
             <p>Citizen's Charter System</p>
             <span className="hidden md:block">-</span> 
             <p>Lungsod ng San Pablo</p>
           </div>
         </div>
-      
-        <GiHamburgerMenu size={24} className="text-background"/>
+     
+        <i 
+          onClick={showToggle}
+          className="text-background cursor-pointer"
+        >
+          <GiHamburgerMenu size={24}/>
+        </i>
       </div>
 
-      <div className="bg-accent">
-        <ul>
-          <li>link</li>
-          <li>link</li>
-          <li>link</li>
-          <li>link</li>
-          <li>link</li>
+      <Overlay show={show} />
+
+      <div 
+        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+        className={`
+          fixed
+          top-0
+          ${show ? 'right-0' : 'right-[-55%]'}
+          w-[55%]
+          pt-1
+          bg-accent 
+          text-xl
+          text-background
+          transform 
+          transition-transform
+          ${show ? 'opacity-100' : 'opacity-0'}
+        `}
+      >
+        <ul className="flex flex-col items-end gap-4 h-screen p-2">
+          <li
+            onClick={showToggle}
+            className="mb-2 text-3xl"
+          >
+            <i><FaXmark /></i>
+          </li>
+          <hr className="w-full h-0.5 mb-2 rounded-[0.1px] bg-background"/>
+          {Object.entries(links).map(([key, value]) => (
+            !value.staff && !value.superuser && (
+              <li key={key} className="flex items-center gap-2">
+                <span><Link to={value.link}>{key}</Link></span>
+                <span><i>{value.icon}</i></span>
+              </li>
+            )
+          ))}
+
+          {Object.entries(links).map(([key, value]) => (
+            (user.is_staff && user.is_superuser) && 
+            (!user.is_superuser && !value.superuser) && (
+              <li key={key} className="flex items-center gap-2">
+                <span><Link to={value.link}>{key}</Link></span>
+                <span><i>{value.icon}</i></span>
+              </li>
+            )
+          ))}
+
+          {Object.entries(links).map(([key, value]) => (
+            (user.is_staff && user.is_superuser) && 
+            (user.is_superuser && value.superuser) && (
+              <li key={key} className="flex items-center gap-2">
+                <span><Link to={value.link}>{key}</Link></span>
+                <span><i>{value.icon}</i></span>
+              </li>
+            )
+          ))}
         </ul>
       </div>
     </div>
