@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #FDFFFC;
+  --color-background: #E7EBE8;
   --color-foreground: #222222;
-  --color-normal-hover: rgba(255, 255, 255, 0.1);
+  --color-normal-hover: rgba(255, 255, 255, 0.15);
   --color-unfocused: #888888;
   --color-accent: #09A129;
+  --color-active: #7BD58C;
   --color-confirm-hover: #0E8E29;
   --color-warning: #F1D302;
   --color-danger: #ED1C24;
@@ -40,4 +41,8 @@
   body {
     font-family: 'Poppins', sans-serif;
   }
+}
+
+body {
+  background-color: var(--color-background);
 }

@@ -75,16 +75,19 @@ export default function Login() {
         </div>
 
         <button 
+          style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
           className="
             w-auto
             p-2
             rounded-sm
             bg-accent 
             text-md
-            hover:bg-confirm-hover
             text-background 
             cursor-pointer
             md:text-xl
+            hover:bg-confirm-hover
+            focus:bg-confirm-hover
+            active:bg-confirm-hover
           ">
             Pumasok
           </button>

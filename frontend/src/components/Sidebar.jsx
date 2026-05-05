@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import AuthContext from "../context/AuthContext";
 import { Link } from "react-router-dom"
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -20,6 +20,7 @@ import Overlay from "./Overlay";
 export default function Sidebar() {
   const { user, logoutUser } = useContext(AuthContext);
   const [show, setShow] = useState(false);
+  const [location, setLocation] = useState("");
 
   const showToggle = () => {show ? setShow(false) : setShow(true)};
 
@@ -80,6 +81,10 @@ export default function Sidebar() {
     },
   });
 
+  useEffect(() => {
+    setLocation(window.location.pathname);
+  }, []);
+
   return(
     <>
       <Overlay show={show} />
@@ -89,8 +94,10 @@ export default function Sidebar() {
           fixed
           top-0
           w-screen 
-        text-background
-          bg-accent 
+        text-accent
+          bg-background 
+          border-accent
+          border-b
           overflow-hidden
           transform 
           transition-transform
@@ -99,6 +106,8 @@ export default function Sidebar() {
           md:flex-col
           md:justify-between
           md:items-start
+          md:border-b-0
+          md:border-r
           ${show ? 'md:w-55' : 'md:w-15'}
           md:h-screen
       `}>
@@ -224,14 +233,14 @@ export default function Sidebar() {
           className="
             hidden 
             flex-col 
-            p-2 
+            w-full
             text-2xl 
             justify-between 
             h-screen 
             md:flex
         ">
           <div className="flex flex-col">
-            <div className="flex gap-3">
+            <div className="flex gap-3 p-2">
               <div className="flex flex-col gap-2">
                 <img src="/spc-logo.png" className="max-w-10"/>
                 <img src="/bagong-pilipinas.png" className="max-w-10"/>
@@ -257,42 +266,61 @@ export default function Sidebar() {
               </div>
             </div>
 
-            <hr 
-              style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
-              className={`
-                ${show ? 'w-[105%]' : 'w-[22%]'}
-                h-0.5 
-                mt-4 
-                mb-2 
-                rounded-[0.1px] 
-                bg-background
-                transform 
-                transition-transform
-            `}/>
+            <center>
+              <hr 
+                style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                className={`
+                  ${show ? 'w-[95%]' : 'w-[70%]'}
+                  h-0.5 
+                  my-4
+                  rounded-[0.1px] 
+                  bg-background
+                  transform 
+                  transition-transform
+              `}/>
+            </center>
 
             <ul className={`
               flex
               flex-col
-              gap-4
-              p-2
               text-nowrap
             `}>
               {Object.entries(links).map(([key, value]) => (
                 !value.staff && !value.superuser && (
                   <li key={key}>
-                    <span className="flex gap-3 items-center">
-                      <i>{value.icon}</i>
-                      <p 
-                        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                    <Link to={value.link}>
+                      <span 
+                        style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
                         className={`
-                          text-xl 
-                          transform 
-                          transition-transform
-                          ${show ? 'opacity-100' : 'opacity-0'}
+                          flex 
+                          gap-3 
+                          items-center 
+                          px-4 
+                          py-2
+                          cursor-pointer
+                        hover:bg-active
+                        hover:text-confirm-hover
+                        focus:bg-active
+                        focus:text-confirm-hover
+                        active:bg-active
+                        active:text-confirm-hover
+                          ${location === value.link && (
+                            'bg-active text-confirm-hover'
+                          )}
                       `}>
-                        {key}
-                      </p>
-                    </span>
+                        <i>{value.icon}</i>
+                        <p 
+                          style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                          className={`
+                            text-xl 
+                            transform 
+                            transition-transform
+                            ${show ? 'opacity-100' : 'opacity-0'}
+                        `}>
+                          {key}
+                        </p>
+                      </span>
+                    </Link>
                   </li>
               )))}
 
@@ -300,19 +328,37 @@ export default function Sidebar() {
                 (user.is_staff && user.is_superuser) && 
                 (!user.is_superuser && !value.superuser) && (
                   <li key={key}>
-                    <span className="flex gap-3 items-center">
-                      <i>{value.icon}</i>
-                      <p 
-                        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                    <Link to={value.link}>
+                      <span 
+                        style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
                         className={`
-                          text-xl 
-                          transform 
-                          transition-transform
-                          ${show ? 'opacity-100' : 'opacity-0'}
+                          flex 
+                          gap-3 
+                          items-center 
+                          px-4 
+                          py-2
+                          cursor-pointer
+                        hover:bg-active
+                        hover:text-confirm-hover
+                        focus:bg-active
+                        focus:text-confirm-hover
+                        active:bg-active
+                        active:text-confirm-hover
+                          ${location === value.link && ('text-warning')}
                       `}>
-                        {key}
-                      </p>
-                    </span>
+                        <i>{value.icon}</i>
+                        <p 
+                          style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                          className={`
+                            text-xl 
+                            transform 
+                            transition-transform
+                            ${show ? 'opacity-100' : 'opacity-0'}
+                        `}>
+                          {key}
+                        </p>
+                      </span>
+                    </Link>
                   </li>
               )))}
 
@@ -320,25 +366,54 @@ export default function Sidebar() {
                 (user.is_staff && user.is_superuser) && 
                 (user.is_superuser && value.superuser) && (
                   <li key={key}>
-                    <span className="flex gap-3 items-center">
-                      <i>{value.icon}</i>
-                      <p 
-                        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                    <Link to={value.link}>
+                      <span 
+                        style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
                         className={`
-                          text-xl 
-                          transform 
-                          transition-transform
-                          ${show ? 'opacity-100' : 'opacity-0'}
+                          flex 
+                          gap-3 
+                          items-center 
+                          px-4 
+                          py-2
+                          cursor-pointer
+                        hover:bg-active
+                        hover:text-confirm-hover
+                        focus:bg-active
+                        focus:text-confirm-hover
+                        active:bg-active
+                        active:text-confirm-hover
+                          ${location === value.link && ('text-warning')}
                       `}>
-                        {key}
-                      </p>
-                    </span>
+                        <i>{value.icon}</i>
+                        <p 
+                          style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                          className={`
+                            text-xl 
+                            transform 
+                            transition-transform
+                            ${show ? 'opacity-100' : 'opacity-0'}
+                        `}>
+                          {key}
+                        </p>
+                      </span>
+                    </Link>
                   </li>
               )))}
 
               <i 
                 onClick={showToggle} 
-                className="cursor-pointer">
+                style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
+                className="
+                  cursor-pointer 
+                  px-4 
+                  py-2 
+                  hover:bg-active
+                  hover:text-confirm-hover
+                  focus:bg-active
+                  focus:text-confirm-hover
+                  active:bg-active
+                  active:text-confirm-hover
+              ">
                 {show ? (
                   <FaChevronLeft 
                     size={24}
@@ -355,39 +430,50 @@ export default function Sidebar() {
                       transition-transform
                   "/>
                 )}
-                
               </i>
             </ul>
           </div>
 
-          <div className="flex flex-col">
-            <span 
-              onClick={logoutUser} 
-              className="
-                hidden 
-                p-2 
-                gap-3 
-                items-center 
-                md:flex
-                hover:bg-normal-hover
-            ">
-              <i className="text-2xl"><RiLogoutBoxRFill /></i>
-              <p 
-                style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
-                className={`
-                  text-xl 
-                  transform 
-                  transition-transform
-                  ${show ? 'opacity-100' : 'opacity-0'}
-              `}>
-                Logout
-              </p>
-            </span>
-
+          <div className="flex flex-col bg-accent text-background">
+            <Link to="/logout">
+              <span 
+                onClick={logoutUser} 
+                style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
+                className="
+                  hidden  
+                  px-4 
+                  py-2
+                  gap-3 
+                  items-center 
+                  cursor-pointer
+                  md:flex
+                  hover:bg-active
+                  hover:text-confirm-hover
+                  focus:bg-active
+                  focus:text-confirm-hover
+                  active:bg-active
+                  active:text-confirm-hover
+              ">
+                <i className="text-2xl"><RiLogoutBoxRFill /></i>
+                <p 
+                  style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                  className={`
+                    text-xl 
+                    transform 
+                    transition-transform
+                    ${show ? 'opacity-100' : 'opacity-0'}
+                `}>
+                  Logout
+                </p>
+              </span>
+            </Link>
+            
             <p 
               className="
                 text-[8px] 
                 text-right 
+                text-nowrap
+                p-2
                 ml-[10px] 
                 md:text-left
             ">

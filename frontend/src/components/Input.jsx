@@ -28,7 +28,7 @@ export default function Input({
         name={name}
         value={value}
         onChange={(e) => setValue(value=>({...value,[name]:e.target.value}))}
-        className="text-md focus:outline-none md:text-xl"
+        className="text-md md:text-xl focus:outline-none active:outline-none"
       />
     </div>
   );
