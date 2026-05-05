@@ -3,6 +3,7 @@
 @theme {
   --color-background: #FDFFFC;
   --color-foreground: #222222;
+  --color-normal-hover: rgba(255, 255, 255, 0.1);
   --color-unfocused: #888888;
   --color-accent: #09A129;
   --color-confirm-hover: #0E8E29;

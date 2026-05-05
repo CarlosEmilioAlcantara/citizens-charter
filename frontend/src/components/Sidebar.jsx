@@ -14,6 +14,7 @@ import { IoDocumentTextSharp } from "react-icons/io5";
 import { HiBuildingOffice, HiBuildingOffice2 } from "react-icons/hi2";
 import { TbWritingFilled } from "react-icons/tb";
 import { RiLogoutBoxRFill } from "react-icons/ri";
+import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
 import Overlay from "./Overlay";
 
 export default function Sidebar() {
@@ -82,21 +83,26 @@ export default function Sidebar() {
   return(
     <>
       <Overlay show={show} />
-      <div className={`
-        w-screen 
-      text-background
-        bg-accent 
-        md:fixed
-        md:left-0
-        md:flex
-        md:flex-col
-        md:justify-between
-        ${show ? 'md:items-start' : 'md:items-center'}
-        ${show ? 'md:w-1/4' : 'md:w-1/12'}
-        md:h-screen
-        ${show && ('md:z-10')}
+      <div 
+        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+        className={`
+          fixed
+          top-0
+          w-screen 
+        text-background
+          bg-accent 
+          overflow-hidden
+          transform 
+          transition-transform
+          md:left-0
+          md:flex
+          md:flex-col
+          md:justify-between
+          md:items-start
+          ${show ? 'md:w-55' : 'md:w-15'}
+          md:h-screen
       `}>
-        <div className="
+        <div className={`
           flex 
           justify-between 
           items-center 
@@ -104,7 +110,8 @@ export default function Sidebar() {
           md:flex-col 
           md:gap-5 
           md:hidden
-        ">
+          ${show && ('-z-10')}
+        `}>
           <div className="flex items-center gap-2 md:flex-col">
             <img src="/spc-logo.png" className="w-10"/>
             <img src="/bagong-pilipinas.png" className="w-10"/>
@@ -124,10 +131,7 @@ export default function Sidebar() {
             </div>
           </div>
       
-          <i 
-            onClick={showToggle}
-            className="cursor-pointer"
-          >
+          <i onClick={showToggle} className="cursor-pointer">
             <GiHamburgerMenu size={24}/>
           </i>
 
@@ -164,7 +168,7 @@ export default function Sidebar() {
           `}
         >
           <div className="p-2">
-            <div className="flex flex-col items-end md:items-start">
+            <div className="flex flex-col items-end">
               <span
                 onClick={showToggle}
                 className="mb-3 text-3xl cursor-pointer"
@@ -174,7 +178,7 @@ export default function Sidebar() {
               <hr className="w-full h-0.5 mb-2 rounded-[0.1px] bg-background"/>
             </div>
 
-            <ul className="flex flex-col items-end gap-4 md:items-start">
+            <ul className="flex flex-col items-end gap-4">
               {Object.entries(links).map(([key, value]) => (
                 !value.staff && !value.superuser && (
                   <li key={key} className="flex gap-2">
@@ -215,44 +219,190 @@ export default function Sidebar() {
           </p>
         </div>
 
-        <div className="flex flex-col p-2 text-2xl">
-          <ul className="flex flex-col items-end gap-4 md:items-start">
-            {Object.entries(links).map(([key, value]) => (
-              !value.staff && !value.superuser && (
-                <li key={key}>
-                  <span className="flex gap-2">
-                    <i>{value.icon}</i>
-                    <p className="hidden text-xl md:block">{key}</p>
-                  </span>
-                </li>
-            )))}
+        {/* TODO: Add name of system */}
+        <div 
+          className="
+            hidden 
+            flex-col 
+            p-2 
+            text-2xl 
+            justify-between 
+            h-screen 
+            md:flex
+        ">
+          <div className="flex flex-col">
+            <div className="flex gap-3">
+              <div className="flex flex-col gap-2">
+                <img src="/spc-logo.png" className="max-w-10"/>
+                <img src="/bagong-pilipinas.png" className="max-w-10"/>
+              </div>
 
-            {Object.entries(links).map(([key, value]) => (
-              (user.is_staff && user.is_superuser) && 
-              (!user.is_superuser && !value.superuser) && (
-                <li key={key}>
-                  <span className="flex gap-2">
-                    <i>{value.icon}</i>
-                    <p className="hidden text-xl md:block">{key}</p>
-                  </span>
-                </li>
-            )))}
+              <div 
+                style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                className={`
+                  flex
+                  flex-col 
+                  justify-center
+                  items-center
+                  font-bold 
+                  text-center
+                  tracking-wider 
+                  text-nowrap
+                  transform 
+                  transition-transform
+                  ${show ? 'opacity-100' : 'opacity-0'}
+              `}>
+                <p className="text-sm">Citizen's Charter <br />System</p>
+                <p className="text-[10px]">Lungsod ng San Pablo</p>
+              </div>
+            </div>
 
-            {Object.entries(links).map(([key, value]) => (
-              (user.is_staff && user.is_superuser) && 
-              (user.is_superuser && value.superuser) && (
-                <li key={key}>
-                  <span className="flex gap-2">
-                    <i>{value.icon}</i>
-                    <p className="hidden text-xl md:block">{key}</p>
-                  </span>
-                </li>
-            )))}
-          </ul>
+            <hr 
+              style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+              className={`
+                ${show ? 'w-[105%]' : 'w-[22%]'}
+                h-0.5 
+                mt-4 
+                mb-2 
+                rounded-[0.1px] 
+                bg-background
+                transform 
+                transition-transform
+            `}/>
+
+            <ul className={`
+              flex
+              flex-col
+              gap-4
+              p-2
+              text-nowrap
+            `}>
+              {Object.entries(links).map(([key, value]) => (
+                !value.staff && !value.superuser && (
+                  <li key={key}>
+                    <span className="flex gap-3 items-center">
+                      <i>{value.icon}</i>
+                      <p 
+                        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                        className={`
+                          text-xl 
+                          transform 
+                          transition-transform
+                          ${show ? 'opacity-100' : 'opacity-0'}
+                      `}>
+                        {key}
+                      </p>
+                    </span>
+                  </li>
+              )))}
+
+              {Object.entries(links).map(([key, value]) => (
+                (user.is_staff && user.is_superuser) && 
+                (!user.is_superuser && !value.superuser) && (
+                  <li key={key}>
+                    <span className="flex gap-3 items-center">
+                      <i>{value.icon}</i>
+                      <p 
+                        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                        className={`
+                          text-xl 
+                          transform 
+                          transition-transform
+                          ${show ? 'opacity-100' : 'opacity-0'}
+                      `}>
+                        {key}
+                      </p>
+                    </span>
+                  </li>
+              )))}
+
+              {Object.entries(links).map(([key, value]) => (
+                (user.is_staff && user.is_superuser) && 
+                (user.is_superuser && value.superuser) && (
+                  <li key={key}>
+                    <span className="flex gap-3 items-center">
+                      <i>{value.icon}</i>
+                      <p 
+                        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                        className={`
+                          text-xl 
+                          transform 
+                          transition-transform
+                          ${show ? 'opacity-100' : 'opacity-0'}
+                      `}>
+                        {key}
+                      </p>
+                    </span>
+                  </li>
+              )))}
+
+              <i 
+                onClick={showToggle} 
+                className="cursor-pointer">
+                {show ? (
+                  <FaChevronLeft 
+                    size={24}
+                    style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                    className="transform transition-transform"
+                  />
+                ) : (
+                  <FaChevronLeft 
+                    size={24} 
+                    style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                    className="
+                      scale-x-[-1]
+                      transform 
+                      transition-transform
+                  "/>
+                )}
+                
+              </i>
+            </ul>
+          </div>
+
+          <div className="flex flex-col">
+            <span 
+              onClick={logoutUser} 
+              className="
+                hidden 
+                p-2 
+                gap-3 
+                items-center 
+                md:flex
+                hover:bg-normal-hover
+            ">
+              <i className="text-2xl"><RiLogoutBoxRFill /></i>
+              <p 
+                style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                className={`
+                  text-xl 
+                  transform 
+                  transition-transform
+                  ${show ? 'opacity-100' : 'opacity-0'}
+              `}>
+                Logout
+              </p>
+            </span>
+
+            <p 
+              className="
+                text-[8px] 
+                text-right 
+                ml-[10px] 
+                md:text-left
+            ">
+              MISO <span 
+                style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
+                className={`
+                  transform 
+                  transition-transform
+                  ${show ? 'opacity-100' : 'opacity-0'}
+                `}>
+                  made software
+              </span>
+            </p>
+          </div>
         </div>
-        <span onClick={logoutUser} className="hidden p-2 md:block">
-          <i className="text-2xl"><RiLogoutBoxRFill /></i>
-        </span>
       </div>
     </>
   );
