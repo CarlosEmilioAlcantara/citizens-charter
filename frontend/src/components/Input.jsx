@@ -1,7 +1,8 @@
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Input({
-  label, 
+  label,
+  warning, 
   type,
   placeholder, 
   name,
@@ -20,7 +21,12 @@ export default function Input({
         border-foreground 
         rounded-sm
       ">
-      <label className="text-[8px] md:text-[10px]">{ label }</label>
+      <div className="flex gap-1">
+        <label className="text-[8px] md:text-[10px]">{ label }</label>
+        <label className="text-[8px] text-danger italic md:text-[10px]">
+          { warning }
+        </label>
+      </div>
 
       <input
         type={type}

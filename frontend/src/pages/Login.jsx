@@ -1,8 +1,10 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, Suspense } from "react";
 import AuthContext from "../context/AuthContext";
 import Overlay from "../components/Overlay";
 import Input from "../components/Input";
 import Footer from "../components/Footer";
+import Alert from "../components/Alert";
+import useTimeout from "../utils/useTimeout";
 
 export default function Login() {
   const [value, setValue] = useState({
@@ -10,6 +12,8 @@ export default function Login() {
     password: '',
   })
   const { loginUser } = useContext(AuthContext);
+  const [toast, setToast] = useState(null);
+  const [data, setData] = useState({});
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,7 +21,9 @@ export default function Login() {
       name: value.name,
       password: value.password,
     };
-    loginUser(loginData);
+    const [data, res] = await loginUser(loginData);
+    setToast({ success: res.ok, message: "Login Unsuccessful" });
+    setData(data);
   };
 
   return (
@@ -57,6 +63,7 @@ export default function Login() {
 
           <Input 
             label="Username" 
+            warning={Object.keys(data).includes("name") && data.name}
             type="text" 
             placeholder="Username..."
             name="name"
@@ -66,6 +73,7 @@ export default function Login() {
 
           <Input 
             label="Password" 
+            warning={Object.keys(data).includes("password") && data.password}
             type="password" 
             placeholder="Password..."
             name="password"
@@ -93,6 +101,15 @@ export default function Login() {
           </button>
       </form>
       <Footer/>
+
+      {toast && (
+        <Alert 
+          success={toast.success} 
+          message={toast.message} 
+          timeout={3000} 
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

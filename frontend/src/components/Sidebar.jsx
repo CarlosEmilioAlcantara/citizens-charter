@@ -16,13 +16,12 @@ import { TbWritingFilled } from "react-icons/tb";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
 import Overlay from "./Overlay";
+import useToggle from "../utils/useToggle";
 
 export default function Sidebar() {
   const { user, logoutUser } = useContext(AuthContext);
-  const [show, setShow] = useState(false);
+  const [state, toggle] = useToggle(false);
   const [location, setLocation] = useState("");
-
-  const showToggle = () => {show ? setShow(false) : setShow(true)};
 
   const [links, setLinks] = useState({
     "Dashboard": {
@@ -87,7 +86,7 @@ export default function Sidebar() {
 
   return(
     <>
-      <Overlay show={show} />
+      <Overlay show={state} />
       <div className={`
         fixed
         top-0
@@ -101,7 +100,7 @@ export default function Sidebar() {
         border-accent
       text-accent
         md:hidden
-        ${show && ('-z-10')}
+        ${state && ('-z-10')}
       `}>
         <div className="flex items-center gap-2 md:flex-col">
           <img src="/spc-logo.png" className="w-10"/>
@@ -122,7 +121,7 @@ export default function Sidebar() {
           </div>
         </div>
     
-        <i onClick={showToggle} className="cursor-pointer">
+        <i onClick={toggle} className="cursor-pointer">
           <GiHamburgerMenu size={24}/>
         </i>
 
@@ -142,7 +141,7 @@ export default function Sidebar() {
         className={`
           fixed
           top-0
-          ${show ? 'right-0' : 'right-[-55%]'}
+          ${state ? 'right-0' : 'right-[-55%]'}
           flex
           flex-col
           justify-between
@@ -156,14 +155,14 @@ export default function Sidebar() {
           text-accent
           transform 
           transition-transform
-          ${show ? 'opacity-100' : 'opacity-0'}
+          ${state ? 'opacity-100' : 'opacity-0'}
           md:hidden 
         `}
       >
         <div>
           <div className="flex flex-col items-end">
             <span
-              onClick={showToggle}
+              onClick={toggle}
               className="mb-3 text-3xl p-2 pb-0 cursor-pointer"
             >
               <i><FaXmark /></i>
@@ -320,7 +319,7 @@ export default function Sidebar() {
           transform 
           transition-transform
           md:flex
-          ${show ? 'md:w-55' : 'md:w-15'}
+          ${state ? 'md:w-55' : 'md:w-15'}
           z-10
       `}>
         <div 
@@ -353,7 +352,7 @@ export default function Sidebar() {
                   text-nowrap
                   transform 
                   transition-transform
-                  ${show ? 'opacity-100' : 'opacity-0'}
+                  ${state ? 'opacity-100' : 'opacity-0'}
               `}>
                 <p className="text-sm">Citizen's Charter <br />System</p>
                 <p className="text-[10px]">Lungsod ng San Pablo</p>
@@ -397,7 +396,7 @@ export default function Sidebar() {
                           text-xl 
                           transform 
                           transition-transform
-                          ${show ? 'opacity-100' : 'opacity-0'}
+                          ${state ? 'opacity-100' : 'opacity-0'}
                       `}>
                         {key}
                       </p>
@@ -434,7 +433,7 @@ export default function Sidebar() {
                           text-xl 
                           transform 
                           transition-transform
-                          ${show ? 'opacity-100' : 'opacity-0'}
+                          ${state ? 'opacity-100' : 'opacity-0'}
                       `}>
                         {key}
                       </p>
@@ -471,7 +470,7 @@ export default function Sidebar() {
                           text-xl 
                           transform 
                           transition-transform
-                          ${show ? 'opacity-100' : 'opacity-0'}
+                          ${state ? 'opacity-100' : 'opacity-0'}
                       `}>
                         {key}
                       </p>
@@ -480,7 +479,7 @@ export default function Sidebar() {
               )))}
 
               <i 
-                onClick={showToggle} 
+                onClick={toggle} 
                 style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
                 className="
                   cursor-pointer 
@@ -493,7 +492,7 @@ export default function Sidebar() {
                   active:bg-active
                   active:text-confirm-hover
               ">
-                {show ? (
+                {state ? (
                   <FaChevronLeft 
                     size={24}
                     style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
@@ -539,7 +538,7 @@ export default function Sidebar() {
                   text-xl 
                   transform 
                   transition-transform
-                  ${show ? 'opacity-100' : 'opacity-0'}
+                  ${state ? 'opacity-100' : 'opacity-0'}
               `}>
                 Logout
               </p>
@@ -559,7 +558,7 @@ export default function Sidebar() {
                 className={`
                   transform 
                   transition-transform
-                  ${show ? 'opacity-100' : 'opacity-0'}
+                  ${state ? 'opacity-100' : 'opacity-0'}
                 `}>
                   made software
               </span>

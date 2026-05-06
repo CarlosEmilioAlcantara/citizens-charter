@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import Alert from "../components/Alert";
 
 const AuthContext = createContext();
 export default AuthContext;
@@ -39,9 +40,9 @@ export function AuthProvider({ children }) {
         setUser(jwtDecode(data.access));
         localStorage.setItem("authTokens", JSON.stringify(data));
         navigate("/dashboard");
-      } else {
-        alert("Login Unsuccessful");
-      }
+      } 
+
+      return [data, res];
     } catch (err) {
       console.error(err);
     }
