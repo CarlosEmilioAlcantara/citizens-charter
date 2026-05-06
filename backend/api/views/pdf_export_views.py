@@ -315,7 +315,7 @@ class CitizensCharterListView(ListAPIView):
     queryset = CitizensCharter.objects.all().order_by('id')
     serializer_class = CitizensCharterSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['office']
+    search_fields = ['name']
 
     def get_queryset(self):
         return self.queryset

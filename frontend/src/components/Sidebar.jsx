@@ -12,6 +12,7 @@ import {
 import { FaXmark, FaClipboardUser } from "react-icons/fa6"
 import { IoDocumentTextSharp } from "react-icons/io5";
 import { HiBuildingOffice, HiBuildingOffice2 } from "react-icons/hi2";
+import { ImBooks } from "react-icons/im";
 import { TbWritingFilled } from "react-icons/tb";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
@@ -69,6 +70,12 @@ export default function Sidebar() {
     "Admin Audit": {
       "link": "/staff-audit",
       "icon": <FaClipboardUser />,
+      "staff": true,
+      "superuser": true,
+    },
+    "Charter PDFs": {
+      "link": "/charter-pdfs",
+      "icon": <ImBooks />,
       "staff": true,
       "superuser": true,
     },
@@ -424,7 +431,9 @@ export default function Sidebar() {
                       focus:text-confirm-hover
                       active:bg-active
                       active:text-confirm-hover
-                        ${location === value.link && ('text-warning')}
+                        ${location === value.link && (
+                          'bg-active text-confirm-hover'
+                        )}
                     `}>
                       <i>{value.icon}</i>
                       <p 
@@ -461,7 +470,9 @@ export default function Sidebar() {
                       focus:text-confirm-hover
                       active:bg-active
                       active:text-confirm-hover
-                        ${location === value.link && ('text-warning')}
+                        ${location === value.link && (
+                          'bg-active text-confirm-hover'
+                        )}
                     `}>
                       <i>{value.icon}</i>
                       <p 
