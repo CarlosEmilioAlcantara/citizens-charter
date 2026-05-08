@@ -148,7 +148,7 @@ export default function Sidebar() {
         className={`
           fixed
           top-0
-          ${state ? 'right-0' : 'right-[-55%]'}
+          ${state ? 'right-0' : '-right-60'}
           flex
           flex-col
           justify-between

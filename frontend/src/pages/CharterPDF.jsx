@@ -1,6 +1,14 @@
+// TODO;
+// [] 1) Generate pdfs
+// [] 2) Regnerate pdf
+// [] 3) Download pdf
+// [] 4) Delete pdf
+
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { fetchCharterPDFs } from "../apis/CharterPDFAPI";
+import { fetchCharterPDFs, viewCharterPDF } from "../apis/CharterPDFAPI";
+import Table from "../components/Table";
+import Dropdown from "../components/Dropdown";
 
 export default function CharterPDF() {
   const [pdfs, setPdfs] = useState([]);
@@ -18,10 +26,25 @@ export default function CharterPDF() {
     });
   }, [])
 
+  Object.entries(pdfs).map(([key, data]) => {
+    data["actions"] = (<Dropdown items={[
+      (<input 
+        type="button" 
+        value={"test"} 
+        onClick={() => viewCharterPDF(data["id"])}
+        className="w-full cursor-pointer text-right"
+      />)
+    ]}/>);
+  })
+
   return(
-    <div>
+    <div className="mt-5 ml-20">
       <Sidebar/>
-      <div></div>
+      <Table 
+        headers={["PDF", "Actions"]}
+        body={pdfs}
+        hideID={true}
+      />
     </div>
   );
 }
