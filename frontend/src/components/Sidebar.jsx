@@ -93,7 +93,7 @@ export default function Sidebar() {
 
   return(
     <>
-      <Overlay show={state} />
+      <Overlay show={state} zIndex={20}/>
       <div className={`
         fixed
         top-0
@@ -327,7 +327,7 @@ export default function Sidebar() {
           transition-transform
           md:flex
           ${state ? 'md:w-55' : 'md:w-15'}
-          z-10
+          z-30
       `}>
         <div 
           className="
