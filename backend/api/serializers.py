@@ -603,4 +603,5 @@ class CitizensCharterSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
+            'pdf',
         ]

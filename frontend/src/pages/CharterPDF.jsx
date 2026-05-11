@@ -1,14 +1,15 @@
 // TODO;
 // [] 1) Generate pdfs
 // [] 2) Regnerate pdf
-// [] 3) Download pdf
+// [*] 3) Download pdf
 // [] 4) Delete pdf
 
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { fetchCharterPDFs, viewCharterPDF } from "../apis/CharterPDFAPI";
+import { fetchCharterPDFs, downloadCharterPDF } from "../apis/CharterPDFAPI";
 import Table from "../components/Table";
 import Dropdown from "../components/Dropdown";
+import PDFViewer from "../components/PDFViewer";
 
 export default function CharterPDF() {
   const [pdfs, setPdfs] = useState([]);
@@ -16,6 +17,7 @@ export default function CharterPDF() {
   const [prev, setPrev] = useState("");
   const [next, setNext] = useState("");
   const [count, setCount] = useState("");
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
     fetchCharterPDFs().then(data => {
@@ -28,7 +30,14 @@ export default function CharterPDF() {
 
   Object.entries(pdfs).map(([key, data]) => {
     data["actions"] = (<Dropdown items={[
-      {"name": "I-Download PDF", "function": () => viewCharterPDF(data["id"]),}
+      {
+        "name": "Tingnan PDF", 
+        "function": () => {setUrl(data["pdf"])},
+      },
+      {
+        "name": "Download PDF", 
+        "function": () => downloadCharterPDF(data["id"]),
+      },
     ]}/>);
   })
 
@@ -40,6 +49,9 @@ export default function CharterPDF() {
         body={pdfs}
         hideID={true}
       />
+      {url && (
+        <PDFViewer url={url}/>
+      )}
     </div>
   );
 }

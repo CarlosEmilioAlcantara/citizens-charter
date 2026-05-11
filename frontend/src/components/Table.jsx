@@ -22,7 +22,8 @@ export default function Table({ headers, body, hideID = false }) {
         <tbody>
           {Object.entries(body).map(([key, data]) => (
             <tr key={key} className="text-md border-b border-b-unfocused">
-              {Object.keys(data).length === 3 ? (
+              {/* {Object.keys(data).length === 3 ? ( */}
+              {Object.keys(data).length === 4 ? (
                 hideID && Object.keys(data)[0] == "id" ? (
                   <>
                     <td 
@@ -35,10 +36,10 @@ export default function Table({ headers, body, hideID = false }) {
                       {Object.values(data)[1]}
                     </td>
                     <td 
-                      key={Object.keys(data)[2]} 
+                      key={Object.keys(data)[3]} 
                       className="flex justify-end px-6 py-2"
                     >
-                      {Object.values(data)[2]}
+                      {Object.values(data)[3]}
                     </td>
                   </>
                 ) : (
@@ -53,16 +54,17 @@ export default function Table({ headers, body, hideID = false }) {
                       {Object.values(data)[1]}
                     </td>
                     <td 
-                      key={Object.keys(data)[2]}
+                      key={Object.keys(data)[3]}
                       className="flex justify-end px-6 py-2"
                     >
-                      {Object.values(data)[2]}
+                      {Object.values(data)[3]}
                     </td>
                   </>
                 )
               ) : (
                 Object.entries(data).map(([key, value]) => (
-                  hideID && key == "id" ? (
+                  hideID && key == "id" || key == "pdf" ? (
+                  // hideID && key == "id" ? (
                     <td className="hidden" key={key}>{value}</td>
                   ) : (
                     <td className="px-6 py-2" key={key}>{value}</td>

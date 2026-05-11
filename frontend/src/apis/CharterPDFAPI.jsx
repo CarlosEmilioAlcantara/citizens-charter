@@ -11,7 +11,7 @@ const fetchCharterPDFs = async () => {
   }
 }
 
-const viewCharterPDF = async (id) => {
+const downloadCharterPDF = async (id) => {
   try {
     const res = await fetch(`/api/pdf/citizens-charter/download/${id}`, {
       method: "GET",
@@ -32,4 +32,4 @@ const viewCharterPDF = async (id) => {
   }
 }
 
-export { fetchCharterPDFs, viewCharterPDF }
+export { fetchCharterPDFs, downloadCharterPDF }
