@@ -5,10 +5,11 @@ export default function Dropdown({ items }) {
   const [state, toggle] = useToggle(false);
 
   return(
-    <div className="relative flex flex-col gap-1">
+    <div className="relative flex flex-col items-center gap-1">
       <div 
         onClick={toggle}
         className="
+          w-28
           flex 
           items-center 
           gap-2
@@ -41,8 +42,8 @@ export default function Dropdown({ items }) {
 
       <div className={`
         absolute
-        w-full
         top-8
+        right-0
         bg-background border 
         border-accent
         rounded-sm
@@ -61,11 +62,17 @@ export default function Dropdown({ items }) {
                 px-2 
                 py-1 
                 ${state ? 'cursor-pointer' : ''}
+                ${state ? 'z-10' : '-z-10'}
                 transition-all 
                 duration-300
                 hover:bg-active
             `}>
-              {item}
+              <input 
+                type="button" 
+                value={item.name} 
+                 onClick={item.function}
+                 className="w-full cursor-pointer text-right"
+              />
             </li>
           ))}
         </ul>

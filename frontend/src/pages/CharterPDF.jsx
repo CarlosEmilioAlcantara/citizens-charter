@@ -28,17 +28,12 @@ export default function CharterPDF() {
 
   Object.entries(pdfs).map(([key, data]) => {
     data["actions"] = (<Dropdown items={[
-      (<input 
-        type="button" 
-        value={"test"} 
-        onClick={() => viewCharterPDF(data["id"])}
-        className="w-full cursor-pointer text-right"
-      />)
+      {"name": "I-Download PDF", "function": () => viewCharterPDF(data["id"]),}
     ]}/>);
   })
 
   return(
-    <div className="mt-5 ml-20">
+    <div className="mt-5 ml-22">
       <Sidebar/>
       <Table 
         headers={["PDF", "Actions"]}
