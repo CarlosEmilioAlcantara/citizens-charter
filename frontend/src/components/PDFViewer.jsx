@@ -5,21 +5,28 @@ import { FaPrint } from "react-icons/fa";
 import Overlay from './Overlay';
 
 export default function PDFViewer({ url, onClose }) {
+  // TODO; You can probably put this in a utility functions
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     const enter = setTimeout(() => setShow(true), 10);
-    const remove = setTimeout(() => onClose, 300);
-    
     return () => {
       clearTimeout(enter);
+    }
+  }, []);
+
+  const handleClose = () => {
+    setShow(false);
+    const remove = setTimeout(() => onClose?.(), 300);
+
+    return () => {
       clearTimeout(remove);
     }
-  }, [onClose]);
+  }
 
   return ReactDom.createPortal(
     <>
-      <Overlay show={true} zIndex={40}/>
+      <Overlay show={`${show}`} zIndex={40}/>
 
       <div className={`
         absolute 
@@ -62,7 +69,7 @@ export default function PDFViewer({ url, onClose }) {
               <span>Karta ng Mamamayan</span>
             </div>
 
-            <FaXmark size={20} onClick={onClose} className="cursor-pointer"/>
+            <FaXmark size={20} onClick={handleClose} className="cursor-pointer"/>
           </div>
 
           <iframe

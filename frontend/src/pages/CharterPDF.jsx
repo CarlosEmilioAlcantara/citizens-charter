@@ -50,7 +50,7 @@ export default function CharterPDF() {
         hideID={true}
       />
       {url && (
-        <PDFViewer url={url} onClose={() => setUrl(null)}/>
+        <PDFViewer url={url} onClose={() => {setUrl(null)}}/>
       )}
     </div>
   );
