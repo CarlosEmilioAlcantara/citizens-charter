@@ -3,30 +3,14 @@ import ReactDom from 'react-dom';
 import { FaXmark } from "react-icons/fa6";
 import { FaPrint } from "react-icons/fa";
 import Overlay from './Overlay';
+import useShow from '../utils/useShow';
 
 export default function PDFViewer({ url, onClose }) {
-  // TODO; You can probably put this in a utility functions
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    const enter = setTimeout(() => setShow(true), 10);
-    return () => {
-      clearTimeout(enter);
-    }
-  }, []);
-
-  const handleClose = () => {
-    setShow(false);
-    const remove = setTimeout(() => onClose?.(), 300);
-
-    return () => {
-      clearTimeout(remove);
-    }
-  }
+  const [show, handleClose] = useShow({initialValue: false, onClose: onClose});
 
   return ReactDom.createPortal(
     <>
-      <Overlay show={`${show}`} zIndex={40}/>
+      <Overlay show={show} zIndex={40}/>
 
       <div className={`
         absolute 
