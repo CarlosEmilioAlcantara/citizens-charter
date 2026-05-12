@@ -27,7 +27,7 @@ export default function Button({
         active:bg-confirm-hover
       `}
     >
-      <span>{icon}</span>
+      {icon && (<span>{icon}</span>)}
       <p>{label}</p>
     </button>
   );

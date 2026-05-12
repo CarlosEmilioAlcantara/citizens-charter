@@ -1,4 +1,3 @@
-// Utility function for popups
 import { useEffect, useState } from "react";
 
 export default function useShow({ 

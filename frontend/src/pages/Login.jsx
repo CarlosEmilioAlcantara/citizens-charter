@@ -90,7 +90,6 @@ export default function Login() {
         <Alert 
           success={toast.success} 
           message={toast.message} 
-          timeout={3000} 
           onClose={() => setToast(null)}
         />
       )}

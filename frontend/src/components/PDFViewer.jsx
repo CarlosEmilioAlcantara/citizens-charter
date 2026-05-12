@@ -10,7 +10,7 @@ export default function PDFViewer({ url, onClose }) {
 
   return ReactDom.createPortal(
     <>
-      <Overlay show={show} zIndex={40}/>
+      <Overlay show={show} zIndex={40} />
 
       <div className={`
         fixed 

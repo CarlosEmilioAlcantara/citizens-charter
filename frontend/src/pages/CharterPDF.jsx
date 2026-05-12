@@ -19,6 +19,7 @@ import Dropdown from "../components/Dropdown";
 import DropdownLabel from "../components/DropdownLabel";
 import PDFViewer from "../components/PDFViewer";
 import Button from "../components/Button";
+import Loader from "../components/Loader";
 import Alert from "../components/Alert";
 
 export default function CharterPDF() {
@@ -29,14 +30,21 @@ export default function CharterPDF() {
   const [count, setCount] = useState("");
   const [url, setUrl] = useState("");
   const [toast, setToast] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { authTokens } = useContext(AuthContext);
 
   const handleGenerate = async () => { 
-    const res = await generateCharterPDFs(authTokens);
-    setToast({ 
-      success: res.ok, 
-      message: `${res.ok && "PDFs Generated" || "PDF Generation Fail"}` 
-    });
+    setLoading(true);
+    try {
+      const res = await generateCharterPDFs(authTokens);
+
+      setToast({ 
+        success: res.ok, 
+        message: `${res.ok && "PDFs Generated" || "PDF Generation Fail"}` 
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -66,6 +74,7 @@ export default function CharterPDF() {
 
   return(
     <div className="mt-5 ml-22">
+      <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
       <Sidebar/>
 
       <div className="">
