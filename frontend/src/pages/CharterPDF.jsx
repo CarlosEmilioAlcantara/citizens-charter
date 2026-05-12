@@ -7,9 +7,12 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { fetchCharterPDFs, downloadCharterPDF } from "../apis/CharterPDFAPI";
+import { FaEye, FaFileDownload, FaPrint } from "react-icons/fa";
 import Table from "../components/Table";
 import Dropdown from "../components/Dropdown";
+import DropdownLabel from "../components/DropdownLabel";
 import PDFViewer from "../components/PDFViewer";
+import Button from "../components/Button";
 
 export default function CharterPDF() {
   const [pdfs, setPdfs] = useState([]);
@@ -31,11 +34,14 @@ export default function CharterPDF() {
   Object.entries(pdfs).map(([key, data]) => {
     data["actions"] = (<Dropdown items={[
       {
-        "name": "Tingnan PDF", 
+        "name": <DropdownLabel icon={<FaEye />} label={"Tingnan PDF"}/>, 
         "function": () => {setUrl(data["pdf"])},
       },
       {
-        "name": "Download PDF", 
+        "name": <DropdownLabel 
+          icon={<FaFileDownload />} 
+          label={"Download PDF"}
+        />, 
         "function": () => downloadCharterPDF(data["id"]),
       },
     ]}/>);
@@ -44,6 +50,14 @@ export default function CharterPDF() {
   return(
     <div className="mt-5 ml-22">
       <Sidebar/>
+
+      <div className="">
+        <Button label={"Lumikha mga PDF"} icon={<FaPrint />}/>
+        <h2 className="text-xl font-bold">
+          Karta ng Mamamayan ng Lahat ng Opisina
+        </h2>
+      </div>
+
       <Table 
         headers={["PDF", "Actions"]}
         body={pdfs}

@@ -58,6 +58,8 @@ export default function Dropdown({ items }) {
             <li 
               key={index}
               className={`
+                flex
+                justify-end
                 w-full 
                 px-2 
                 py-1 
@@ -67,12 +69,12 @@ export default function Dropdown({ items }) {
                 duration-300
                 hover:bg-active
             `}>
-              <input 
-                type="button" 
-                value={item.name} 
-                 onClick={item.function}
-                 className="w-full cursor-pointer text-right"
-              />
+              <button 
+                onClick={item.function}
+                className="cursor-pointer text-right"
+              >
+                {item.name}
+              </button>
             </li>
           ))}
         </ul>

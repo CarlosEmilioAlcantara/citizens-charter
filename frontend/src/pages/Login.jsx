@@ -4,7 +4,7 @@ import Overlay from "../components/Overlay";
 import Input from "../components/Input";
 import Footer from "../components/Footer";
 import Alert from "../components/Alert";
-import useTimeout from "../utils/useTimeout";
+import Button from "../components/Button";
 
 export default function Login() {
   const [value, setValue] = useState({
@@ -82,23 +82,7 @@ export default function Login() {
           />
         </div>
 
-        <button 
-          style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
-          className="
-            w-auto
-            p-2
-            rounded-sm
-            bg-accent 
-            text-md
-            text-background 
-            cursor-pointer
-            md:text-xl
-            hover:bg-confirm-hover
-            focus:bg-confirm-hover
-            active:bg-confirm-hover
-          ">
-            Pumasok
-          </button>
+        <Button label={"Pumasok"} large={true}/>
       </form>
       <Footer/>
 
