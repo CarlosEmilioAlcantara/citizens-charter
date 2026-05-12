@@ -13,9 +13,14 @@ export default function PDFViewer({ url, onClose }) {
       <Overlay show={show} zIndex={40}/>
 
       <div className={`
-        absolute 
-        top-[14%] 
-        left-[22%] 
+        fixed 
+        top-0
+        left-0
+        flex
+        justify-center
+        items-center
+        w-screen
+        h-screen
         transition-opacity 
         duration-300 
         ${show ? 'opacity-100' : 'opacity-0'}
@@ -58,10 +63,13 @@ export default function PDFViewer({ url, onClose }) {
 
           <iframe
             src={url}
-            width="800"
-            height="600"
-            className="mt-3"
-          />
+            className="
+              mt-3 
+              md:w-[600px] 
+              md:h-[400px] 
+              lg:w-[800px] 
+              lg:h-[600px]
+          "/>
         </div>
       </div>
     </>,
