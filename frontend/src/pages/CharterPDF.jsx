@@ -6,13 +6,20 @@
 
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { fetchCharterPDFs, downloadCharterPDF } from "../apis/CharterPDFAPI";
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
+import { 
+  fetchCharterPDFs, 
+  downloadCharterPDF, 
+  generateCharterPDFs, 
+} from "../apis/CharterPDFAPI";
 import { FaEye, FaFileDownload, FaPrint } from "react-icons/fa";
 import Table from "../components/Table";
 import Dropdown from "../components/Dropdown";
 import DropdownLabel from "../components/DropdownLabel";
 import PDFViewer from "../components/PDFViewer";
 import Button from "../components/Button";
+import Alert from "../components/Alert";
 
 export default function CharterPDF() {
   const [pdfs, setPdfs] = useState([]);
@@ -21,6 +28,16 @@ export default function CharterPDF() {
   const [next, setNext] = useState("");
   const [count, setCount] = useState("");
   const [url, setUrl] = useState("");
+  const [toast, setToast] = useState(null);
+  const { authTokens } = useContext(AuthContext);
+
+  const handleGenerate = async () => { 
+    const res = await generateCharterPDFs(authTokens);
+    setToast({ 
+      success: res.ok, 
+      message: `${res.ok && "PDFs Generated" || "PDF Generation Fail"}` 
+    });
+  }
 
   useEffect(() => {
     fetchCharterPDFs().then(data => {
@@ -52,7 +69,11 @@ export default function CharterPDF() {
       <Sidebar/>
 
       <div className="">
-        <Button label={"Lumikha mga PDF"} icon={<FaPrint />}/>
+        <Button 
+          label={"Lumikha mga PDF"} 
+          icon={<FaPrint />} 
+          onClick={handleGenerate}
+        />
         <h2 className="text-xl font-bold">
           Karta ng Mamamayan ng Lahat ng Opisina
         </h2>
@@ -65,6 +86,15 @@ export default function CharterPDF() {
       />
       {url && (
         <PDFViewer url={url} onClose={() => {setUrl(null)}}/>
+      )}
+
+      {toast && (
+        <Alert 
+          success={toast.success} 
+          message={toast.message} 
+          timeout={3000} 
+          onClose={() => setToast(null)}
+        />
       )}
     </div>
   );

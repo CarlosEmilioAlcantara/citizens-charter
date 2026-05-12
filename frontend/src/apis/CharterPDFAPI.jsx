@@ -32,4 +32,17 @@ const downloadCharterPDF = async (id) => {
   }
 }
 
-export { fetchCharterPDFs, downloadCharterPDF }
+const generateCharterPDFs = async (authTokens) => {
+  console.log(authTokens)
+  try {
+    const res = await fetch("/api/pdf/citizens-charter/generate", {
+      method: "PUT",
+      headers: { "Authorization": `Bearer ${authTokens.access}`}
+    });
+    return res;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export { fetchCharterPDFs, downloadCharterPDF, generateCharterPDFs }
