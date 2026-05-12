@@ -21,6 +21,7 @@ import PDFViewer from "../components/PDFViewer";
 import Button from "../components/Button";
 import Loader from "../components/Loader";
 import Alert from "../components/Alert";
+import Search from "../components/Search";
 
 export default function CharterPDF() {
   const [pdfs, setPdfs] = useState([]);
@@ -78,14 +79,15 @@ export default function CharterPDF() {
       <Sidebar/>
 
       <div className="">
+        <h2 className="text-xl font-bold">
+          Karta ng Mamamayan ng Lahat ng Opisina
+        </h2>
         <Button 
           label={"Lumikha mga PDF"} 
           icon={<FaPrint />} 
           onClick={handleGenerate}
         />
-        <h2 className="text-xl font-bold">
-          Karta ng Mamamayan ng Lahat ng Opisina
-        </h2>
+        <Search />
       </div>
 
       <Table 

@@ -20,6 +20,8 @@ export default function Input({
         border 
         border-foreground 
         rounded-sm
+        focus-within:ring-2
+        focus-within:ring-accent/50
       ">
       <div className="flex gap-1">
         <label className="text-[8px] md:text-[10px]">{ label }</label>
@@ -34,7 +36,14 @@ export default function Input({
         name={name}
         value={value}
         onChange={(e) => setValue(value=>({...value,[name]:e.target.value}))}
-        className="text-md md:text-xl focus:outline-none active:outline-none"
+        className="
+          w-full
+        text-foreground 
+          text-md 
+          md:text-xl 
+          focus:outline-none 
+          active:outline-none
+        "
       />
     </div>
   );
