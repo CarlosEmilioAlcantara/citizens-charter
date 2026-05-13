@@ -49,13 +49,13 @@ export default function CharterPDF() {
   }
 
   useEffect(() => {
-    fetchCharterPDFs().then(data => {
+    fetchCharterPDFs(search).then(data => {
       setPdfs(data.results);
       setPrev(data.previous);
       setNext(data.next);
       setCount(data.count);
     });
-  }, [])
+  }, [search])
 
   Object.entries(pdfs).map(([key, data]) => {
     data["actions"] = (<Dropdown items={[
@@ -74,39 +74,59 @@ export default function CharterPDF() {
   })
 
   return(
-    <div className="mt-5 ml-22">
+    <>
       <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
       <Sidebar/>
+      <div className="
+        flex 
+        flex-col 
+        justify-center 
+        items-center
+        mt-16 
+        md:mt-5 
+        md:ml-22
+      ">
+        <div className="
+          flex 
+          flex-col 
+          w-[98%]
+          gap-2
+        ">
+          <div className="flex flex-col items-start gap-2">
+            <h2 className="text-sm font-bold md:text-xl">
+              Karta ng Mamamayan ng Lahat ng Opisina
+            </h2>
+            <Button 
+              label={"Lumikha mga PDF"} 
+              icon={<FaPrint />} 
+              onClick={handleGenerate}
+            />
+            <Search 
+              placeholder={"Ngalan ng opisina"} 
+              value={search} 
+              setValue={setSearch}
+            />
+          </div>
 
-      <div className="">
-        <h2 className="text-xl font-bold">
-          Karta ng Mamamayan ng Lahat ng Opisina
-        </h2>
-        <Button 
-          label={"Lumikha mga PDF"} 
-          icon={<FaPrint />} 
-          onClick={handleGenerate}
-        />
-        <Search />
+          <Table 
+            headers={["PDF", "Actions"]}
+            body={pdfs}
+            hideID={true}
+          />
+
+          {url && (
+            <PDFViewer url={url} onClose={() => {setUrl(null)}}/>
+          )}
+          {toast && (
+            <Alert 
+              success={toast.success} 
+              message={toast.message} 
+              timeout={3000} 
+              onClose={() => setToast(null)}
+            />
+          )}
+        </div>
       </div>
-
-      <Table 
-        headers={["PDF", "Actions"]}
-        body={pdfs}
-        hideID={true}
-      />
-      {url && (
-        <PDFViewer url={url} onClose={() => {setUrl(null)}}/>
-      )}
-
-      {toast && (
-        <Alert 
-          success={toast.success} 
-          message={toast.message} 
-          timeout={3000} 
-          onClose={() => setToast(null)}
-        />
-      )}
-    </div>
+    </>
   );
 }

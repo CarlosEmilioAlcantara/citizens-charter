@@ -1,6 +1,6 @@
 export default function Table({ headers, body, hideID = false }) {
   return (
-    <div className="w-[98%] rounded-lg overflow-hidden">
+    <div className="rounded-lg overflow-hidden">
       <table className="min-w-full table-auto">
         <thead className="border-b-2 border-b-unfocused bg-popup-header">
           {headers.length === 2 ? (

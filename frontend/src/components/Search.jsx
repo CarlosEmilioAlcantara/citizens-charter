@@ -19,7 +19,15 @@ export default function Search({ placeholder, value, setValue }) {
         type="text"
         placeholder={placeholder}
         value={value}
-        className="w-full text-foreground text-md md:text-lg focus:outline-none active:outline-none"
+        onChange={(e) => setValue(value => e.target.value)}
+        className="
+          w-full 
+          text-foreground 
+          text-md 
+          md:text-lg 
+          focus:outline-none 
+          active:outline-none
+        "
       />
     </div>
   )

@@ -1,6 +1,8 @@
-const fetchCharterPDFs = async () => {
+const fetchCharterPDFs = async (search) => {
   try {
-    const res = await fetch("/api/pdf/citizens-charters", {
+    const res = await fetch(
+      `/api/pdf/citizens-charters?search=${search}`, 
+    {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -33,7 +35,6 @@ const downloadCharterPDF = async (id) => {
 }
 
 const generateCharterPDFs = async (authTokens) => {
-  console.log(authTokens)
   try {
     const res = await fetch("/api/pdf/citizens-charter/generate", {
       method: "PUT",
