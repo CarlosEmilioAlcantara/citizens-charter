@@ -1,40 +1,60 @@
+import { useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-export default function Pager({ pages, next, prev, fetchItems, }) {
+export default function Pager({ pages, next, prev, fetchItems, api = null, }) {
+  const [offset, setOffset] = useState(10);
+
   return(
     <div className="
-    flex 
-    items-center 
-    gap-1 
-    rounded-lg 
-    overflow-hidden 
-    text-2xl
-  ">
-      <span className="
-        bg-accent 
-        text-background 
-        p-1 
-        cursor-pointer
-        transition-all
-        duration-300
-        hover:bg-confirm-hover
+      flex 
+      items-center 
+      rounded-lg 
+      overflow-hidden 
+    ">
+      <span 
+        onClick={() => fetchItems(prev)}
+        className="
+          bg-accent 
+          text-background 
+          px-1 
+          py-2
+          text-xl
+          cursor-pointer
+          transition-all
+          duration-300
+          hover:bg-confirm-hover
       ">
-        <FaChevronLeft onClick={() => fetchItems(prev)}/>
+        <FaChevronLeft />
       </span>
 
-      <ul>
-      </ul>
+      <nav className="flex text-xl">
+        {pages.map((page, index) => (
+          <a 
+            key={index} 
+            onClick={() => {
+              fetchItems(`${api}?offset=${index !== 0 && (offset + 10)}`)
+            }}
+            className="leading-none px-2 py-2 hover:bg-active
+          ">
+            {page}
+          </a>
+        ))}
+      </nav>
 
-      <span className="
-        bg-accent 
-        text-background 
-        p-1 
-        cursor-pointer
-        transition-all
-        duration-300
-        hover:bg-confirm-hover
+      <span 
+        onClick={() => fetchItems(next)}
+        className="
+          bg-accent 
+          text-background 
+          px-1 
+          py-2
+          text-xl
+          cursor-pointer
+          transition-all
+          duration-300
+          hover:bg-confirm-hover
       ">
-        <FaChevronRight onClick={() => fetchItems(next)}/>
+        <FaChevronRight />
       </span>
     </div>
   );

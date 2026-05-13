@@ -1,7 +1,10 @@
-const fetchCharterPDFs = async (search) => {
+const fetchCharterPDFs = async ({
+  page = null, 
+  search = ""
+}) => {
   try {
     const res = await fetch(
-      `/api/pdf/citizens-charters?search=${search}`, 
+      page ? page : `/api/pdf/citizens-charters?search=${search}`, 
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },

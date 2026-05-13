@@ -4,6 +4,7 @@
   --color-background: #E7EBE8;
   --color-foreground: #222222;
   --color-normal-hover: rgba(255, 255, 255, 0.15);
+  --color-transparent: rgba(255, 255, 255, 0.00);
   --color-unfocused: #888888;
   --color-popup-header: #C4C4C4;
   --color-accent: #09A129;

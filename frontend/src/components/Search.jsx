@@ -7,7 +7,8 @@ export default function Search({ placeholder, value, setValue }) {
       items-center
       gap-2
       w-full
-      p-1
+      py-1
+      px-2
       border
       border-foreground
       rounded-sm
