@@ -34,9 +34,7 @@ export default function Alert({ success, message, timeout = 3000, onClose }) {
             <FaCircleXmark className='text-danger'/>
           )}
       </i>
-      <p className={`${success ? 'text-accent' : 'text-danger'}`}>
-        {message}
-      </p>
+      <p>{message}</p>
     </div>,
     document.getElementById('portal')
   );

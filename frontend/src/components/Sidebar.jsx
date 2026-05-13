@@ -107,7 +107,7 @@ export default function Sidebar() {
         border-accent
       text-accent
         md:hidden
-        ${state && ('-z-10')}
+        ${state ? 'z-10' : 'z-30'}
       `}>
         <div className="flex items-center gap-2 md:flex-col">
           <img src="/spc-logo.png" className="w-10"/>
@@ -162,7 +162,7 @@ export default function Sidebar() {
           text-accent
           transform 
           transition-transform
-          ${state ? 'opacity-100' : 'opacity-0'}
+          ${state ? 'opacity-100 z-30' : 'opacity-0'}
           md:hidden 
         `}
       >

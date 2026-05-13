@@ -16,7 +16,7 @@ import {
 import { FaEye, FaFileDownload, FaPrint } from "react-icons/fa";
 import Table from "../components/Table";
 import Dropdown from "../components/Dropdown";
-import DropdownLabel from "../components/DropdownLabel";
+import DropdownItem from "../components/DropdownItem";
 import PDFViewer from "../components/PDFViewer";
 import Button from "../components/Button";
 import Loader from "../components/Loader";
@@ -28,7 +28,7 @@ export default function CharterPDF() {
   const [search, setSearch] = useState("");
   const [prev, setPrev] = useState("");
   const [next, setNext] = useState("");
-  const [count, setCount] = useState("");
+  const [count, setCount] = useState(null);
   const [url, setUrl] = useState("");
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -48,6 +48,17 @@ export default function CharterPDF() {
     }
   }
 
+  const handlePaging = async (page) => {
+    if (page !== null) {
+      fetchCharterPDFs(page).then(data => {
+        setPdfs(data.results);
+        setPrev(data.previous);
+        setNext(data.next);
+        setCount(data.count);
+      });
+    };
+  }
+
   useEffect(() => {
     fetchCharterPDFs(search).then(data => {
       setPdfs(data.results);
@@ -60,11 +71,11 @@ export default function CharterPDF() {
   Object.entries(pdfs).map(([key, data]) => {
     data["actions"] = (<Dropdown items={[
       {
-        "name": <DropdownLabel icon={<FaEye />} label={"Tingnan PDF"}/>, 
+        "name": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
         "function": () => {setUrl(data["pdf"])},
       },
       {
-        "name": <DropdownLabel 
+        "name": <DropdownItem 
           icon={<FaFileDownload />} 
           label={"Download PDF"}
         />, 
@@ -111,6 +122,10 @@ export default function CharterPDF() {
           <Table 
             headers={["PDF", "Actions"]}
             body={pdfs}
+            count={count}
+            next={next}
+            prev={prev}
+            fetchItems={handlePaging}
             hideID={true}
           />
 

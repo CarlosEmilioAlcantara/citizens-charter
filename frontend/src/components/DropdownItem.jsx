@@ -1,4 +1,4 @@
-export default function DropdownLabel({ icon, label }) {
+export default function DropdownItem({ icon, label }) {
   return (
     <span className="
       flex 
