@@ -38,6 +38,7 @@ export default function CharterPDF() {
   const [route, setRoute] = useState("/api/pdf/citizens-charters");
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const { authTokens } = useContext(AuthContext);
 
   const handleGenerate = async () => { 
@@ -68,7 +69,11 @@ export default function CharterPDF() {
   }
 
   useEffect(() => {
-    fetchCharterPDFs({search: search, page_size: pageSize }).then(data => {
+    fetchCharterPDFs({
+      search: search, 
+      current_page: currentPage, 
+      page_size: pageSize 
+    }).then(data => {
       setPdfs(data.results);
       setPrev(data.previous);
       setNext(data.next);
@@ -160,6 +165,8 @@ export default function CharterPDF() {
               prev={prev}
               fetchItems={handlePaging}
               route={route}
+              pageSize={pageSize}
+              setCurrentPage={setCurrentPage}
             />
           </div>
 

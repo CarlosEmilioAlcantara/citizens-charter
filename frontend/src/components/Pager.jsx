@@ -2,14 +2,22 @@ import { useState, useEffect, useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiChevronsLeft, FiChevronsRight } from "react-icons/fi";
 
-export default function Pager({ count, next, prev, fetchItems, route }) {
+export default function Pager({ 
+  count, 
+  next, 
+  prev, 
+  fetchItems, 
+  route, 
+  pageSize,
+  setCurrentPage, 
+}) {
   const [pages, setPages] = useState([]);
   const currentPage = useRef(1);
-  const number = Math.ceil(count / 10);
+  const number = Math.ceil(count / pageSize);
 
   useEffect(() => {
     setPages(Array.from({ length: number }, (_, i) => i + 1));
-  }, [count]);
+  }, [count, pageSize]);
 
   return(
     <div className="
@@ -22,6 +30,7 @@ export default function Pager({ count, next, prev, fetchItems, route }) {
         onClick={() => {
           fetchItems(`${route}?page=1`);
           currentPage.current = 1;
+          setCurrentPage(currentPage.current);
         }}
         className={`
           ${currentPage.current === 1 ? 
@@ -42,6 +51,7 @@ export default function Pager({ count, next, prev, fetchItems, route }) {
           fetchItems(prev); 
           currentPage.current = Number(prev.match(/page=(\d+)/)?.pop()) || 
             1;
+          setCurrentPage(currentPage.current);
         }}
         className={`
           ${currentPage.current === 1 ? 
@@ -65,6 +75,7 @@ export default function Pager({ count, next, prev, fetchItems, route }) {
             onClick={() => {
               fetchItems(`${route}?page=${page}`);
               currentPage.current = page;
+              setCurrentPage(currentPage.current);
             }}
             className={`
               leading-none 
@@ -85,6 +96,7 @@ export default function Pager({ count, next, prev, fetchItems, route }) {
           fetchItems(next);
           currentPage.current = Number(next.match(/page=(\d+)/).pop()) || 
             number;
+          setCurrentPage(currentPage.current);
         }}
         className={`
           ${currentPage.current === number ? 
@@ -105,7 +117,8 @@ export default function Pager({ count, next, prev, fetchItems, route }) {
       <span 
         onClick={() => {
           fetchItems(`${route}?page=last`);
-          currentPage.current = number
+          currentPage.current = number;
+          setCurrentPage(currentPage.current);
         }}
         className={`
           ${currentPage.current === number ? 

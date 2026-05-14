@@ -1,18 +1,22 @@
 const fetchCharterPDFs = async ({
   page = null, 
   search = "",
+  current_page = "",
   page_size = ""
 }) => {
   try {
     const res = await fetch(
       page ? page : 
-        `/api/pdf/citizens-charters?search=${search}&page_size=${page_size}`, 
+        `/api/pdf/citizens-charters?search=${search}&page=${current_page}&page_size=${page_size}`, 
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
     const data = await res.json();
-    return data;
+
+    if (res.ok) {
+      return data;
+    };
   } catch (err) {
     console.error(err);
   }
