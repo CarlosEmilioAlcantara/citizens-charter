@@ -12,14 +12,12 @@ export default function Table({
   hideID = false,
 }) {
   const [pages, setPages] = useState([]);
+  const number = Math.ceil(count / 10);
 
   useEffect(() => {
-    const number = count / 10;
-    for(let i = 1; i < number; i++) {
-      setPages(prevPages => [...prevPages, i]);
-    }
-  }, [body])
-  
+    setPages(Array.from({ length: number }, (_, i) => i + 1));
+  }, [body]);
+
   return (
     <>
       <div className="rounded-t-lg overflow-hidden">

@@ -27,6 +27,7 @@ from ..utils.report_utils import create_office_report
 from ..utils.time_utils import create_total_time
 from ..serializers import CitizensCharterSerializer
 from ..permissions import IsInOffice
+from ..pagers import MyCustomPagination
 
 class ExportOfficeReportView(APIView):
     permission_classes = [IsAuthenticated]
@@ -314,6 +315,7 @@ class DeleteCitizensCharterPdfView(APIView):
 class CitizensCharterListView(ListAPIView):
     queryset = CitizensCharter.objects.all().order_by('id')
     serializer_class = CitizensCharterSerializer
+    pagination_class = MyCustomPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 

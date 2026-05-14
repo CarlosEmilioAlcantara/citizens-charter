@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FiChevronsLeft, FiChevronsRight } from "react-icons/fi";
 
 export default function Pager({ pages, next, prev, fetchItems, api = null, }) {
   const [offset, setOffset] = useState(10);
@@ -8,9 +9,23 @@ export default function Pager({ pages, next, prev, fetchItems, api = null, }) {
     <div className="
       flex 
       items-center 
-      rounded-lg 
+      rounded-xl
       overflow-hidden 
     ">
+      <span 
+        onClick={() => fetchItems(`${api}?page=1`)}
+        className="
+          bg-accent 
+          text-background 
+          py-[3px]
+          leading-none
+          cursor-pointer
+          transition-all
+          duration-300
+          hover:bg-confirm-hover
+      ">
+        <FiChevronsLeft size={30} />
+      </span>
       <span 
         onClick={() => fetchItems(prev)}
         className="
@@ -18,13 +33,12 @@ export default function Pager({ pages, next, prev, fetchItems, api = null, }) {
           text-background 
           px-1 
           py-2
-          text-xl
           cursor-pointer
           transition-all
           duration-300
           hover:bg-confirm-hover
       ">
-        <FaChevronLeft />
+        <FaChevronLeft size={20} />
       </span>
 
       <nav className="flex text-xl">
@@ -32,7 +46,7 @@ export default function Pager({ pages, next, prev, fetchItems, api = null, }) {
           <a 
             key={index} 
             onClick={() => {
-              fetchItems(`${api}?offset=${index !== 0 && (offset + 10)}`)
+              fetchItems(`${api}?page=${page}`)
             }}
             className="leading-none px-2 py-2 hover:bg-active
           ">
@@ -48,13 +62,26 @@ export default function Pager({ pages, next, prev, fetchItems, api = null, }) {
           text-background 
           px-1 
           py-2
-          text-xl
           cursor-pointer
           transition-all
           duration-300
           hover:bg-confirm-hover
       ">
-        <FaChevronRight />
+        <FaChevronRight size={20} />
+      </span>
+      <span 
+        onClick={() => fetchItems(`${api}?page=last`)}
+        className="
+          bg-accent 
+          text-background 
+          py-[3px]
+          leading-none
+          cursor-pointer
+          transition-all
+          duration-300
+          hover:bg-confirm-hover
+      ">
+        <FiChevronsRight size={30} />
       </span>
     </div>
   );
