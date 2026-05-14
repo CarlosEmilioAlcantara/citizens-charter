@@ -1,7 +1,7 @@
-export default function EntriesCounter({ count }) {
+export default function EntriesCounter({ total, count }) {
   return (
     <p className="text-xs text-unfocused md:flex-1">
-      Showing 10 out of {count} entries
+      Showing {total} out of {count} entries
     </p>
   );
 }

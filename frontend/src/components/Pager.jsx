@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiChevronsLeft, FiChevronsRight } from "react-icons/fi";
 
-export default function Pager({ count, next, prev, fetchItems, api }) {
+export default function Pager({ count, next, prev, fetchItems, route }) {
   const [pages, setPages] = useState([]);
   const number = Math.ceil(count / 10);
 
@@ -18,18 +18,18 @@ export default function Pager({ count, next, prev, fetchItems, api }) {
       overflow-hidden 
     ">
       <span 
-        onClick={() => fetchItems(`${api}?page=1`)}
+        onClick={() => fetchItems(`${route}?page=1`)}
         className="
           bg-accent 
           text-background 
-          py-[3px]
+          py-px
           leading-none
           cursor-pointer
           transition-all
           duration-300
           hover:bg-confirm-hover
       ">
-        <FiChevronsLeft size={30} />
+        <FiChevronsLeft size={34} />
       </span>
       <span 
         onClick={() => fetchItems(prev)}
@@ -51,7 +51,7 @@ export default function Pager({ count, next, prev, fetchItems, api }) {
           <a 
             key={index} 
             onClick={() => {
-              fetchItems(`${api}?page=${page}`)
+              fetchItems(`${route}?page=${page}`)
             }}
             className="
               leading-none 
@@ -82,18 +82,18 @@ export default function Pager({ count, next, prev, fetchItems, api }) {
         <FaChevronRight size={20} />
       </span>
       <span 
-        onClick={() => fetchItems(`${api}?page=last`)}
+        onClick={() => fetchItems(`${route}?page=last`)}
         className="
           bg-accent 
           text-background 
-          py-[3px]
+          py-px
           leading-none
           cursor-pointer
           transition-all
           duration-300
           hover:bg-confirm-hover
       ">
-        <FiChevronsRight size={30} />
+        <FiChevronsRight size={34} />
       </span>
     </div>
   );

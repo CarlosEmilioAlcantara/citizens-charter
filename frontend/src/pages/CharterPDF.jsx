@@ -1,10 +1,10 @@
 // TODO;
-// [] 1) Generate pdfs
+// [*] 1) Generate pdfs
 // [] 2) Regnerate pdf
 // [*] 3) Download pdf
 // [] 4) Delete pdf
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
@@ -16,6 +16,7 @@ import {
 import { FaEye, FaFileDownload, FaPrint } from "react-icons/fa";
 import Button from "../components/Button";
 import Search from "../components/Search";
+import PageSizeSelector from "../components/PageSizeSelector";
 import Table from "../components/Table";
 import Dropdown from "../components/Dropdown";
 import DropdownItem from "../components/DropdownItem";
@@ -28,11 +29,13 @@ import Alert from "../components/Alert";
 export default function CharterPDF() {
   const [pdfs, setPdfs] = useState([]);
   const [search, setSearch] = useState("");
+  const [pageSize, setPageSize] = useState(10);
   const [url, setUrl] = useState("");
   const [prev, setPrev] = useState("");
   const [next, setNext] = useState("");
   const [count, setCount] = useState(null);
-  const [api, setApi] = useState("/api/pdf/citizens-charters");
+  const [total, setTotal] = useState(null);
+  const [route, setRoute] = useState("/api/pdf/citizens-charters");
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
   const { authTokens } = useContext(AuthContext);
@@ -52,27 +55,33 @@ export default function CharterPDF() {
   }
 
   const handlePaging = async (page) => {
-    if (page !== null) {
-      fetchCharterPDFs({page: page}).then(data => {
-        setPdfs(data.results);
-        setPrev(data.previous);
-        setNext(data.next);
-        setCount(data.count);
-      });
-    };
-  }
-
-  useEffect(() => {
-    fetchCharterPDFs({search: search}).then(data => {
+    fetchCharterPDFs({ 
+      page: page, 
+      search: search, 
+      page_size: pageSize, 
+    }).then(data => {
       setPdfs(data.results);
       setPrev(data.previous);
       setNext(data.next);
       setCount(data.count);
     });
-  }, [search])
+  }
+
+  useEffect(() => {
+    fetchCharterPDFs({search: search, page_size: pageSize }).then(data => {
+      setPdfs(data.results);
+      setPrev(data.previous);
+      setNext(data.next);
+      setCount(data.count);
+    });
+  }, [search, pageSize])
+
+  useEffect(() => {
+    setTotal(pdfs.length)
+  }, [pdfs])
 
   Object.entries(pdfs).map(([key, data]) => {
-    data["actions"] = (<Dropdown items={[
+    data["actions"] = (<Dropdown label={"Aksyon"} items={[
       {
         "name": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
         "function": () => {setUrl(data["pdf"])},
@@ -115,21 +124,21 @@ export default function CharterPDF() {
               icon={<FaPrint />} 
               onClick={handleGenerate}
             />
-            <Search 
-              placeholder={"Ngalan ng opisina"} 
-              value={search} 
-              setValue={setSearch}
-            />
+
+            <div className="flex gap-3 w-full">
+              <Search 
+                placeholder={"Ngalan ng opisina"} 
+                value={search} 
+                setValue={setSearch}
+              />
+
+              <PageSizeSelector label={pageSize} setValue={setPageSize} />
+            </div>
           </div>
 
           <Table 
             headers={["PDF", "Actions"]}
             body={pdfs}
-            count={count}
-            next={next}
-            prev={prev}
-            fetchItems={handlePaging}
-            api={api}
             hideID={true}
           />
           <div className="
@@ -142,6 +151,7 @@ export default function CharterPDF() {
             md:flex-row
           ">
             <EntriesCounter
+              total={total}
               count={count}
             /> 
             <Pager
@@ -149,7 +159,7 @@ export default function CharterPDF() {
               next={next}
               prev={prev}
               fetchItems={handlePaging}
-              api={api}
+              route={route}
             />
           </div>
 

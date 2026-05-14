@@ -1,4 +1,5 @@
 import { FaSearch } from "react-icons/fa";
+import { FaXmark } from "react-icons/fa6"
 
 export default function Search({ placeholder, value, setValue }) {
   return(
@@ -25,11 +26,20 @@ export default function Search({ placeholder, value, setValue }) {
           w-full 
           text-foreground 
           text-md 
-          md:text-lg 
           focus:outline-none 
           active:outline-none
         "
       />
+      {value && 
+        <FaXmark 
+          onClick={() => setValue("")} 
+          className="
+            cursor-pointer 
+            transition-all 
+            duration-300 
+            hover:text-accent
+        "/>
+      }
     </div>
   )
 }

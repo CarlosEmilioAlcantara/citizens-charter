@@ -4,9 +4,9 @@ import Pager from "./Pager";
 export default function Table({ 
   headers, 
   body, 
-  hideID = false,
+  hideID = false, 
+  setTotal = null 
 }) {
-
   return (
     <div className="rounded-t-lg overflow-hidden">
       <table className="table-fixed w-full">
@@ -64,12 +64,12 @@ export default function Table({
                     >
                       {Object.values(data)[0]}
                     </td>
-                    <td key={Object.keys(data)[1]} className="px-6 py-2">
+                    <td key={Object.keys(data)[1]} className="px-6 p-[6px]">
                       {Object.values(data)[1]}
                     </td>
                     <td 
                       key={Object.keys(data)[3]} 
-                      className="flex justify-end px-6 py-2"
+                      className="flex justify-end px-6 p-[6px]"
                     >
                       {Object.values(data)[3]}
                     </td>
@@ -78,16 +78,16 @@ export default function Table({
                   <>
                     <td 
                       key={Object.keys(data)[0]}
-                      className="px-6 py-2" 
+                      className="px-6 p-[6px]" 
                     >
                       {Object.values(data)[0]}
                     </td>
-                    <td key={Object.keys(data)[1]} className="px-6 py-2">
+                    <td key={Object.keys(data)[1]} className="px-6 p-[6px]">
                       {Object.values(data)[1]}
                     </td>
                     <td 
                       key={Object.keys(data)[3]}
-                      className="flex justify-end px-6 py-2"
+                      className="flex justify-end px-6 p-[6px]"
                     >
                       {Object.values(data)[3]}
                     </td>
@@ -99,7 +99,7 @@ export default function Table({
                   // hideID && key == "id" ? (
                     <td className="hidden" key={key}>{value}</td>
                   ) : (
-                    <td className="px-6 py-2" key={key}>{value}</td>
+                    <td className="px-6 p-[6px]" key={key}>{value}</td>
                   )
                 ))
               )}
