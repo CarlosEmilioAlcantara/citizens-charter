@@ -313,7 +313,7 @@ class DeleteCitizensCharterPdfView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class CitizensCharterListView(ListAPIView):
-    queryset = CitizensCharter.objects.all().order_by('id')
+    queryset = CitizensCharter.objects.all().order_by('name')
     serializer_class = CitizensCharterSerializer
     pagination_class = MyCustomPagination
     filter_backends = [filters.SearchFilter]

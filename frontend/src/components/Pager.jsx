@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiChevronsLeft, FiChevronsRight } from "react-icons/fi";
 
-export default function Pager({ pages, next, prev, fetchItems, api = null, }) {
-  const [offset, setOffset] = useState(10);
+export default function Pager({ count, next, prev, fetchItems, api }) {
+  const [pages, setPages] = useState([]);
+  const number = Math.ceil(count / 10);
+
+  useEffect(() => {
+    setPages(Array.from({ length: number }, (_, i) => i + 1));
+  }, [count]);
 
   return(
     <div className="
@@ -48,7 +53,14 @@ export default function Pager({ pages, next, prev, fetchItems, api = null, }) {
             onClick={() => {
               fetchItems(`${api}?page=${page}`)
             }}
-            className="leading-none px-2 py-2 hover:bg-active
+            className="
+              leading-none 
+              px-2 
+              py-2 
+              cursor-pointer 
+              transition-all
+              duration-300
+              hover:bg-active
           ">
             {page}
           </a>

@@ -14,23 +14,25 @@ import {
   generateCharterPDFs, 
 } from "../apis/CharterPDFAPI";
 import { FaEye, FaFileDownload, FaPrint } from "react-icons/fa";
+import Button from "../components/Button";
+import Search from "../components/Search";
 import Table from "../components/Table";
 import Dropdown from "../components/Dropdown";
 import DropdownItem from "../components/DropdownItem";
+import EntriesCounter from "../components/EntriesCounter";
+import Pager from "../components/Pager";
 import PDFViewer from "../components/PDFViewer";
-import Button from "../components/Button";
 import Loader from "../components/Loader";
 import Alert from "../components/Alert";
-import Search from "../components/Search";
 
 export default function CharterPDF() {
   const [pdfs, setPdfs] = useState([]);
   const [search, setSearch] = useState("");
+  const [url, setUrl] = useState("");
   const [prev, setPrev] = useState("");
   const [next, setNext] = useState("");
   const [count, setCount] = useState(null);
   const [api, setApi] = useState("/api/pdf/citizens-charters");
-  const [url, setUrl] = useState("");
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
   const { authTokens } = useContext(AuthContext);
@@ -130,6 +132,26 @@ export default function CharterPDF() {
             api={api}
             hideID={true}
           />
+          <div className="
+            flex 
+            flex-col 
+            justify-between 
+            items-center 
+            p-3 
+            gap-3
+            md:flex-row
+          ">
+            <EntriesCounter
+              count={count}
+            /> 
+            <Pager
+              count={count}
+              next={next}
+              prev={prev}
+              fetchItems={handlePaging}
+              api={api}
+            />
+          </div>
 
           {url && (
             <PDFViewer url={url} onClose={() => {setUrl(null)}}/>
