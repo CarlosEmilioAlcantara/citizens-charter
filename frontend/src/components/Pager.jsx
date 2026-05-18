@@ -75,7 +75,7 @@ export default function Pager({
             onClick={() => {
               fetchItems(`${route}?page=${page}`);
               currentPage.current = page;
-              setCurrentPage(currentPage.current);
+              setCurrentPage(page);
             }}
             className={`
               leading-none 

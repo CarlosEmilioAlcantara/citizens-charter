@@ -9,7 +9,7 @@ export default function Dropdown({ label = "Action", small = false, items }) {
       <div 
         onClick={toggle}
         className={`
-          ${small && 'w-20'}
+          ${small && 'w-30'}
           relative
           flex
           justify-center
@@ -28,7 +28,7 @@ export default function Dropdown({ label = "Action", small = false, items }) {
           duration-300
           hover:bg-confirm-hover
       `}>
-        <span className="flex justify-center shrink-0">
+        <span className="w-[24px]">
           {state ? (
             <FaChevronDown 
               size={24} 
@@ -41,7 +41,9 @@ export default function Dropdown({ label = "Action", small = false, items }) {
             />
           )}
         </span>
-        <span className="flex truncate">{label}</span>
+        <span className={`${small && 'w-md'} text-nowrap`}>
+          {label}
+        </span>
       </div>
 
       <div className={`
@@ -73,7 +75,6 @@ export default function Dropdown({ label = "Action", small = false, items }) {
                 hover:bg-active
             `}>
               <button 
-                value={item.name}
                 onClick={item.function}
                 className="px-2 py-1 cursor-pointer text-right"
               >
