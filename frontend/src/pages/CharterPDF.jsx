@@ -97,13 +97,12 @@ export default function CharterPDF() {
         })},
       },
     ]}/>);
-    console.log(data["office"]);
   })
 
   return(
     <>
       <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
-      <Sidebar/>
+      <Sidebar />
       <div className="
         flex 
         flex-col 

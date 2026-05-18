@@ -47,7 +47,7 @@ const generateCharterPDFs = async (authTokens) => {
   try {
     const res = await fetch("/api/pdf/citizens-charter/generate", {
       method: "PUT",
-      headers: { "Authorization": `Bearer ${authTokens.access}`}
+      headers: { "Authorization": `Bearer ${authTokens.access}` }
     });
     return res;
   } catch (err) {
@@ -59,7 +59,7 @@ const regenerateCharterPDFs = async (authTokens, id) => {
   try {
     const res = await fetch(`/api/pdf/citizens-charter/regenerate/${id}`, {
       method: "PUT",
-      headers: { "Authorization": `Bearer ${authTokens.access}`}
+      headers: { "Authorization": `Bearer ${authTokens.access}` }
     });
     return res;
   } catch (err) {
