@@ -1,6 +1,6 @@
 // TODO;
 // [*] 1) Generate pdfs
-// [] 2) Regnerate pdf
+// [*] 2) Regnerate pdf
 // [*] 3) Download pdf
 // [] 4) Delete pdf
 
@@ -12,11 +12,12 @@ import {
   fetchCharterPDFs, 
   downloadCharterPDF, 
   generateCharterPDFs, 
-  regenerateCharterPDFs,
+  regenerateCharterPDF,
 } from "../apis/CharterPDFAPI";
 import { FaEye, FaFileDownload, FaPrint } from "react-icons/fa";
 import { TbReload } from "react-icons/tb";
 import useLoader from "../utils/useLoader";
+import usePaging from "../utils/usePaging";
 import Button from "../components/Button";
 import Search from "../components/Search";
 import PageSizeSelector from "../components/PageSizeSelector";
@@ -30,50 +31,26 @@ import Loader from "../components/Loader";
 import Alert from "../components/Alert";
 
 export default function CharterPDF() {
-  const [pdfs, setPdfs] = useState([]);
-  const [search, setSearch] = useState("");
-  const [pageSize, setPageSize] = useState(10);
-  const [url, setUrl] = useState("");
-  const [prev, setPrev] = useState("");
-  const [next, setNext] = useState("");
-  const [count, setCount] = useState(null);
-  const [total, setTotal] = useState(null);
-  const [route, setRoute] = useState("/api/pdf/citizens-charters");
+  const [
+    items,
+    search,
+    setSearch,
+    pageSize,
+    setPageSize,
+    prev,
+    next,
+    count,
+    currentPage,
+    setCurrentPage,
+    total,
+    handlePaging,
+  ] = usePaging({ api: fetchCharterPDFs })
   const [toast, setToast, loading, handleLoading] = useLoader();
-  const [currentPage, setCurrentPage] = useState(1);
   const { authTokens } = useContext(AuthContext);
 
-  const handlePaging = async (page) => {
-    fetchCharterPDFs({ 
-      page: page, 
-      search: search, 
-      page_size: pageSize, 
-    }).then(data => {
-      setPdfs(data.results);
-      setPrev(data.previous);
-      setNext(data.next);
-      setCount(data.count);
-    });
-  }
+  const [url, setUrl] = useState("");
 
-  useEffect(() => {
-    fetchCharterPDFs({
-      search: search, 
-      current_page: currentPage, 
-      page_size: pageSize 
-    }).then(data => {
-      setPdfs(data.results);
-      setPrev(data.previous);
-      setNext(data.next);
-      setCount(data.count);
-    });
-  }, [search, pageSize])
-
-  useEffect(() => {
-    setTotal(pdfs.length)
-  }, [pdfs])
-
-  Object.entries(pdfs).map(([key, data]) => {
+  Object.entries(items).map(([key, data]) => {
     data["actions"] = (<Dropdown label={"Aksyon"} items={[
       {
         "name": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
@@ -89,7 +66,7 @@ export default function CharterPDF() {
       {
         "name": <DropdownItem icon={<TbReload />} label={"Regenerate PDF"}/>, 
         "function": () => {handleLoading({
-          api: regenerateCharterPDFs,
+          api: regenerateCharterPDF,
           id: data["office"],
           authTokens: authTokens,
           messageSuccess: "PDF Nalikha",
@@ -148,7 +125,7 @@ export default function CharterPDF() {
 
           <Table 
             headers={["PDF", "Actions"]}
-            body={pdfs}
+            body={items}
             charterList={true}
           />
           <div className="
@@ -169,7 +146,7 @@ export default function CharterPDF() {
               next={next}
               prev={prev}
               fetchItems={handlePaging}
-              route={route}
+              route={"/api/pdf/citizens-charters"}
               pageSize={pageSize}
               setCurrentPage={setCurrentPage}
             />

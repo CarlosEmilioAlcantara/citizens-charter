@@ -55,10 +55,22 @@ const generateCharterPDFs = async (authTokens) => {
   }
 }
 
-const regenerateCharterPDFs = async (authTokens, id) => {
+const regenerateCharterPDF = async (authTokens, id) => {
   try {
     const res = await fetch(`/api/pdf/citizens-charter/regenerate/${id}`, {
       method: "PUT",
+      headers: { "Authorization": `Bearer ${authTokens.access}` }
+    });
+    return res;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+const deleteCharterPDF = async (authTokens, id) => {
+  try {
+    const res = await fetch(`/api/pdf/citizens-charter/delete/${id}`, {
+      method: "DELETE",
       headers: { "Authorization": `Bearer ${authTokens.access}` }
     });
     return res;
@@ -71,5 +83,6 @@ export {
   fetchCharterPDFs, 
   downloadCharterPDF, 
   generateCharterPDFs,
-  regenerateCharterPDFs,
+  regenerateCharterPDF,
+  deleteCharterPDF,
 }
