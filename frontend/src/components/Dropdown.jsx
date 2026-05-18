@@ -1,7 +1,7 @@
 import { FaChevronDown } from "react-icons/fa";
 import useToggle from "../utils/useToggle";
 
-export default function Dropdown({ label = "Action", small = false, items }) {
+export default function Dropdown({ label = "Action", sizeSelector = false, items }) {
   const [state, toggle] = useToggle(false);
 
   return(
@@ -9,7 +9,7 @@ export default function Dropdown({ label = "Action", small = false, items }) {
       <div 
         onClick={toggle}
         className={`
-          ${small && 'w-30'}
+          ${sizeSelector && 'w-30'}
           relative
           flex
           justify-center
@@ -41,13 +41,13 @@ export default function Dropdown({ label = "Action", small = false, items }) {
             />
           )}
         </span>
-        <span className={`${small && 'w-md'} text-nowrap`}>
+        <span className={`${sizeSelector && 'w-md'} text-nowrap`}>
           {label}
         </span>
       </div>
 
       <div className={`
-        ${small && 'w-full'}
+        ${sizeSelector && 'w-full'}
         absolute
         top-8
         right-0
@@ -67,7 +67,7 @@ export default function Dropdown({ label = "Action", small = false, items }) {
               key={index}
               className={`
                 flex
-                ${small ? 'justify-center' : 'justify-end'}
+                ${sizeSelector ? 'justify-center' : 'justify-end'}
                 ${state ? 'cursor-pointer' : ''}
                 ${state ? 'z-10' : '-z-10'}
                 transition-all 

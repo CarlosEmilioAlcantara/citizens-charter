@@ -604,4 +604,5 @@ class CitizensCharterSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'pdf',
+            'office',
         ]

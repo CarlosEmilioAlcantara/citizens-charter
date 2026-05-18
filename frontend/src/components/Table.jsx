@@ -5,6 +5,7 @@ export default function Table({
   headers, 
   body, 
   hideID = false, 
+  charterList = false,
   setTotal = null 
 }) {
   return (
@@ -55,45 +56,54 @@ export default function Table({
               border-b-unfocused
             ">
               {/* {Object.keys(data).length === 3 ? ( */}
-              {Object.keys(data).length === 4 ? (
+              {Object.keys(data).length === 2 && (
                 hideID && Object.keys(data)[0] == "id" ? (
                   <>
-                    <td 
-                      key={Object.keys(data)[0]}
-                      className="hidden" 
-                    >
+                    <td key={Object.keys(data)[0]} className="hidden">
                       {Object.values(data)[0]}
                     </td>
-                    <td key={Object.keys(data)[1]} className="px-6 p-[6px]">
-                      {Object.values(data)[1]}
-                    </td>
                     <td 
-                      key={Object.keys(data)[3]} 
+                      key={Object.keys(data)[1]} 
                       className="flex justify-end px-6 p-[6px]"
                     >
-                      {Object.values(data)[3]}
+                      {Object.values(data)[1]}
                     </td>
                   </>
                 ) : (
                   <>
-                    <td 
-                      key={Object.keys(data)[0]}
-                      className="px-6 p-[6px]" 
-                    >
+                    <td key={Object.keys(data)[0]} className="px-6 p-[6px]">
                       {Object.values(data)[0]}
                     </td>
-                    <td key={Object.keys(data)[1]} className="px-6 p-[6px]">
-                      {Object.values(data)[1]}
-                    </td>
                     <td 
-                      key={Object.keys(data)[3]}
+                      key={Object.keys(data)[1]}
                       className="flex justify-end px-6 p-[6px]"
                     >
-                      {Object.values(data)[3]}
+                      {Object.values(data)[1]}
                     </td>
                   </>
                 )
-              ) : (
+              ) || charterList && (
+                <>
+                  <td key={Object.keys(data)[0]} className="hidden">
+                    {Object.values(data)[0]}
+                  </td>
+                  <td key={Object.keys(data)[1]} className="px-6 p-[6px]">
+                    {Object.values(data)[1]}
+                  </td>
+                  <td key={Object.keys(data)[2]} className="hidden">
+                    {Object.values(data)[2]}
+                  </td>
+                  <td key={Object.keys(data)[3]} className="hidden">
+                    {Object.values(data)[3]}
+                  </td>
+                  <td 
+                    key={Object.keys(data)[4]} 
+                    className="flex justify-end px-6 p-[6px]"
+                  >
+                    {Object.values(data)[4]}
+                  </td>
+                </>
+              ) || (
                 Object.entries(data).map(([key, value]) => (
                   hideID && key == "id" || key == "pdf" ? (
                   // hideID && key == "id" ? (

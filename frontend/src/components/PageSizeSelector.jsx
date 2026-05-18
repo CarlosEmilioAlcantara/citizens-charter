@@ -2,7 +2,7 @@ import Dropdown from "./Dropdown";
 
 export default function PageSizeSelector({ label, setValue }) {
   return(
-    <Dropdown label={`${label} Rows`} small={true} items={[
+    <Dropdown label={`${label} Rows`} sizeSelector={true} items={[
       {
         "name": "10 Rows",
         "function": (e) => {setValue(value => 10)}
