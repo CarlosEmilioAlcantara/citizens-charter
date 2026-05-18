@@ -307,8 +307,7 @@ class DeleteCitizensCharterPdfView(APIView):
 
     def delete(self, request, pk):
         charter = get_object_or_404(CitizensCharter, pk=pk)
-        with set_actor(request.user):
-            charter.delete()
+        charter.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 

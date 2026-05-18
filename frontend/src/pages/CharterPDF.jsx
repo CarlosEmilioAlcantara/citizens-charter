@@ -4,7 +4,7 @@
 // [*] 3) Download pdf
 // [] 4) Delete pdf
 
-import { use, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
@@ -13,8 +13,9 @@ import {
   downloadCharterPDF, 
   generateCharterPDFs, 
   regenerateCharterPDF,
+  deleteCharterPDF,
 } from "../apis/CharterPDFAPI";
-import { FaEye, FaFileDownload, FaPrint } from "react-icons/fa";
+import { FaEye, FaFileDownload, FaPrint, FaTrashAlt } from "react-icons/fa";
 import { TbReload } from "react-icons/tb";
 import useLoader from "../utils/useLoader";
 import usePaging from "../utils/usePaging";
@@ -46,6 +47,7 @@ export default function CharterPDF() {
     handlePaging,
   ] = usePaging({ api: fetchCharterPDFs })
   const [toast, setToast, loading, handleLoading] = useLoader();
+  const route = useRef("/api/pdf/citizens-charters")
   const { authTokens } = useContext(AuthContext);
 
   const [url, setUrl] = useState("");
@@ -69,9 +71,23 @@ export default function CharterPDF() {
           api: regenerateCharterPDF,
           id: data["office"],
           authTokens: authTokens,
-          messageSuccess: "PDF Nalikha",
-          messageFail: "PDF Paglikha Fail",
-        })},
+          messageSuccess: "PDF Regenerated",
+          messageFail: "PDF Regeneration Failed",
+        }) && handlePaging(`${route.current}?page=${currentPage}`)},
+      },
+      {
+        "name": <DropdownItem 
+          icon={<FaTrashAlt />} 
+          label={"Delete PDF"}
+          remove={true}
+        />, 
+        "function": () => {handleLoading({
+          api: deleteCharterPDF,
+          id: data["id"],
+          authTokens: authTokens,
+          messageSuccess: "PDF Deleted",
+          messageFail: "PDF Deletion Failed",
+        }) && handlePaging(`${route.current}?page=${currentPage}`)},
       },
     ]}/>);
   })
@@ -146,8 +162,9 @@ export default function CharterPDF() {
               next={next}
               prev={prev}
               fetchItems={handlePaging}
-              route={"/api/pdf/citizens-charters"}
+              route={route.current}
               pageSize={pageSize}
+              currentPage={currentPage}
               setCurrentPage={setCurrentPage}
             />
           </div>

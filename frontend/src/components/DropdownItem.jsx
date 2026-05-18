@@ -1,4 +1,4 @@
-export default function DropdownItem({ icon, label }) {
+export default function DropdownItem({ icon, label, remove = false }) {
   return (
     <span className="
       flex 
@@ -7,7 +7,9 @@ export default function DropdownItem({ icon, label }) {
       gap-2
       whitespace-nowrap
     ">
-      <span className="text-accent">{icon}</span>
+      <span className={`${remove ? 'text-danger' : 'text-accent'}`}>
+        {icon}
+      </span>
       <p>{label}</p>
     </span>
   );

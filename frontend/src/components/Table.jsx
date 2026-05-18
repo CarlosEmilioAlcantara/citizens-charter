@@ -6,7 +6,7 @@ export default function Table({
   body, 
   hideID = false, 
   charterList = false,
-  setTotal = null 
+  setTotal = null,
 }) {
   return (
     <div className="rounded-t-lg overflow-hidden">

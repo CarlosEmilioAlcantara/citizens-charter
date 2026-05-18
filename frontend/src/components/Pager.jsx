@@ -9,10 +9,10 @@ export default function Pager({
   fetchItems, 
   route, 
   pageSize,
+  currentPage,
   setCurrentPage, 
 }) {
   const [pages, setPages] = useState([]);
-  const currentPage = useRef(1);
   const number = Math.ceil(count / pageSize);
 
   useEffect(() => {
@@ -29,11 +29,10 @@ export default function Pager({
       <span 
         onClick={() => {
           fetchItems(`${route}?page=1`);
-          currentPage.current = 1;
-          setCurrentPage(currentPage.current);
+          setCurrentPage(1);
         }}
         className={`
-          ${currentPage.current === 1 ? 
+          ${currentPage === 1 ? 
             'bg-unfocused text-foreground pointer-events-none' : 
             'bg-accent text-background'
           }
@@ -49,12 +48,10 @@ export default function Pager({
       <span 
         onClick={() => {
           fetchItems(prev); 
-          currentPage.current = Number(prev.match(/page=(\d+)/)?.pop()) || 
-            1;
-          setCurrentPage(currentPage.current);
+          setCurrentPage(Number(prev.match(/page=(\d+)/)?.pop()) || 1);
         }}
         className={`
-          ${currentPage.current === 1 ? 
+          ${currentPage === 1 ? 
             'bg-unfocused text-foreground pointer-events-none' : 
             'bg-accent text-background'
           }
@@ -74,13 +71,12 @@ export default function Pager({
             key={index} 
             onClick={() => {
               fetchItems(`${route}?page=${page}`);
-              currentPage.current = page;
               setCurrentPage(page);
             }}
             className={`
               leading-none 
               p-2
-              ${currentPage.current === page && 'bg-active'}
+              ${currentPage === page && 'bg-active'}
               cursor-pointer 
               transition-all
               duration-300
@@ -94,12 +90,10 @@ export default function Pager({
       <span 
         onClick={() => {
           fetchItems(next);
-          currentPage.current = Number(next.match(/page=(\d+)/).pop()) || 
-            number;
-          setCurrentPage(currentPage.current);
+          setCurrentPage(Number(next.match(/page=(\d+)/).pop()) || number);
         }}
         className={`
-          ${currentPage.current === number ? 
+          ${currentPage === number ? 
             'bg-unfocused text-foreground pointer-events-none' : 
             'bg-accent text-background'
           }
@@ -117,11 +111,10 @@ export default function Pager({
       <span 
         onClick={() => {
           fetchItems(`${route}?page=last`);
-          currentPage.current = number;
-          setCurrentPage(currentPage.current);
+          setCurrentPage(number);
         }}
         className={`
-          ${currentPage.current === number ? 
+          ${currentPage === number ? 
             'bg-unfocused text-foreground pointer-events-none' : 
             'bg-accent text-background'
           }

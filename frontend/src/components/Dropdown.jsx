@@ -1,7 +1,11 @@
 import { FaChevronDown } from "react-icons/fa";
 import useToggle from "../utils/useToggle";
 
-export default function Dropdown({ label = "Action", sizeSelector = false, items }) {
+export default function Dropdown({ 
+  label = "Action", 
+  sizeSelector = false, 
+  items,
+}) {
   const [state, toggle] = useToggle(false);
 
   return(
