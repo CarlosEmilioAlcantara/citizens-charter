@@ -12,12 +12,53 @@ export default function Pager({
   currentPage,
   setCurrentPage, 
 }) {
-  const [pages, setPages] = useState([]);
+  // const [pages, setPages] = useState([]);
+  const [halfwayPages, setHalfwayPages] = useState([]);
   const number = Math.ceil(count / pageSize);
+  const between = Math.floor(number / 2);
 
-  useEffect(() => {
-    setPages(Array.from({ length: number }, (_, i) => i + 1));
-  }, [count, pageSize]);
+  const getPages = (currentPage, number) => {
+    if (number === 1) {
+      return [1];
+    }
+
+    const pages = [];
+    const firstPage = 1;
+    const lastPage = number;
+    const prevPage = currentPage - 1;
+    const nextPage = currentPage + 1;
+
+    pages.push(firstPage);
+
+    if (Math.abs(firstPage - prevPage) > 1) {
+      pages.push("...");
+    }
+
+    if (firstPage < prevPage) {
+      pages.push(prevPage);
+    }
+
+    if (currentPage !== firstPage && currentPage !== lastPage) {
+      pages.push(currentPage);
+    }
+
+    if (nextPage < lastPage) {
+      pages.push(nextPage);
+    }
+
+    if (Math.abs(nextPage - lastPage) > 1) {
+      pages.push("...");
+    }
+
+    pages.push(lastPage);
+
+    return pages;
+  };
+
+  // useEffect(() => {
+  //   setPages(Array.from({ length: number }, (_, i) => i + 1));
+  //   setHalfwayPages(Array.from({ length: number - 4}, (_, i) => i + 4));
+  // }, [count, pageSize]);
 
   return(
     <div className="
@@ -66,13 +107,64 @@ export default function Pager({
       </span>
 
       <nav className="flex text-xl">
-        {pages.map((page, index) => (
+        {/* {pages.map((page, index) => {
+          const showEllipsis =
+            Object.values(halfwayPages).includes(index + 1) && 
+              (index + 1);
+            
+          const previousWasHidden =
+            Object.values(halfwayPages).includes(index);
+
+          if (showEllipsis) {
+            if (previousWasHidden) return null;
+
+            return (
+              <a
+                key={index}
+                className={`
+                  leading-none 
+                  p-2
+                  ${currentPage === page && 'bg-active'}
+                  cursor-pointer 
+                  transition-all
+                  duration-300
+                  hover:bg-active
+              `}>
+                ...    
+              </a>
+            );
+          }
+
+          return (
+            <a 
+              key={index} 
+              onClick={() => {
+                fetchItems(`${route}?page=${page}`);
+                setCurrentPage(page);
+              }}
+              className={`
+                leading-none 
+                p-2
+                ${currentPage === page && 'bg-active'}
+                cursor-pointer 
+                transition-all
+                duration-300
+                hover:bg-active
+            `}>
+              {page}
+            </a>
+          );
+        })} */}
+        {getPages(currentPage, number).map((page, index) => (
           <a 
             key={index} 
             onClick={() => {
-              fetchItems(`${route}?page=${page}`);
-              setCurrentPage(page);
+              if (!isNaN(page)) {
+                fetchItems(`${route}?page=${page}`);
+                setCurrentPage(page);
+              }
             }}
+            style={isNaN(page) ? { pointerEvents: "none" }: {}}
             className={`
               leading-none 
               p-2
