@@ -225,7 +225,7 @@ class CitizensCharter(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    office = models.ForeignKey(
+    office = models.OneToOneField(
         Office,
         on_delete=models.CASCADE,
         related_name='charters'

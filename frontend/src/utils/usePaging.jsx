@@ -11,16 +11,21 @@ export default function usePaging({ api }) {
   const [total, setTotal] = useState(null);
 
   const handlePaging = async (page) => {
-    api({ 
-      page: page, 
-      search: search, 
-      page_size: pageSize, 
-    }).then(data => {
+    try {
+      const data = await api({ 
+        page: page, 
+        search: search, 
+        page_size: pageSize, 
+      });
+
       setItems(data.results);
       setPrev(data.previous);
       setNext(data.next);
       setCount(data.count);
-    });
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
 
   useEffect(() => {

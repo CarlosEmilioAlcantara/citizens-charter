@@ -29,6 +29,7 @@ export default function Loader({ show, message }) {
           p-11
           rounded-lg
           bg-background
+          shadow-lg
           overflow-hidden
         ">
           <div className="

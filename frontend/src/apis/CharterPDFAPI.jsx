@@ -2,7 +2,7 @@ const fetchCharterPDFs = async ({
   page = null, 
   search = "",
   current_page = "",
-  page_size = ""
+  page_size = "",
 }) => {
   try {
     const res = await fetch(
@@ -13,7 +13,6 @@ const fetchCharterPDFs = async ({
       headers: { "Content-Type": "application/json" },
     });
     const data = await res.json();
-
     if (res.ok) {
       return data;
     };

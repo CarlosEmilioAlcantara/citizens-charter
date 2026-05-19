@@ -202,51 +202,63 @@ class CreateCitizensCharterPdfsView(APIView):
                 ]
             )
 
-            charter = existing_charters.get(office.id)
-            if charter:
-                with set_actor(request.user):
-                    charter.pdf.save(
-                        name=f"{office.name}.pdf",
-                        content=File(io.BytesIO(pdf)),
-                        save=True
-                    )
-            else:
-                new_charters.append(
-                    CitizensCharter(
-                        name=f"{office.name}.pdf",
-                        office=office
-                    )
-                )
-
-        created = CitizensCharter.objects.bulk_create(new_charters)
-        for charter in created:
-            office_name, services = create_citizens_charter_whole(
-                request, office.pk
-            )
-            html = render_to_string(
-                'documents/citizens-charter.html', 
-                context={
-                    'office_name': office_name, 
-                    'services': services
-                }
+            charter, created = CitizensCharter.objects.get_or_create(
+                office=office,
+                defaults={"name": f"{office.name}.pdf"}
             )
 
-            pdf = create_pdf(
-                html, 
-                request, 
-                stylesheets=[
-                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
-                    f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
-                ]
-            )
-
-            office = charter.office
             with set_actor(request.user):
                 charter.pdf.save(
                     name=f"{office.name}.pdf",
                     content=File(io.BytesIO(pdf)),
                     save=True
                 )
+        #     charter = existing_charters.get(office.id)
+        #     if charter:
+        #         with set_actor(request.user):
+        #             charter.pdf.save(
+        #                 name=f"{office.name}.pdf",
+        #                 content=File(io.BytesIO(pdf)),
+        #                 save=True
+        #             )
+        #     else:
+        #         new_charters.append(
+        #             CitizensCharter(
+        #                 name=f"{office.name}.pdf",
+        #                 office=office
+        #             )
+        #         )
+
+        # created = CitizensCharter.objects.bulk_create(new_charters)
+        # for charter in created:
+        #     office_name, services = create_citizens_charter_whole(
+        #         request, office.pk
+        #     )
+        #     html = render_to_string(
+        #         'documents/citizens-charter.html', 
+        #         context={
+        #             'office_name': office_name, 
+        #             'services': services
+        #         }
+        #     )
+
+        #     pdf = create_pdf(
+        #         html, 
+        #         request, 
+        #         stylesheets=[
+        #             f"{settings.BASE_DIR}/api/static/citizens_charter/css/reset.css",
+        #             f"{settings.BASE_DIR}/api/static/citizens_charter/css/citizens-charter-styles.css",
+        #         ]
+        #     )
+
+        #     office = charter.office
+        #     with set_actor(request.user):
+        #         charter.pdf.save(
+        #             name=f"{office.name}.pdf",
+        #             content=File(io.BytesIO(pdf)),
+        #             save=True
+        #         )
+
 
         return Response(status=status.HTTP_201_CREATED)
 

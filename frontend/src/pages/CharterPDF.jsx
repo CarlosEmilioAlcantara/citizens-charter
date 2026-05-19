@@ -19,6 +19,7 @@ import { FaEye, FaFileDownload, FaPrint, FaTrashAlt } from "react-icons/fa";
 import { TbReload } from "react-icons/tb";
 import useLoader from "../utils/useLoader";
 import usePaging from "../utils/usePaging";
+import refreshList from "../utils/refreshList";
 import Button from "../components/Button";
 import Search from "../components/Search";
 import PageSizeSelector from "../components/PageSizeSelector";
@@ -67,13 +68,22 @@ export default function CharterPDF() {
       },
       {
         "name": <DropdownItem icon={<TbReload />} label={"Regenerate PDF"}/>, 
-        "function": () => {handleLoading({
-          api: regenerateCharterPDF,
-          id: data["office"],
-          authTokens: authTokens,
-          messageSuccess: "PDF Regenerated",
-          messageFail: "PDF Regeneration Failed",
-        }) && handlePaging(`${route.current}?page=${currentPage}`)},
+        "function": async () => { 
+          await handleLoading({
+            api: regenerateCharterPDF,
+            id: data["office"],
+            authTokens: authTokens,
+            messageSuccess: "PDF Regenerated",
+            messageFail: "PDF Regeneration Failed",
+          }); 
+          refreshList({
+            handlePaging: handlePaging,
+            route: route.current,
+            currentPage: currentPage,
+            setCurrentPage: setCurrentPage,
+            timeout: 300,
+          });
+        },
       },
       {
         "name": <DropdownItem 
@@ -81,13 +91,22 @@ export default function CharterPDF() {
           label={"Delete PDF"}
           remove={true}
         />, 
-        "function": () => {handleLoading({
-          api: deleteCharterPDF,
-          id: data["id"],
-          authTokens: authTokens,
-          messageSuccess: "PDF Deleted",
-          messageFail: "PDF Deletion Failed",
-        }) && handlePaging(`${route.current}?page=${currentPage}`)},
+        "function": async () => { 
+          await handleLoading({
+            api: deleteCharterPDF,
+            id: data["id"],
+            authTokens: authTokens,
+            messageSuccess: "PDF Deleted",
+            messageFail: "PDF Deletion Failed",
+          }) 
+          refreshList({
+            handlePaging: handlePaging,
+            route: route.current,
+            currentPage: currentPage,
+            setCurrentPage: setCurrentPage,
+            timeout: 300,
+          });
+        },
       },
     ]}/>);
   })
@@ -118,14 +137,22 @@ export default function CharterPDF() {
             <Button 
               label={"Lumikha PDFs"} 
               icon={<FaPrint />} 
-              onClick={() => 
-                handleLoading({
+              onClick={ async () => {
+                await handleLoading({
                   api: generateCharterPDFs, 
                   authTokens: authTokens, 
                   messageSuccess: "PDFs Nalikha", 
                   messageFail:"PDFs Paglikha Fail",
-                }
-              )}
+                }); 
+
+                refreshList({
+                  handlePaging: handlePaging,
+                  route: route.current,
+                  currentPage: currentPage,
+                  setCurrentPage: setCurrentPage,
+                  timeout: 300,
+                });
+              }}
             />
 
             <div className="flex gap-3 w-full">
