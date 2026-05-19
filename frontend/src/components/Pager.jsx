@@ -12,19 +12,16 @@ export default function Pager({
   currentPage,
   setCurrentPage, 
 }) {
-  // const [pages, setPages] = useState([]);
-  const [halfwayPages, setHalfwayPages] = useState([]);
-  const number = Math.ceil(count / pageSize);
-  const between = Math.floor(number / 2);
+  const totalPages = Math.ceil(count / pageSize);
 
-  const getPages = (currentPage, number) => {
-    if (number === 1) {
+  const getPages = (currentPage, totalPages) => {
+    if (totalPages === 1) {
       return [1];
     }
 
     const pages = [];
     const firstPage = 1;
-    const lastPage = number;
+    const lastPage = totalPages;
     const prevPage = currentPage - 1;
     const nextPage = currentPage + 1;
 
@@ -54,11 +51,6 @@ export default function Pager({
 
     return pages;
   };
-
-  // useEffect(() => {
-  //   setPages(Array.from({ length: number }, (_, i) => i + 1));
-  //   setHalfwayPages(Array.from({ length: number - 4}, (_, i) => i + 4));
-  // }, [count, pageSize]);
 
   return(
     <div className="
@@ -107,55 +99,7 @@ export default function Pager({
       </span>
 
       <nav className="flex text-xl">
-        {/* {pages.map((page, index) => {
-          const showEllipsis =
-            Object.values(halfwayPages).includes(index + 1) && 
-              (index + 1);
-            
-          const previousWasHidden =
-            Object.values(halfwayPages).includes(index);
-
-          if (showEllipsis) {
-            if (previousWasHidden) return null;
-
-            return (
-              <a
-                key={index}
-                className={`
-                  leading-none 
-                  p-2
-                  ${currentPage === page && 'bg-active'}
-                  cursor-pointer 
-                  transition-all
-                  duration-300
-                  hover:bg-active
-              `}>
-                ...    
-              </a>
-            );
-          }
-
-          return (
-            <a 
-              key={index} 
-              onClick={() => {
-                fetchItems(`${route}?page=${page}`);
-                setCurrentPage(page);
-              }}
-              className={`
-                leading-none 
-                p-2
-                ${currentPage === page && 'bg-active'}
-                cursor-pointer 
-                transition-all
-                duration-300
-                hover:bg-active
-            `}>
-              {page}
-            </a>
-          );
-        })} */}
-        {getPages(currentPage, number).map((page, index) => (
+        {getPages(currentPage, totalPages).map((page, index) => (
           <a 
             key={index} 
             onClick={() => {
@@ -182,10 +126,10 @@ export default function Pager({
       <span 
         onClick={() => {
           fetchItems(next);
-          setCurrentPage(Number(next.match(/page=(\d+)/).pop()) || number);
+          setCurrentPage(Number(next.match(/page=(\d+)/).pop()) || totalPages);
         }}
         className={`
-          ${currentPage === number ? 
+          ${currentPage === totalPages ? 
             'bg-unfocused text-foreground pointer-events-none' : 
             'bg-accent text-background'
           }
@@ -203,10 +147,10 @@ export default function Pager({
       <span 
         onClick={() => {
           fetchItems(`${route}?page=last`);
-          setCurrentPage(number);
+          setCurrentPage(totalPages);
         }}
         className={`
-          ${currentPage === number ? 
+          ${currentPage === totalPages ? 
             'bg-unfocused text-foreground pointer-events-none' : 
             'bg-accent text-background'
           }

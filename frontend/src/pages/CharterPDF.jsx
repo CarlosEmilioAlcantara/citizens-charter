@@ -2,7 +2,7 @@
 // [*] 1) Generate pdfs
 // [*] 2) Regnerate pdf
 // [*] 3) Download pdf
-// [] 4) Delete pdf
+// [*] 4) Delete pdf
 
 import { useRef, useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
