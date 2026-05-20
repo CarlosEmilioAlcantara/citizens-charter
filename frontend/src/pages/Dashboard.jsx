@@ -1,9 +1,9 @@
-import Sidebar from "../components/Sidebar"
+import Navigation from "../components/Navigation"
 
 export default function Dashboard() {
   return(
     <div>
-      <Sidebar/>
+      <Navigation />
       <h1>Test</h1>
     </div>
   )

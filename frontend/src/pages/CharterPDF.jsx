@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
+import Navigation from "../components/Navigation";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import { fetchAPI } from "../apis/fetchAPI";
@@ -124,7 +124,7 @@ export default function CharterPDF() {
   return(
     <>
       <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
-      <Sidebar />
+      <Navigation />
       <div className="
         flex 
         flex-col 

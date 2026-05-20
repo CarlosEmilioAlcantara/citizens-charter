@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiChevronsLeft, FiChevronsRight } from "react-icons/fi";
 
