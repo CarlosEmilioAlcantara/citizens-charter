@@ -26,13 +26,17 @@ export default function usePaging({ api }) {
   }
 
   useEffect(() => {
-    api(`${route}?search=${search}&page_size=${pageSize}`)
-      .then(data => {
-        setItems(data.results);
-        setPrev(data.previous);
-        setNext(data.next);
-        setCount(data.count);
-    });
+    if (route) {
+      api(`${route}?page=${currentPage}&search=${search}&page_size=${pageSize}`)
+        .then(data => {
+          setItems(data.results);
+          setPrev(data.previous);
+          setNext(data.next);
+          setCount(data.count);
+      }).catch(error => {
+        handlePaging(`${route}?search=${search}&page_size=${pageSize}`);
+      });
+    }
   }, [route, search, pageSize])
 
   useEffect(() => {

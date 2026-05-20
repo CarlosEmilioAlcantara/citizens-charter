@@ -16,47 +16,36 @@ export default function Pager({
   const totalPages = Math.ceil(count / pageSize);
 
   const getPages = (currentPage, totalPages) => {
-    if (totalPages === 1 || totalPages === 0) {
-      setCurrentPage(1);
-      return [1];
-    }
-
-    if (totalPages < currentPage) {
-      setCurrentPage(totalPages);
-    }
+    if (totalPages === 1 || totalPages === 0) { return [1] }
 
     const pages = [];
     const firstPage = 1;
     const lastPage = totalPages;
     const prevPage = currentPage - 1;
     const nextPage = currentPage + 1;
-
     pages.push(firstPage);
 
-    if (Math.abs(firstPage - prevPage) > 1) {
-      pages.push("...");
-    }
-
-    if (firstPage < prevPage) {
-      pages.push(prevPage);
-    }
+    if (Math.abs(firstPage - prevPage) > 1) { pages.push("...") }
+    if (firstPage < prevPage) { pages.push(prevPage) }
 
     if (currentPage !== firstPage && currentPage !== lastPage) {
       pages.push(currentPage);
     }
 
-    if (nextPage < lastPage) {
-      pages.push(nextPage);
-    }
-
-    if (Math.abs(nextPage - lastPage) > 1) {
-      pages.push("...");
-    }
+    if (nextPage < lastPage) { pages.push(nextPage) }
+    if (Math.abs(nextPage - lastPage) > 1) { pages.push("...") }
 
     pages.push(lastPage);
-
     return pages;
   };
+
+  useEffect(() => {
+    if (totalPages === 1 || totalPages === 0) {
+      setCurrentPage(1);
+    } else if (totalPages < currentPage) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage, setCurrentPage]);
 
   return(
     <div className="
