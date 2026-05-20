@@ -1,6 +1,7 @@
-export default function Overlay({ show, zIndex = 0 }) {
+export default function Overlay({ show, toggle, zIndex = 0 }) {
   return(
     <div
+      onClick={toggle}
       style={{ zIndex }}
       className={`
         fixed
