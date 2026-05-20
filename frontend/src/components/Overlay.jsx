@@ -1,4 +1,9 @@
-export default function Overlay({ show, toggle, zIndex = 0 }) {
+export default function Overlay({ 
+  show, 
+  toggle, 
+  transparent = false, 
+  zIndex = 0 
+}) {
   return(
     <div
       onClick={toggle}
@@ -6,7 +11,7 @@ export default function Overlay({ show, toggle, zIndex = 0 }) {
       className={`
         fixed
         inset-0
-        bg-black/60
+        ${transparent ? 'bg-black/0' : 'bg-black/60'}
         transition-opacity
         duration-300 
         ${show ? 'opacity-100' : 'opacity-0 pointer-events-none'}
