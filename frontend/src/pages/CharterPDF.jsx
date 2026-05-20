@@ -8,8 +8,8 @@ import { useRef, useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
+import { fetchAPI } from "../apis/fetchAPI";
 import { 
-  fetchCharterPDFs, 
   downloadCharterPDF, 
   generateCharterPDFs, 
   regenerateCharterPDF,
@@ -34,6 +34,8 @@ import Alert from "../components/Alert";
 
 export default function CharterPDF() {
   const [
+    route,
+    setRoute,
     items,
     search,
     setSearch,
@@ -46,12 +48,15 @@ export default function CharterPDF() {
     setCurrentPage,
     total,
     handlePaging,
-  ] = usePaging({ api: fetchCharterPDFs })
+  ] = usePaging({ api: fetchAPI })
   const [toast, setToast, loading, handleLoading] = useLoader();
-  const route = useRef("/api/pdf/citizens-charters")
   const { authTokens } = useContext(AuthContext);
 
   const [url, setUrl] = useState("");
+
+  useEffect(() => {
+    setRoute("/api/pdf/citizens-charters");
+  }, []);
 
   Object.entries(items).map(([key, data]) => {
     data["actions"] = (<Dropdown label={"Aksyon"} items={[
@@ -78,9 +83,11 @@ export default function CharterPDF() {
           }); 
           refreshList({
             handlePaging: handlePaging,
-            route: route.current,
+            route: route,
             currentPage: currentPage,
             setCurrentPage: setCurrentPage,
+            search: search,
+            pageSize: pageSize,
             timeout: 300,
           });
         },
@@ -101,9 +108,11 @@ export default function CharterPDF() {
           }) 
           refreshList({
             handlePaging: handlePaging,
-            route: route.current,
+            route: route,
             currentPage: currentPage,
             setCurrentPage: setCurrentPage,
+            search: search,
+            pageSize: pageSize,
             timeout: 300,
           });
         },
@@ -147,9 +156,11 @@ export default function CharterPDF() {
 
                 refreshList({
                   handlePaging: handlePaging,
-                  route: route.current,
+                  route: route,
                   currentPage: currentPage,
                   setCurrentPage: setCurrentPage,
+                  search: search,
+                  pageSize: pageSize,
                   timeout: 300,
                 });
               }}
@@ -188,9 +199,10 @@ export default function CharterPDF() {
               count={count}
               next={next}
               prev={prev}
-              fetchItems={handlePaging}
-              route={route.current}
+              search={search}
               pageSize={pageSize}
+              fetchItems={handlePaging}
+              route={route}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
             />

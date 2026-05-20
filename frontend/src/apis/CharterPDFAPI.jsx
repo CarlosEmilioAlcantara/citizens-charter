@@ -1,26 +1,3 @@
-const fetchCharterPDFs = async ({
-  page = null, 
-  search = "",
-  current_page = "",
-  page_size = "",
-}) => {
-  try {
-    const res = await fetch(
-      page ? page : 
-        `/api/pdf/citizens-charters?search=${search}&page=${current_page}&page_size=${page_size}`, 
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-    const data = await res.json();
-    if (res.ok) {
-      return data;
-    };
-  } catch (err) {
-    console.error(err);
-  }
-}
-
 const downloadCharterPDF = async (id) => {
   try {
     const res = await fetch(`/api/pdf/citizens-charter/download/${id}`, {
@@ -79,7 +56,6 @@ const deleteCharterPDF = async (authTokens, id) => {
 }
 
 export { 
-  fetchCharterPDFs, 
   downloadCharterPDF, 
   generateCharterPDFs,
   regenerateCharterPDF,

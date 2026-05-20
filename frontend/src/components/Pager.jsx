@@ -6,16 +6,18 @@ export default function Pager({
   count, 
   next, 
   prev, 
+  search,
+  pageSize,
   fetchItems, 
   route, 
-  pageSize,
   currentPage,
   setCurrentPage, 
 }) {
   const totalPages = Math.ceil(count / pageSize);
 
   const getPages = (currentPage, totalPages) => {
-    if (totalPages === 1) {
+    if (totalPages === 1 || totalPages === 0) {
+      setCurrentPage(1);
       return [1];
     }
 
@@ -52,6 +54,7 @@ export default function Pager({
     return pages;
   };
 
+  console.log(totalPages);
   return(
     <div className="
       flex 
@@ -61,7 +64,7 @@ export default function Pager({
     ">
       <span 
         onClick={() => {
-          fetchItems(`${route}?page=1`);
+          fetchItems(`${route}?page=1&search=${search}&page_size=${pageSize}`);
           setCurrentPage(1);
         }}
         className={`
@@ -104,7 +107,7 @@ export default function Pager({
             key={index} 
             onClick={() => {
               if (!isNaN(page)) {
-                fetchItems(`${route}?page=${page}`);
+                fetchItems(`${route}?page=${page}&search=${search}&page_size=${pageSize}`);
                 setCurrentPage(page);
               }
             }}
@@ -129,7 +132,7 @@ export default function Pager({
           setCurrentPage(Number(next.match(/page=(\d+)/).pop()) || totalPages);
         }}
         className={`
-          ${currentPage === totalPages ? 
+          ${currentPage === totalPages || totalPages === 0 ? 
             'bg-unfocused text-foreground pointer-events-none' : 
             'bg-accent text-background'
           }
@@ -146,11 +149,13 @@ export default function Pager({
       </span>
       <span 
         onClick={() => {
-          fetchItems(`${route}?page=last`);
+          fetchItems(
+            `${route}?page=last&search=${search}&page_size=${pageSize}`
+          );
           setCurrentPage(totalPages);
         }}
         className={`
-          ${currentPage === totalPages ? 
+          ${currentPage === totalPages || totalPages === 0 ? 
             'bg-unfocused text-foreground pointer-events-none' : 
             'bg-accent text-background'
           }
