@@ -21,6 +21,10 @@ export default function Pager({
       return [1];
     }
 
+    if (totalPages < currentPage) {
+      setCurrentPage(totalPages);
+    }
+
     const pages = [];
     const firstPage = 1;
     const lastPage = totalPages;
@@ -54,7 +58,6 @@ export default function Pager({
     return pages;
   };
 
-  console.log(totalPages);
   return(
     <div className="
       flex 
