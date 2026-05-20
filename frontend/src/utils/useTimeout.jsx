@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from "react";
-import useToggle from "./useToggle";
 
 export default function useTimeout({ 
   initialValue = false, 

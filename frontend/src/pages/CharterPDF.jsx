@@ -23,6 +23,7 @@ import refreshList from "../utils/refreshList";
 import Button from "../components/Button";
 import Search from "../components/Search";
 import PageSizeSelector from "../components/PageSizeSelector";
+import TableHeader from "../components/TableHeader";
 import Table from "../components/Table";
 import Dropdown from "../components/Dropdown";
 import DropdownItem from "../components/DropdownItem";
@@ -41,6 +42,8 @@ export default function CharterPDF() {
     setSearch,
     pageSize,
     setPageSize,
+    order,
+    setOrder,
     prev,
     next,
     count,
@@ -56,6 +59,7 @@ export default function CharterPDF() {
 
   useEffect(() => {
     setRoute("/api/pdf/citizens-charters");
+    setOrder("name");
   }, []);
 
   Object.entries(items).map(([key, data]) => {
@@ -88,6 +92,7 @@ export default function CharterPDF() {
             setCurrentPage: setCurrentPage,
             search: search,
             pageSize: pageSize,
+            order: order,
             timeout: 300,
           });
         },
@@ -113,6 +118,7 @@ export default function CharterPDF() {
             setCurrentPage: setCurrentPage,
             search: search,
             pageSize: pageSize,
+            order: order,
             timeout: 300,
           });
         },
@@ -161,6 +167,7 @@ export default function CharterPDF() {
                   setCurrentPage: setCurrentPage,
                   search: search,
                   pageSize: pageSize,
+                  order: order,
                   timeout: 300,
                 });
               }}
@@ -178,7 +185,10 @@ export default function CharterPDF() {
           </div>
 
           <Table 
-            headers={["PDF", "Actions"]}
+            headers={[
+              <TableHeader label={"PDF"} order={order} setOrder={setOrder}/>, 
+              "Actions",
+            ]}
             body={items}
             charterList={true}
           />
