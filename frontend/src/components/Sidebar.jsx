@@ -1,5 +1,6 @@
-import { useState, useContext, useEffect } from "react";
 import AuthContext from "../context/AuthContext";
+import { useState, useContext } from "react";
+import { navItems } from "../stores/navItems";
 import { Link } from "react-router-dom"
 import { GiHamburgerMenu } from "react-icons/gi";
 import { 
@@ -22,74 +23,7 @@ import useToggle from "../utils/useToggle";
 export default function Sidebar() {
   const { user, logoutUser } = useContext(AuthContext);
   const [state, toggle] = useToggle(false);
-  const [location, setLocation] = useState("");
-
-  const [links, setLinks] = useState({
-    "Dashboard": {
-      "link": "/dashboard",
-      "icon": <FaHome />,
-      "staff": false,
-      "superuser": false,
-    },
-    "Charter": {
-      "link": "/charter",
-      "icon": <IoDocumentTextSharp />,
-      "staff": false,
-      "superuser": false,
-    },
-    "Analytics": {
-      "link": "/analytics",
-      "icon": <FaChartBar />,
-      "staff": true,
-      "superuser": false,
-    },
-    "Sectors": {
-      "link": "/sectors",
-      "icon": <HiBuildingOffice2 />,
-      "staff": true,
-      "superuser": true,
-    },
-    "Offices": {
-      "link": "/offices",
-      "icon": <HiBuildingOffice />,
-      "staff": true,
-      "superuser": true,
-    },
-    "Users": {
-      "link": "/users",
-      "icon": <FaUsers />,
-      "staff": true,
-      "superuser": true,
-    },
-    "Charter Audit": {
-      "link": "/charter-audit",
-      "icon": <TbWritingFilled />,
-      "staff": true,
-      "superuser": true,
-    },
-    "Admin Audit": {
-      "link": "/staff-audit",
-      "icon": <FaClipboardUser />,
-      "staff": true,
-      "superuser": true,
-    },
-    "Charter PDFs": {
-      "link": "/charter-pdfs",
-      "icon": <ImBooks />,
-      "staff": true,
-      "superuser": true,
-    },
-    "Data Backup": {
-      "link": "/data-backup",
-      "icon": <FaDatabase />,
-      "staff": true,
-      "superuser": true,
-    },
-  });
-
-  useEffect(() => {
-    setLocation(window.location.pathname);
-  }, []);
+  const [links, _] = useState({...navItems});
 
   return(
     <>
@@ -133,18 +67,12 @@ export default function Sidebar() {
         </i>
 
         <div
-          style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
-          className={`
-            hidden
-            p-2
-            text-2xl
-            md:block
-        `}>
+          className="hidden p-2 text-2xl transition-all duration-500 md:block"
+        >
         </div>
       </div>
 
       <div 
-        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
         className={`
           fixed
           top-0
@@ -160,8 +88,8 @@ export default function Sidebar() {
           border-accent
           text-xl
           text-accent
-          transform 
-          transition-transform
+          transition-all
+          duration-500
           ${state ? 'opacity-100 z-30' : 'opacity-0'}
           md:hidden 
         `}
@@ -183,7 +111,6 @@ export default function Sidebar() {
                 <li key={key} className="w-full">
                   <Link 
                     to={value.link}
-                    style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
                     className={`
                       flex 
                       gap-3 
@@ -191,13 +118,15 @@ export default function Sidebar() {
                       items-center 
                       p-2
                       cursor-pointer
+                      transition-all
+                      duration-300
                     hover:bg-active
                     hover:text-confirm-hover
                     focus:bg-active
                     focus:text-confirm-hover
                     active:bg-active
                     active:text-confirm-hover
-                      ${location === value.link && (
+                      ${window.location.pathname === value.link && (
                         'bg-active text-confirm-hover'
                       )}
                   `}>
@@ -213,7 +142,6 @@ export default function Sidebar() {
                 <li key={key} className="w-full">
                   <Link 
                     to={value.link}
-                    style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
                     className={`
                       flex 
                       gap-3 
@@ -221,13 +149,15 @@ export default function Sidebar() {
                       items-center 
                       p-2
                       cursor-pointer
+                      transition-all
+                      duration-300
                     hover:bg-active
                     hover:text-confirm-hover
                     focus:bg-active
                     focus:text-confirm-hover
                     active:bg-active
                     active:text-confirm-hover
-                      ${location === value.link && (
+                      ${window.location.pathname === value.link && (
                         'bg-active text-confirm-hover'
                       )}
                   `}>
@@ -243,7 +173,6 @@ export default function Sidebar() {
                 <li key={key} className="w-full">
                   <Link 
                     to={value.link}
-                    style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
                     className={`
                       flex 
                       gap-3 
@@ -251,13 +180,15 @@ export default function Sidebar() {
                       items-center 
                       p-2
                       cursor-pointer
+                      transition-all
+                      duration-300
                     hover:bg-active
                     hover:text-confirm-hover
                     focus:bg-active
                     focus:text-confirm-hover
                     active:bg-active
                     active:text-confirm-hover
-                      ${location === value.link && (
+                      ${window.location.pathname === value.link && (
                         'bg-active text-confirm-hover'
                       )}
                     `}>
@@ -270,7 +201,6 @@ export default function Sidebar() {
             <li onClick={logoutUser} className="w-full">
               <Link
                 to="/logout"
-                style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
                 className="
                   flex 
                   gap-3 
@@ -278,6 +208,8 @@ export default function Sidebar() {
                   items-center 
                   p-2
                   cursor-pointer
+                  transition-all
+                  duration-300
                 hover:bg-active
                 hover:text-confirm-hover
                 focus:bg-active
@@ -306,7 +238,6 @@ export default function Sidebar() {
       </div>
 
       <div 
-        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
         className={`
           hidden
           fixed
@@ -323,8 +254,8 @@ export default function Sidebar() {
           bg-background 
           border-accent
           overflow-hidden
-          transform 
-          transition-transform
+          transition-all
+          duration-500
           md:flex
           ${state ? 'md:w-55' : 'md:w-15'}
           z-30
@@ -347,7 +278,6 @@ export default function Sidebar() {
               </div>
 
               <div 
-                style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
                 className={`
                   flex
                   flex-col 
@@ -357,8 +287,8 @@ export default function Sidebar() {
                   text-center
                   tracking-wider 
                   text-nowrap
-                  transform 
-                  transition-transform
+                  transition-all
+                  duration-500
                   ${state ? 'opacity-100' : 'opacity-0'}
               `}>
                 <p className="text-sm">Citizen's Charter <br />System</p>
@@ -378,7 +308,6 @@ export default function Sidebar() {
                   <li key={key}>
                     <Link 
                       to={value.link}
-                      style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
                       className={`
                         flex 
                         gap-3 
@@ -386,23 +315,24 @@ export default function Sidebar() {
                         px-4 
                         py-2
                         cursor-pointer
+                        transition-all
+                        duration-300
                       hover:bg-active
                       hover:text-confirm-hover
                       focus:bg-active
                       focus:text-confirm-hover
                       active:bg-active
                       active:text-confirm-hover
-                        ${location === value.link && (
+                        ${window.location.pathname === value.link && (
                           'bg-active text-confirm-hover'
                         )}
                     `}>
                       <i>{value.icon}</i>
                       <p 
-                        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
                         className={`
                           text-xl 
-                          transform 
-                          transition-transform
+                          transition-all
+                          duration-500
                           ${state ? 'opacity-100' : 'opacity-0'}
                       `}>
                         {key}
@@ -417,7 +347,6 @@ export default function Sidebar() {
                   <li key={key}>
                     <Link 
                       to={value.link}
-                      style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
                       className={`
                         flex 
                         gap-3 
@@ -425,23 +354,24 @@ export default function Sidebar() {
                         px-4 
                         py-2
                         cursor-pointer
+                        transition-all
+                        duration-300
                       hover:bg-active
                       hover:text-confirm-hover
                       focus:bg-active
                       focus:text-confirm-hover
                       active:bg-active
                       active:text-confirm-hover
-                        ${location === value.link && (
+                        ${window.location.pathname === value.link && (
                           'bg-active text-confirm-hover'
                         )}
                     `}>
                       <i>{value.icon}</i>
                       <p 
-                        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
                         className={`
                           text-xl 
-                          transform 
-                          transition-transform
+                          transition-all
+                          duration-500
                           ${state ? 'opacity-100' : 'opacity-0'}
                       `}>
                         {key}
@@ -456,7 +386,6 @@ export default function Sidebar() {
                   <li key={key}>
                     <Link 
                       to={value.link}
-                      style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
                       className={`
                         flex 
                         gap-3 
@@ -464,23 +393,24 @@ export default function Sidebar() {
                         px-4 
                         py-2
                         cursor-pointer
+                        transition-all
+                        duration-300
                       hover:bg-active
                       hover:text-confirm-hover
                       focus:bg-active
                       focus:text-confirm-hover
                       active:bg-active
                       active:text-confirm-hover
-                        ${location === value.link && (
+                        ${window.location.pathname === value.link && (
                           'bg-active text-confirm-hover'
                         )}
                     `}>
                       <i>{value.icon}</i>
                       <p 
-                        style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
                         className={`
                           text-xl 
-                          transform 
-                          transition-transform
+                          transition-all
+                          duration-500
                           ${state ? 'opacity-100' : 'opacity-0'}
                       `}>
                         {key}
@@ -491,11 +421,12 @@ export default function Sidebar() {
 
               <i 
                 onClick={toggle} 
-                style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
                 className="
                   cursor-pointer 
                   px-4 
                   py-2 
+                  transition-all
+                  duration-300
                   hover:bg-active
                   hover:text-confirm-hover
                   focus:bg-active
@@ -506,18 +437,13 @@ export default function Sidebar() {
                 {state ? (
                   <FaChevronLeft 
                     size={24}
-                    style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
-                    className="transform transition-transform"
+                    className="transition-all duration-500"
                   />
                 ) : (
                   <FaChevronLeft 
                     size={24} 
-                    style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
-                    className="
-                      scale-x-[-1]
-                      transform 
-                      transition-transform
-                  "/>
+                    className="scale-x-[-1] transition-all duration-500"
+                  />
                 )}
               </i>
             </ul>
@@ -526,7 +452,6 @@ export default function Sidebar() {
           <div className="flex flex-col bg-accent text-background">
             <Link to="/logout"
               onClick={logoutUser} 
-              style={{ transition: "all 0.3s ease, all 0.3s ease" }} 
               className="
                 hidden  
                 px-4 
@@ -534,6 +459,8 @@ export default function Sidebar() {
                 gap-3 
                 items-center 
                 cursor-pointer
+                transition-all
+                duration-300
                 md:flex
                 hover:bg-active
                 hover:text-confirm-hover
@@ -544,11 +471,10 @@ export default function Sidebar() {
             ">
               <i className="text-2xl"><RiLogoutBoxRFill /></i>
               <p 
-                style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
                 className={`
                   text-xl 
-                  transform 
-                  transition-transform
+                  transition-all
+                  duration-500
                   ${state ? 'opacity-100' : 'opacity-0'}
               `}>
                 Logout
@@ -565,10 +491,9 @@ export default function Sidebar() {
                 md:text-left
             ">
               MISO <span 
-                style={{ transition: "all 0.5s ease, all 0.5s ease" }} 
                 className={`
-                  transform 
-                  transition-transform
+                  transition-all
+                  duration-500
                   ${state ? 'opacity-100' : 'opacity-0'}
                 `}>
                   made software

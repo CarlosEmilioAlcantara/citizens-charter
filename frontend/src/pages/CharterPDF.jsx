@@ -1,10 +1,4 @@
-// TODO;
-// [*] 1) Generate pdfs
-// [*] 2) Regnerate pdf
-// [*] 3) Download pdf
-// [*] 4) Delete pdf
-
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
@@ -60,10 +54,10 @@ export default function CharterPDF() {
   useEffect(() => {
     setRoute("/api/pdf/citizens-charters");
     setOrder("name");
-  }, []);
+  }, [setRoute, setOrder]);
 
   Object.entries(items).map(([key, data]) => {
-    data["actions"] = (<Dropdown label={"Aksyon"} items={[
+    data["actions"] = (<Dropdown key={key} label={"Aksyon"} items={[
       {
         "name": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
         "function": () => {setUrl(data["pdf"])},
@@ -123,7 +117,8 @@ export default function CharterPDF() {
           });
         },
       },
-    ]}/>);
+    ]}
+    />);
   })
 
   return(
