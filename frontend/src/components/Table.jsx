@@ -7,7 +7,7 @@ export default function Table({
   charterList = false,
 }) {
   return (
-    <div className="rounded-t-lg overflow-hidden">
+    <div className="rounded-t-lg overflow-y-hidden">
       <table className="table-fixed w-full">
         <thead className="
           table 

@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import ReactDom from 'react-dom';
 import { FaXmark } from "react-icons/fa6";
 import { FaPrint } from "react-icons/fa";
@@ -10,7 +9,6 @@ export default function PDFViewer({ url, onClose }) {
 
   return ReactDom.createPortal(
     <>
-      <Overlay show={show} zIndex={40} />
 
       <div className={`
         fixed 
@@ -19,13 +17,14 @@ export default function PDFViewer({ url, onClose }) {
         flex
         justify-center
         items-center
-        w-screen
-        h-screen
+        w-full
+        h-full
         transition-opacity 
         duration-300 
         ${show ? 'opacity-100' : 'opacity-0'}
         z-50
       `}>
+        <Overlay show={show} zIndex={40} toggle={handleClose} />
         <div className="
           relative
           flex
@@ -35,6 +34,7 @@ export default function PDFViewer({ url, onClose }) {
           rounded-lg
           bg-background
           overflow-hidden
+          z-50
         ">
           <div className="
             absolute 

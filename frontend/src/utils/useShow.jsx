@@ -9,12 +9,13 @@ export default function useShow({
 
   useEffect(() => {
     const enter = setTimeout(() => setShow(true), 10);
-    return () => { clearTimeout(enter); };
+    return () => clearTimeout(enter);
   }, []);
 
   const handleClose = () => {
     setShow(false);
-    setTimeout(() => onClose?.(), timeout);
+    const close = setTimeout(() => onClose?.(), timeout);
+    return () => clearTimeout(close);
   }
 
   return [show, handleClose];

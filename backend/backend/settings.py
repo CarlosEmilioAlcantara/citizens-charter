@@ -14,6 +14,7 @@ import os
 import environ
 from datetime import timedelta
 from pathlib import Path
+from django.utils.csp import CSP
 
 env = environ.Env()
 environ.Env.read_env()
@@ -60,8 +61,13 @@ MIDDLEWARE = [
     # 'api.middleware.DebugUserMiddleware',
     # 'auditlog.middleware.AuditlogMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.csp.ContentSecurityPolicyMiddleware',
 ]
+
+SECURE_CSP = {
+    "default-src": [CSP.SELF],
+    "frame-ancestors": [CSP.SELF, 'http://localhost:5173'],
+}
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -102,7 +108,6 @@ SIMPLE_JWT = {
     'CHECK_USER_IS_ACTIVE': True,
 }
 
-X_FRAME_OPTIONS = "SAMEORIGIN"
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
