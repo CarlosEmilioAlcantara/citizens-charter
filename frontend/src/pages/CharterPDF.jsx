@@ -15,6 +15,8 @@ import useLoader from "../utils/useLoader";
 import usePaging from "../utils/usePaging";
 import useTableControls from "../utils/useTableControls";
 import refreshList from "../utils/refreshList";
+import useWindowWidth from "../utils/useWindowWidth";
+import { isNotMobile } from "../utils/isNotMobile";
 import Button from "../components/Button";
 import Search from "../components/Search";
 import PageSizeSelector from "../components/PageSizeSelector";
@@ -56,6 +58,7 @@ export default function CharterPDF() {
     toggleDropdown,
   } = useTableControls();
   const [toast, setToast, loading, handleLoading] = useLoader();
+  const [windowWidth] = useWindowWidth();
   const [url, setUrl] = useState("");
 
   useEffect(() => {
@@ -73,7 +76,10 @@ export default function CharterPDF() {
       items={[
       {
         "name": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
-        "function": () => {setUrl(data["pdf"])},
+        "function": () => {
+          isNotMobile(windowWidth) ? 
+          setUrl(data["pdf"]) : window.open(data["pdf"], "_blank");
+        },
       },
       {
         "name": <DropdownItem 

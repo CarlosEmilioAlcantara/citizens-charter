@@ -12,7 +12,7 @@ import { isNotMobile } from "../utils/isNotMobile";
 export default function Navigation() {
   const { user, logoutUser } = useContext(AuthContext);
   const [state, toggle] = useToggle(false);
-  const [windowWidth] = useWindowWidth({});
+  const [windowWidth] = useWindowWidth();
   const [links, _] = useState({...navItems});
 
   return(
