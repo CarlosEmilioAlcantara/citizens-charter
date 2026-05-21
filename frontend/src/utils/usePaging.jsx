@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export default function usePaging({ api }) {
   const [route, setRoute] = useState("");
@@ -12,7 +12,7 @@ export default function usePaging({ api }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(null);
 
-  const handlePaging = async (route) => {
+  const handlePaging = useCallback(async (route) => {
     try {
       const data = await api(route);
 
@@ -21,10 +21,10 @@ export default function usePaging({ api }) {
       setNext(data.next);
       setCount(data.count);
       return true;
-    } catch (err) {
+    } catch {
       return false;
     }
-  }
+  }, [api]);
 
   useEffect(() => {
     if (route) {
@@ -36,13 +36,13 @@ export default function usePaging({ api }) {
         setPrev(data.previous);
         setNext(data.next);
         setCount(data.count);
-    }).catch(error => {
+    }).catch(() => {
       handlePaging(
         `${route}?search=${search}&page_size=${pageSize}&ordering=${order}`
       );
     });
     }
-  }, [route, search, pageSize, order])
+  }, [api, route, search, currentPage, handlePaging, pageSize, order])
 
   useEffect(() => {
     setTotal(items.length)

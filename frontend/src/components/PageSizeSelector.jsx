@@ -1,47 +1,57 @@
 import Dropdown from "./Dropdown";
 
-export default function PageSizeSelector({ label, setValue }) {
+export default function PageSizeSelector({ 
+  label, 
+  isOpen, 
+  toggle, 
+  setPageSize 
+}) {
   return(
-    <Dropdown label={`${label} Rows`} sizeSelector={true} items={[
+    <Dropdown 
+      isOpen={isOpen}
+      toggle={toggle}
+      label={`${label} Rows`} 
+      sizeSelector={true} 
+      items={[
       {
         "name": "10 Rows",
-        "function": (e) => {setValue(value => 10)}
+        "function": () => {setPageSize(10)}
       },
       {
         "name": "20 Rows",
-        "function": (e) => {setValue(value => 20)}
+        "function": () => {setPageSize(20)}
       },
       {
         "name": "30 Rows",
-        "function": (e) => {setValue(value => 30)}
+        "function": () => {setPageSize(30)}
       },
       {
         "name": "40 Rows",
-        "function": (e) => {setValue(value => 40)}
+        "function": () => {setPageSize(40)}
       },
       {
         "name": "50 Rows",
-        "function": (e) => {setValue(value => 50)}
+        "function": () => {setPageSize(50)}
       },
       {
         "name": "60 Rows",
-        "function": (e) => {setValue(value => 60)}
+        "function": () => {setPageSize(60)}
       },
       {
         "name": "70 Rows",
-        "function": (e) => {setValue(value => 70)}
+        "function": () => {setPageSize(70)}
       },
       {
         "name": "80 Rows",
-        "function": (e) => {setValue(value => 80)}
+        "function": () => {setPageSize(80)}
       },
       {
         "name": "90 Rows",
-        "function": (e) => {setValue(value => 90)}
+        "function": () => {setPageSize(90)}
       },
       {
         "name": "100 Rows",
-        "function": (e) => {setValue(value => 100)}
+        "function": () => {setPageSize(100)}
       },
     ]}/>
   );

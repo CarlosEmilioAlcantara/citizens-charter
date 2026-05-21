@@ -17,7 +17,8 @@ export default function Navigation() {
 
   return(
     <>
-      <Overlay show={state} toggle={toggle} zIndex={20}/>
+      <Overlay show={state} toggle={toggle} zIndex={30}/>
+
       {!isNotMobile(windowWidth) && (
         <Topbar state={state} toggle={toggle} />
       )}

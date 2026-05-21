@@ -13,6 +13,7 @@ import { FaEye, FaFileDownload, FaPrint, FaTrashAlt } from "react-icons/fa";
 import { TbReload } from "react-icons/tb";
 import useLoader from "../utils/useLoader";
 import usePaging from "../utils/usePaging";
+import useDropdown from "../utils/useDropdown";
 import refreshList from "../utils/refreshList";
 import Button from "../components/Button";
 import Search from "../components/Search";
@@ -46,6 +47,8 @@ export default function CharterPDF() {
     total,
     handlePaging,
   ] = usePaging({ api: fetchAPI })
+  const [dropdown, setDropdown] = useDropdown(null);
+  const [pageSizeSelector, setPageSizeSelector] = useState(false);
   const [toast, setToast, loading, handleLoading] = useLoader();
   const { authTokens } = useContext(AuthContext);
 
@@ -57,7 +60,16 @@ export default function CharterPDF() {
   }, [setRoute, setOrder]);
 
   Object.entries(items).map(([key, data]) => {
-    data["actions"] = (<Dropdown key={key} label={"Aksyon"} items={[
+    data["actions"] = (
+    <Dropdown 
+      key={key} 
+      label={"Aksyon"} 
+      isOpen={dropdown === key}
+      toggle={() => {
+        setDropdown(dropdown === key ? null : key);
+        setPageSizeSelector(false);
+      }}
+      items={[
       {
         "name": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
         "function": () => {setUrl(data["pdf"])},
@@ -175,7 +187,15 @@ export default function CharterPDF() {
                 setValue={setSearch}
               />
 
-              <PageSizeSelector label={pageSize} setValue={setPageSize} />
+              <PageSizeSelector 
+                label={pageSize} 
+                setPageSize={setPageSize} 
+                isOpen={pageSizeSelector}
+                toggle={() => {
+                  setPageSizeSelector(prev => !prev);
+                  setDropdown(null);
+                }}
+              />
             </div>
           </div>
 

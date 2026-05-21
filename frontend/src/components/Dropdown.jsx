@@ -1,17 +1,20 @@
 import { FaChevronDown } from "react-icons/fa";
-import useToggle from "../utils/useToggle";
 import Overlay from "./Overlay";
 
 export default function Dropdown({ 
+  isOpen,
+  toggle,
   label = "Action", 
   sizeSelector = false, 
   items,
 }) {
-  const [state, toggle] = useToggle(false);
-
   return(
     <>
-      <Overlay show={state} toggle={toggle} transparent={true} />
+      <Overlay 
+        show={isOpen} 
+        toggle={toggle}
+        transparent={true} 
+      />
       <div className="relative flex flex-col items-center gap-1">
         <div 
           onClick={toggle}
@@ -33,10 +36,11 @@ export default function Dropdown({
             cursor-pointer
             transition-all
             duration-300
+            z-10
             hover:bg-confirm-hover
         `}>
           <span className="w-[24px]">
-            {state ? (
+            {isOpen ? (
               <FaChevronDown 
                 size={24} 
                 className="scale-y-[-1] transition-all duration-300"
@@ -62,7 +66,7 @@ export default function Dropdown({
           border 
           border-accent
           rounded-sm
-          ${state ? 'opacity-100 z-10' : 'opacity-0 -z-10'}
+          ${isOpen ? 'opacity-100 z-20' : 'opacity-0 -z-10'}
           transition-all
           duration-300
         `}>
@@ -75,8 +79,9 @@ export default function Dropdown({
                 className={`
                   flex
                   ${sizeSelector ? 'justify-center' : 'justify-end'}
-                  ${state ? 'cursor-pointer' : ''}
-                  ${state ? 'z-10' : '-z-10'}
+                  ${isOpen ? 'cursor-pointer' : ''}
+                  ${isOpen ? 'z-10' : '-z-10'
+                  }
                   transition-all 
                   duration-300
                   hover:bg-active
