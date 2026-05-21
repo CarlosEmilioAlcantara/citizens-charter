@@ -21,6 +21,7 @@ export default function Button({
         cursor-pointer
         transition-all
         duration-300
+        z-10
         ${large && 'md:text-lg'}
         hover:bg-confirm-hover
         focus:bg-confirm-hover

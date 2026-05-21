@@ -15,9 +15,11 @@ export default function Dropdown({
         toggle={toggle}
         transparent={true} 
       />
-      <div className="relative flex flex-col items-center gap-1">
+      <div 
+        onClick={toggle} 
+        className="relative flex flex-col items-center gap-1"
+      >
         <div 
-          onClick={toggle}
           className={`
             ${sizeSelector && 'w-30'}
             relative

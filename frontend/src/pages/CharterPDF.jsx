@@ -159,7 +159,10 @@ export default function CharterPDF() {
             <Button 
               label={"Lumikha PDFs"} 
               icon={<FaPrint />} 
-              onClick={ async () => {
+              onClick={async () => {
+                setDropdown(null);
+                setPageSizeSelector(false);
+
                 await handleLoading({
                   api: generateCharterPDFs, 
                   authTokens: authTokens, 
@@ -185,6 +188,10 @@ export default function CharterPDF() {
                 placeholder={"Ngalan ng opisina"} 
                 value={search} 
                 setValue={setSearch}
+                onClick={() => {
+                  setDropdown(null);
+                  setPageSizeSelector(false);
+                }}
               />
 
               <PageSizeSelector 
@@ -201,7 +208,15 @@ export default function CharterPDF() {
 
           <Table 
             headers={[
-              <TableHeader label={"PDF"} order={order} setOrder={setOrder}/>, 
+              <TableHeader 
+                label={"PDF"} 
+                order={order} 
+                setOrder={setOrder} 
+                onClick={() => {
+                  setDropdown(null);
+                  setPageSizeSelector(false);
+                }}
+              />, 
               "Actions",
             ]}
             body={items}
@@ -230,6 +245,10 @@ export default function CharterPDF() {
               route={route}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
+              onClick={() => {
+                setDropdown(null);
+                setPageSizeSelector(false);
+              }}
             />
           </div>
 

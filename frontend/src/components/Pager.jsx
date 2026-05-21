@@ -12,6 +12,7 @@ export default function Pager({
   route, 
   currentPage,
   setCurrentPage, 
+  onClick,
 }) {
   const totalPages = Math.ceil(count / pageSize);
 
@@ -48,11 +49,14 @@ export default function Pager({
   }, [totalPages, currentPage, setCurrentPage]);
 
   return(
-    <div className="
-      flex 
-      items-center 
-      rounded-xl
-      overflow-hidden 
+    <div 
+      onClick={onClick}
+      className="
+        flex 
+        items-center 
+        rounded-xl
+        overflow-hidden 
+        z-10
     ">
       <span 
         onClick={() => {

@@ -1,27 +1,30 @@
 import { FaSearch } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6"
 
-export default function Search({ placeholder, value, setValue }) {
+export default function Search({ placeholder, value, setValue, onClick }) {
   return(
-    <div className="
-      flex
-      items-center
-      gap-2
-      w-full
-      py-1
-      px-2
-      border
-      border-foreground
-      rounded-sm
-      focus-within:ring-2
-      focus-within:ring-accent/50
+    <div 
+      onClick={onClick}
+      className="
+        flex
+        items-center
+        gap-2
+        w-full
+        py-1
+        px-2
+        border
+        border-foreground
+        rounded-sm
+        focus-within:ring-2
+        focus-within:ring-accent/50
+        z-10
     ">
       <FaSearch />
       <input 
         type="text"
         placeholder={placeholder}
         value={value}
-        onChange={(e) => setValue(value => e.target.value)}
+        onChange={(e) => setValue(e.target.value)}
         className="
           w-full 
           text-foreground 

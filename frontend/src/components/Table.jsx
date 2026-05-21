@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import Pager from "./Pager";
 
 export default function Table({ 
@@ -6,7 +5,6 @@ export default function Table({
   body, 
   hideID = false, 
   charterList = false,
-  setTotal = null,
 }) {
   return (
     <div className="rounded-t-lg overflow-hidden">
