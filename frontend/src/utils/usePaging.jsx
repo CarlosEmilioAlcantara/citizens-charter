@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-export default function usePaging({ api }) {
+export default function usePaging(api) {
   const [route, setRoute] = useState("");
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");

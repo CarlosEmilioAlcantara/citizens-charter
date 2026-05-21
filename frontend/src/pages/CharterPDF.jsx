@@ -13,7 +13,7 @@ import { FaEye, FaFileDownload, FaPrint, FaTrashAlt } from "react-icons/fa";
 import { TbReload } from "react-icons/tb";
 import useLoader from "../utils/useLoader";
 import usePaging from "../utils/usePaging";
-import useDropdown from "../utils/useDropdown";
+import useTableControls from "../utils/useTableControls";
 import refreshList from "../utils/refreshList";
 import Button from "../components/Button";
 import Search from "../components/Search";
@@ -29,6 +29,7 @@ import Loader from "../components/Loader";
 import Alert from "../components/Alert";
 
 export default function CharterPDF() {
+  const { authTokens } = useContext(AuthContext);
   const [
     route,
     setRoute,
@@ -46,12 +47,15 @@ export default function CharterPDF() {
     setCurrentPage,
     total,
     handlePaging,
-  ] = usePaging({ api: fetchAPI })
-  const [dropdown, setDropdown] = useDropdown(null);
-  const [pageSizeSelector, setPageSizeSelector] = useState(false);
+  ] = usePaging(fetchAPI)
+  const {
+    dropdown, 
+    pageSizeSelector, 
+    closeControls,
+    togglePageSizeSelector,
+    toggleDropdown,
+  } = useTableControls();
   const [toast, setToast, loading, handleLoading] = useLoader();
-  const { authTokens } = useContext(AuthContext);
-
   const [url, setUrl] = useState("");
 
   useEffect(() => {
@@ -65,10 +69,7 @@ export default function CharterPDF() {
       key={key} 
       label={"Aksyon"} 
       isOpen={dropdown === key}
-      toggle={() => {
-        setDropdown(dropdown === key ? null : key);
-        setPageSizeSelector(false);
-      }}
+      toggle={() => toggleDropdown(key)}
       items={[
       {
         "name": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
@@ -160,8 +161,7 @@ export default function CharterPDF() {
               label={"Lumikha PDFs"} 
               icon={<FaPrint />} 
               onClick={async () => {
-                setDropdown(null);
-                setPageSizeSelector(false);
+                closeControls();
 
                 await handleLoading({
                   api: generateCharterPDFs, 
@@ -188,20 +188,14 @@ export default function CharterPDF() {
                 placeholder={"Ngalan ng opisina"} 
                 value={search} 
                 setValue={setSearch}
-                onClick={() => {
-                  setDropdown(null);
-                  setPageSizeSelector(false);
-                }}
+                onClick={() => closeControls()}
               />
 
               <PageSizeSelector 
                 label={pageSize} 
                 setPageSize={setPageSize} 
                 isOpen={pageSizeSelector}
-                toggle={() => {
-                  setPageSizeSelector(prev => !prev);
-                  setDropdown(null);
-                }}
+                toggle={() => togglePageSizeSelector()}
               />
             </div>
           </div>
@@ -212,10 +206,7 @@ export default function CharterPDF() {
                 label={"PDF"} 
                 order={order} 
                 setOrder={setOrder} 
-                onClick={() => {
-                  setDropdown(null);
-                  setPageSizeSelector(false);
-                }}
+                onClick={() => closeControls()}
               />, 
               "Actions",
             ]}
@@ -245,10 +236,7 @@ export default function CharterPDF() {
               route={route}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              onClick={() => {
-                setDropdown(null);
-                setPageSizeSelector(false);
-              }}
+              onClick={() => closeControls()}
             />
           </div>
 

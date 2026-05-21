@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, Suspense } from "react";
+import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import Overlay from "../components/Overlay";
 import Input from "../components/Input";
@@ -7,11 +7,11 @@ import Alert from "../components/Alert";
 import Button from "../components/Button";
 
 export default function Login() {
+  const { loginUser } = useContext(AuthContext);
   const [value, setValue] = useState({
     name: '',
     password: '',
   })
-  const { loginUser } = useContext(AuthContext);
   const [toast, setToast] = useState(null);
   const [data, setData] = useState({});
 
