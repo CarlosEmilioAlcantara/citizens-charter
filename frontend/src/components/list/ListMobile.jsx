@@ -53,8 +53,11 @@ export default function ListMobile({
               )
             ) || charterList && (
                 <>
-                  <span key={Object.keys(data)[1]}>
-                    {Object.values(data)[1]}
+                  <span 
+                    key={Object.keys(data)[1]} 
+                    className="font-bold text-center"
+                  >
+                    <p className="mb-2">{Object.values(data)[1]}</p>
                   </span>
                   <span key={Object.keys(data)[4]}>
                     {Object.values(data)[4]}
