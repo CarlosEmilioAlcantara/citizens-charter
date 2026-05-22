@@ -1,14 +1,20 @@
 import Button from "./Button"
 
-export default function ButtonGroup({ items }) {
+export default function ButtonGroup({ buttons }) {
+  const rows = [];
+  for (let i = 0; i < buttons.length; i += 2) {
+    rows.push(buttons.slice(i, i + 2));
+  }
+
   return(
-    items.map((item, index) => (
-      <Button 
-        key={index} 
-        label={item.label} 
-        icon={item.icon} 
-        onClick={item.function} 
-      />
-    ))
+    <div className="flex flex-col gap-1">
+      {rows.map((row, index) => (
+        <div key={index} className="flex gap-1 w-full justify-between">
+          {row.map((button, index) => (
+            <span key={index} className="w-1/2">{button}</span>
+          ))}
+        </div>
+      ))}
+    </div>
   )
 }

@@ -62,9 +62,15 @@ export default function Table({
                     </td>
                     <td 
                       key={Object.keys(data)[1]} 
-                      className="flex justify-end px-6 p-[6px]"
+                      className="px-6 p-[6px]"
                     >
                       {Object.values(data)[1]}
+                    </td>
+                    <td 
+                      key={Object.keys(data)[2]} 
+                      className="flex justify-end px-6 p-[6px]"
+                    >
+                      {Object.values(data)[2]}
                     </td>
                   </>
                 ) : (
@@ -73,26 +79,23 @@ export default function Table({
                       {Object.values(data)[0]}
                     </td>
                     <td 
-                      key={Object.keys(data)[1]}
-                      className="flex justify-end px-6 p-[6px]"
+                      key={Object.keys(data)[1]} 
+                      className="px-6 p-[6px]"
                     >
                       {Object.values(data)[1]}
+                    </td>
+                    <td 
+                      key={Object.keys(data)[2]} 
+                      className="flex justify-end px-6 p-[6px]"
+                    >
+                      {Object.values(data)[2]}
                     </td>
                   </>
                 )
               ) || charterList && (
                 <>
-                  <td key={Object.keys(data)[0]} className="hidden">
-                    {Object.values(data)[0]}
-                  </td>
                   <td key={Object.keys(data)[1]} className="px-6 p-[6px]">
                     {Object.values(data)[1]}
-                  </td>
-                  <td key={Object.keys(data)[2]} className="hidden">
-                    {Object.values(data)[2]}
-                  </td>
-                  <td key={Object.keys(data)[3]} className="hidden">
-                    {Object.values(data)[3]}
                   </td>
                   <td 
                     key={Object.keys(data)[4]} 
@@ -103,8 +106,7 @@ export default function Table({
                 </>
               ) || (
                 Object.entries(data).map(([key, value]) => (
-                  hideID && key == "id" || key == "pdf" ? (
-                  // hideID && key == "id" ? (
+                  hideID && key == "id" ? (
                     <td className="hidden" key={key}>{value}</td>
                   ) : (
                     <td className="px-6 p-[6px]" key={key}>{value}</td>

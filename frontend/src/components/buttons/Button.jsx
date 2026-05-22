@@ -1,8 +1,10 @@
 export default function Button({ 
   label, 
+  icon = null,
   onClick = null, 
   large = false,
-  icon = null,
+  full = false,
+  remove = false,
 }) {
   return(
     <button
@@ -12,10 +14,10 @@ export default function Button({
         justify-center
         items-center
         gap-2
-        w-auto
+        ${full ? 'w-full' : 'w-auto'}
         ${large ? 'p-2' : 'px-2 py-1'}
         rounded-sm
-        bg-accent 
+        ${remove ? 'bg-danger' : 'bg-accent'}
         text-md
         text-background 
         cursor-pointer
@@ -23,9 +25,9 @@ export default function Button({
         duration-300
         z-10
         ${large && 'md:text-lg'}
-        hover:bg-confirm-hover
-        focus:bg-confirm-hover
-        active:bg-confirm-hover
+        ${remove ? 'hover:bg-cancel-hover' : 'hover:bg-confirm-hover'}
+        ${remove ? 'focus:bg-cancel-hover' : 'focus:bg-confirm-hover'}
+        ${remove ? 'active:bg-cancel-hover' : 'active:bg-confirm-hover'}
       `}
     >
       {icon && (<span>{icon}</span>)}
