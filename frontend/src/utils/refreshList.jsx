@@ -6,7 +6,7 @@ export default function refreshList({
   search,
   pageSize,
   order,
-  timeout,
+  timeout = 300,
 }) {
   setTimeout( async () => {
     let status;

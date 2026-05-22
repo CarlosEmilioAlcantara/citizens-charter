@@ -1,7 +1,7 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import Alert from "../components/Alert";
+import Alert from "../components/modals/Alert";
 
 const AuthContext = createContext();
 export default AuthContext;
@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
       : null;
   });
 
-  const loginUser = async (loginData) => {
+  const loginUser = useCallback(async (loginData) => {
     try {
       const res = await fetch("/api/token", {
         method: "POST",
@@ -46,16 +46,16 @@ export function AuthProvider({ children }) {
     } catch (err) {
       console.error(err);
     }
-  }
+  }, [navigate])
 
-  const logoutUser = async () => {
+  const logoutUser = useCallback(async () => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
     navigate("/login");
-  };
+  }, [setAuthTokens, setUser, navigate]);
 
-  const updateToken = async () => {
+  const updateToken = useCallback(async () => {
     try {
       const res = await fetch("/api/token/refresh", {
         method: "POST",
@@ -78,7 +78,7 @@ export function AuthProvider({ children }) {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [authTokens, logoutUser]);
 
   const contextData = {
     user: user,
@@ -105,7 +105,7 @@ export function AuthProvider({ children }) {
     }, 60 * 1000);
 
     return () => clearInterval(interval);
-  }, [authTokens]);
+  }, [authTokens, updateToken]);
 
   useEffect(() => {
     const syncAuth = () => {
@@ -120,7 +120,7 @@ export function AuthProvider({ children }) {
 
     window.addEventListener("storage", syncAuth);
     return () => window.removeEventListener("storage", syncAuth);
-  }, []);
+  }, [loginUser]);
 
   return (
     <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>

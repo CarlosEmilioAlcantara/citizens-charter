@@ -1,13 +1,13 @@
-import AuthContext from "../context/AuthContext";
+import AuthContext from "../../context/AuthContext";
 import { useState, useContext } from "react";
-import { navItems } from "../stores/navItems";
-import Overlay from "./Overlay";
-import Topbar from "./Topbar";
+import { navItems } from "../../stores/navItems";
+import Overlay from "../reusables/Overlay";
+import Topbar from "../layout/Topbar";
 import NavbarMobile from "./NavbarMobile";
 import NavbarDesktop from "./NavbarDesktop";
-import useToggle from "../utils/useToggle";
-import useWindowWidth from "../utils/useWindowWidth";
-import { isNotMobile } from "../utils/isNotMobile";
+import useToggle from "../../utils/useToggle";
+import useWindowWidth from "../../utils/useWindowWidth";
+import { isNotMobile } from "../../utils/isNotMobile";
 
 export default function Navigation() {
   const { user, logoutUser } = useContext(AuthContext);

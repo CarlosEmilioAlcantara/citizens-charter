@@ -1,5 +1,5 @@
 import ReactDom from 'react-dom'
-import Overlay from './Overlay';
+import Overlay from '../reusables/Overlay';
 
 export default function Loader({ show, message }) {
   return ReactDom.createPortal(

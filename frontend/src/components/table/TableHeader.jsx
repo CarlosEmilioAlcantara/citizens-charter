@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import useToggle from "../utils/useToggle";
+import useToggle from "../../utils/useToggle";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
 export default function TableHeader({ label, order, setOrder, onClick }) {

@@ -1,10 +1,10 @@
 import { useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
-import Overlay from "../components/Overlay";
-import Input from "../components/Input";
-import Footer from "../components/Footer";
-import Alert from "../components/Alert";
-import Button from "../components/Button";
+import Overlay from "../components/reusables/Overlay";
+import Input from "../components/inputs/Input";
+import Footer from "../components/layout/Footer";
+import Alert from "../components/modals/Alert";
+import Button from "../components/buttons/Button";
 
 export default function Login() {
   const { loginUser } = useContext(AuthContext);

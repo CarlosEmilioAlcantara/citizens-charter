@@ -1,4 +1,4 @@
-import Pager from "./Pager";
+import Pager from "../table_controls/Pager";
 
 export default function Table({ 
   headers, 
