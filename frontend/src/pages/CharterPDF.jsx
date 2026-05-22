@@ -16,7 +16,8 @@ import usePaging from "../utils/usePaging";
 import useTableControls from "../utils/useTableControls";
 import refreshList from "../utils/refreshList";
 import useWindowWidth from "../utils/useWindowWidth";
-import { isNotMobile } from "../utils/isNotMobile";
+import { isDesktop } from "../utils/isDesktop";
+import { isTablet } from "../utils/isTablet";
 import Button from "../components/buttons/Button";
 import Search from "../components/inputs/Search";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
@@ -68,102 +69,34 @@ export default function CharterPDF() {
     setOrder("name");
   }, [setRoute, setOrder]);
 
-  useEffect(() => {
-    isNotMobile(windowWidth) && Object.entries(items).map(([key, data]) => {
-      data["actions"] = (
-        <Dropdown 
-          key={key} 
-          label={"Aksyon"} 
-          isOpen={dropdown === key}
-          toggle={() => toggleDropdown(key)}
-          items={[
-            {
-              "label": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
-              "function": () => {
-                isNotMobile(windowWidth) ? 
-                setUrl(data["pdf"]) : window.open(data["pdf"], "_blank");
-              },
+  isTablet(windowWidth) && Object.entries(items).map(([key, data]) => {
+    data["actions"] = (
+      <Dropdown 
+        key={key} 
+        label={"Aksyon"} 
+        isOpen={dropdown === key}
+        toggle={() => toggleDropdown(key)}
+        items={[
+          {
+            "label": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
+            "function": () => {
+              isDesktop(windowWidth) ? 
+              setUrl(data["pdf"]) : window.open(data["pdf"], "_blank");
             },
-            {
-              "label": <DropdownItem 
-                icon={<FaFileDownload />} 
-                label={"Download PDF"}
-              />, 
-              "function": () => downloadCharterPDF(data["id"]),
-            },
-            {
-              "label": <DropdownItem 
-                icon={<TbReload />} 
-                label={"Regenerate PDF"}
-              />, 
-              "function": async () => { 
-                await handleLoading({
-                  api: regenerateCharterPDF,
-                  id: data["office"],
-                  authTokens: authTokens,
-                  messageSuccess: "PDF Regenerated",
-                  messageFail: "PDF Regeneration Failed",
-                }); 
-                refreshList({
-                  handlePaging: handlePaging,
-                  route: route,
-                  currentPage: currentPage,
-                  setCurrentPage: setCurrentPage,
-                  search: search,
-                  pageSize: pageSize,
-                  order: order,
-                  timeout: 300,
-                });
-              },
-            },
-            {
-              "label": <DropdownItem 
-                icon={<FaTrashAlt />} 
-                label={"Delete PDF"}
-                remove={true}
-              />, 
-              "function": async () => { 
-                await handleLoading({
-                  api: deleteCharterPDF,
-                  id: data["id"],
-                  authTokens: authTokens,
-                  messageSuccess: "PDF Deleted",
-                  messageFail: "PDF Deletion Failed",
-                }) 
-                refreshList({
-                  handlePaging: handlePaging,
-                  route: route,
-                  currentPage: currentPage,
-                  setCurrentPage: setCurrentPage,
-                  search: search,
-                  pageSize: pageSize,
-                  order: order,
-                  timeout: 300,
-                });
-              },
-            },
-          ]}
-      />);
-    }) || Object.entries(items).map(([key, data]) => {
-      data["actions"] = (
-        <ButtonGroup key={key} buttons={[
-          <Button 
-            label={"Tingnan PDF"} 
-            icon={<FaEye />} 
-            full={true} 
-            onClick={() => window.open(data["pdf"], "_blank")}
-          />,
-          <Button 
-            label={"Download PDF"} 
-            icon={<FaFileDownload />} 
-            full={true} 
-            onClick={() => downloadCharterPDF(data["id"])}
-          />,
-          <Button 
-            label={"Regenerate PDF"} 
-            icon={<TbReload />} 
-            full={true} 
-            onClick={async () => { 
+          },
+          {
+            "label": <DropdownItem 
+              icon={<FaFileDownload />} 
+              label={"Download PDF"}
+            />, 
+            "function": () => downloadCharterPDF(data["id"]),
+          },
+          {
+            "label": <DropdownItem 
+              icon={<TbReload />} 
+              label={"Regenerate PDF"}
+            />, 
+            "function": async () => { 
               await handleLoading({
                 api: regenerateCharterPDF,
                 id: data["office"],
@@ -181,14 +114,15 @@ export default function CharterPDF() {
                 order: order,
                 timeout: 300,
               });
-            }}
-          />,
-          <Button 
-            label={"Delete PDF"} 
-            icon={<FaTrashAlt />} 
-            full={true} 
-            remove={true} 
-            onClick={async () => { 
+            },
+          },
+          {
+            "label": <DropdownItem 
+              icon={<FaTrashAlt />} 
+              label={"Delete PDF"}
+              remove={true}
+            />, 
+            "function": async () => { 
               await handleLoading({
                 api: deleteCharterPDF,
                 id: data["id"],
@@ -206,12 +140,77 @@ export default function CharterPDF() {
                 order: order,
                 timeout: 300,
               });
-            }}
-          />,
-        ]} />
-      )
-    })
-  }, [items, windowWidth]);
+            },
+          },
+        ]}
+    />);
+  }) || Object.entries(items).map(([key, data]) => {
+    data["actions"] = (
+      <ButtonGroup key={key} buttons={[
+        <Button 
+          label={"Tingnan PDF"} 
+          icon={<FaEye />} 
+          full={true} 
+          onClick={() => window.open(data["pdf"], "_blank")}
+        />,
+        <Button 
+          label={"Download PDF"} 
+          icon={<FaFileDownload />} 
+          full={true} 
+          onClick={() => downloadCharterPDF(data["id"])}
+        />,
+        <Button 
+          label={"Regenerate PDF"} 
+          icon={<TbReload />} 
+          full={true} 
+          onClick={async () => { 
+            await handleLoading({
+              api: regenerateCharterPDF,
+              id: data["office"],
+              authTokens: authTokens,
+              messageSuccess: "PDF Regenerated",
+              messageFail: "PDF Regeneration Failed",
+            }); 
+            refreshList({
+              handlePaging: handlePaging,
+              route: route,
+              currentPage: currentPage,
+              setCurrentPage: setCurrentPage,
+              search: search,
+              pageSize: pageSize,
+              order: order,
+              timeout: 300,
+            });
+          }}
+        />,
+        <Button 
+          label={"Delete PDF"} 
+          icon={<FaTrashAlt />} 
+          full={true} 
+          remove={true} 
+          onClick={async () => { 
+            await handleLoading({
+              api: deleteCharterPDF,
+              id: data["id"],
+              authTokens: authTokens,
+              messageSuccess: "PDF Deleted",
+              messageFail: "PDF Deletion Failed",
+            }) 
+            refreshList({
+              handlePaging: handlePaging,
+              route: route,
+              currentPage: currentPage,
+              setCurrentPage: setCurrentPage,
+              search: search,
+              pageSize: pageSize,
+              order: order,
+              timeout: 300,
+            });
+          }}
+        />,
+      ]} />
+    )
+  })
 
   return(
     <>
@@ -279,7 +278,7 @@ export default function CharterPDF() {
             </div>
           </div>
 
-          {isNotMobile(windowWidth) ? (
+          {isTablet(windowWidth) ? (
             <Table 
               headers={[
                 <TableHeader 

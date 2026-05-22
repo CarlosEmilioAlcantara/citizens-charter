@@ -7,7 +7,7 @@ import NavbarMobile from "./NavbarMobile";
 import NavbarDesktop from "./NavbarDesktop";
 import useToggle from "../../utils/useToggle";
 import useWindowWidth from "../../utils/useWindowWidth";
-import { isNotMobile } from "../../utils/isNotMobile";
+import { isDesktop } from "../../utils/isDesktop";
 
 export default function Navigation() {
   const { user, logoutUser } = useContext(AuthContext);
@@ -19,11 +19,11 @@ export default function Navigation() {
     <>
       <Overlay show={state} toggle={toggle} zIndex={30}/>
 
-      {!isNotMobile(windowWidth) && (
+      {!isDesktop(windowWidth) && (
         <Topbar state={state} toggle={toggle} />
       )}
 
-      {!isNotMobile(windowWidth) && (
+      {!isDesktop(windowWidth) && (
         <NavbarMobile 
           state={state} 
           toggle={toggle} 
@@ -33,7 +33,7 @@ export default function Navigation() {
         />
       )}
 
-      {isNotMobile(windowWidth) && (
+      {isDesktop(windowWidth) && (
         <NavbarDesktop 
           state={state} 
           toggle={toggle} 
