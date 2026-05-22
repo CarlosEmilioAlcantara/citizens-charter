@@ -1,4 +1,5 @@
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import useToggle from "../utils/useToggle";
 
 export default function Input({
   label,
@@ -9,7 +10,10 @@ export default function Input({
   value, 
   setValue,
   size,
+  password = false,
 }) {
+  const [state, toggle] = useToggle(false);
+
   return (
     <div 
       className="
@@ -30,21 +34,45 @@ export default function Input({
         </label>
       </div>
 
-      <input
-        type={type}
-        placeholder={placeholder}
-        name={name}
-        value={value}
-        onChange={(e) => setValue(value=>({...value,[name]:e.target.value}))}
-        className="
-          w-full
-        text-foreground 
-          text-md 
-          md:text-xl 
-          focus:outline-none 
-          active:outline-none
-        "
-      />
+      <div className="flex items-center">
+        <input
+          type={state ? 'text' : type}
+          placeholder={placeholder}
+          name={name}
+          value={value}
+          onChange={(e) => setValue(value=>({...value,[name]:e.target.value}))}
+          className="
+            w-full
+          text-foreground 
+            text-md 
+            md:text-xl 
+            focus:outline-none 
+            active:outline-none
+          "
+        />
+
+        {password && (
+          state ? (
+            <FaEye 
+              onClick={toggle}
+              className="
+                cursor-pointer 
+                transition-all 
+                duration-300 
+                hover:text-accent
+            "/>
+          ) : (
+            <FaEyeSlash 
+              onClick={toggle}
+              className="
+                cursor-pointer 
+                transition-all 
+                duration-300 
+                hover:text-accent
+            "/>
+          )
+        )}
+      </div>
     </div>
   );
 }

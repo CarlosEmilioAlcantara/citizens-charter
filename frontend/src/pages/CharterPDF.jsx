@@ -22,6 +22,7 @@ import Search from "../components/Search";
 import PageSizeSelector from "../components/PageSizeSelector";
 import TableHeader from "../components/TableHeader";
 import Table from "../components/Table";
+import ListMobile from "../components/ListMobile";
 import Dropdown from "../components/Dropdown";
 import DropdownItem from "../components/DropdownItem";
 import EntriesCounter from "../components/EntriesCounter";
@@ -75,21 +76,21 @@ export default function CharterPDF() {
       toggle={() => toggleDropdown(key)}
       items={[
       {
-        "name": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
+        "label": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
         "function": () => {
           isNotMobile(windowWidth) ? 
           setUrl(data["pdf"]) : window.open(data["pdf"], "_blank");
         },
       },
       {
-        "name": <DropdownItem 
+        "label": <DropdownItem 
           icon={<FaFileDownload />} 
           label={"Download PDF"}
         />, 
         "function": () => downloadCharterPDF(data["id"]),
       },
       {
-        "name": <DropdownItem icon={<TbReload />} label={"Regenerate PDF"}/>, 
+        "label": <DropdownItem icon={<TbReload />} label={"Regenerate PDF"}/>, 
         "function": async () => { 
           await handleLoading({
             api: regenerateCharterPDF,
@@ -111,7 +112,7 @@ export default function CharterPDF() {
         },
       },
       {
-        "name": <DropdownItem 
+        "label": <DropdownItem 
           icon={<FaTrashAlt />} 
           label={"Delete PDF"}
           remove={true}
@@ -206,19 +207,35 @@ export default function CharterPDF() {
             </div>
           </div>
 
-          <Table 
-            headers={[
-              <TableHeader 
-                label={"PDF"} 
-                order={order} 
-                setOrder={setOrder} 
-                onClick={() => closeControls()}
-              />, 
-              "Actions",
-            ]}
-            body={items}
-            charterList={true}
-          />
+          {isNotMobile(windowWidth) ? (
+            <Table 
+              headers={[
+                <TableHeader 
+                  label={"PDF"} 
+                  order={order} 
+                  setOrder={setOrder} 
+                  onClick={() => closeControls()}
+                />, 
+                "Actions",
+              ]}
+              body={items}
+              charterList={true}
+            />
+          ) : (
+            <ListMobile 
+              headers={[
+                <TableHeader 
+                  label={"PDF"} 
+                  order={order} 
+                  setOrder={setOrder} 
+                  onClick={() => closeControls()}
+                />, 
+              ]}
+              body={items}
+              // charterList={true}
+            />
+          )}
+
           <div className="
             flex 
             flex-col 

@@ -92,7 +92,7 @@ export default function Dropdown({
                   onClick={item.function}
                   className="px-2 py-1 cursor-pointer text-right"
                 >
-                  {item.name}
+                  {item.label}
                 </button>
               </li>
             ))}

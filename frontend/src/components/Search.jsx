@@ -33,7 +33,7 @@ export default function Search({ placeholder, value, setValue, onClick }) {
           active:outline-none
         "
       />
-      {value && 
+      {value && (
         <FaXmark 
           onClick={() => setValue("")} 
           className="
@@ -42,7 +42,7 @@ export default function Search({ placeholder, value, setValue, onClick }) {
             duration-300 
             hover:text-accent
         "/>
-      }
+      )}
     </div>
   )
 }

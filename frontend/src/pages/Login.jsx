@@ -79,6 +79,7 @@ export default function Login() {
             name="password"
             value={value.password}
             setValue={setValue}
+            password={true}
           />
         </div>
 
