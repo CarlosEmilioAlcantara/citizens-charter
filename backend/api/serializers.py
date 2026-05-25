@@ -598,6 +598,7 @@ class AuditLogSerializer(serializers.ModelSerializer):
         return content_type_model
 
 class CitizensCharterSerializer(serializers.ModelSerializer):
+    sector_name = serializers.CharField(source='sector.name', read_only=True)
     class Meta:
         model = CitizensCharter
         fields = [
@@ -605,4 +606,5 @@ class CitizensCharterSerializer(serializers.ModelSerializer):
             'name',
             'pdf',
             'office',
+            'sector_name',
         ]

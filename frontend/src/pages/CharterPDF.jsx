@@ -43,8 +43,8 @@ export default function CharterPDF() {
     setSearch,
     pageSize,
     setPageSize,
-    order,
-    setOrder,
+    ordering,
+    setOrdering,
     prev,
     next,
     count,
@@ -66,8 +66,7 @@ export default function CharterPDF() {
 
   useEffect(() => {
     setRoute("/api/pdf/citizens-charters");
-    setOrder("name");
-  }, [setRoute, setOrder]);
+  }, [setRoute]);
 
   isTablet(windowWidth) && Object.entries(items).map(([key, data]) => {
     data["actions"] = (
@@ -111,7 +110,7 @@ export default function CharterPDF() {
                 setCurrentPage: setCurrentPage,
                 search: search,
                 pageSize: pageSize,
-                order: order,
+                ordering: ordering,
                 timeout: 300,
               });
             },
@@ -137,7 +136,7 @@ export default function CharterPDF() {
                 setCurrentPage: setCurrentPage,
                 search: search,
                 pageSize: pageSize,
-                order: order,
+                ordering: ordering,
                 timeout: 300,
               });
             },
@@ -178,7 +177,7 @@ export default function CharterPDF() {
               setCurrentPage: setCurrentPage,
               search: search,
               pageSize: pageSize,
-              order: order,
+              ordering: ordering,
               timeout: 300,
             });
           }}
@@ -203,7 +202,7 @@ export default function CharterPDF() {
               setCurrentPage: setCurrentPage,
               search: search,
               pageSize: pageSize,
-              order: order,
+              ordering: ordering,
               timeout: 300,
             });
           }}
@@ -255,7 +254,7 @@ export default function CharterPDF() {
                   setCurrentPage: setCurrentPage,
                   search: search,
                   pageSize: pageSize,
-                  order: order,
+                  ordering: ordering,
                   timeout: 300,
                 });
               }}
@@ -283,8 +282,14 @@ export default function CharterPDF() {
               headers={[
                 <TableHeader 
                   label={"PDF"} 
-                  order={order} 
-                  setOrder={setOrder} 
+                  order={"name"}
+                  setOrdering={setOrdering} 
+                  onClick={() => closeControls()}
+                />, 
+                <TableHeader 
+                  label={"Sector"} 
+                  order={"sector"}
+                  setOrdering={setOrdering} 
                   onClick={() => closeControls()}
                 />, 
                 "Actions",
@@ -297,8 +302,14 @@ export default function CharterPDF() {
               headers={[
                 <TableHeader 
                   label={"PDF"} 
-                  order={order} 
-                  setOrder={setOrder} 
+                  order={"name"}
+                  setOrdering={setOrdering} 
+                  onClick={() => closeControls()}
+                />, 
+                <TableHeader 
+                  label={"Sector"} 
+                  order={"sector"}
+                  setOrdering={setOrdering} 
                   onClick={() => closeControls()}
                 />, 
               ]}

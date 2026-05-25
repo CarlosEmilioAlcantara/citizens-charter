@@ -16,7 +16,13 @@ from auditlog.context import set_actor
 from pypdf import PdfWriter, PdfReader
 from weasyprint import HTML, CSS
 from weasyprint.text.fonts import FontConfiguration
-from ..models import Office, Service, CitizensCharter, Sector, Step
+from ..models import (
+    Office, 
+    Service, 
+    CitizensCharter, 
+    Sector, 
+    Step
+)
 from ..renderers import PDFRenderer
 from ..utils.citizens_charter_utils import (
     create_citizens_charter_single,
@@ -175,12 +181,6 @@ class CreateCitizensCharterPdfsView(APIView):
     def put(self, request):
         offices = list(Office.objects.all().order_by('id'))
 
-        existing_charters = {
-            charter.office_id: charter
-            for charter in CitizensCharter.objects.filter(office__in=offices)
-        }
-        new_charters = []
-
         for office in offices:
             office_name, services = create_citizens_charter_whole(
                 request, office.pk
@@ -204,6 +204,7 @@ class CreateCitizensCharterPdfsView(APIView):
 
             charter, created = CitizensCharter.objects.get_or_create(
                 office=office,
+                sector=office.sector,
                 defaults={"name": f"{office.name}.pdf"}
             )
 
@@ -283,7 +284,7 @@ class CitizensCharterListView(ListAPIView):
     pagination_class = MyCustomPagination
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
-    ordering_fields = ['name']
+    ordering_fields = ['name', 'sector']
 
     def get_queryset(self):
         return self.queryset

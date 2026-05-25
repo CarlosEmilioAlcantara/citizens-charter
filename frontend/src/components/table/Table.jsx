@@ -17,14 +17,22 @@ export default function Table({
           border-b-unfocused 
           bg-popup-header
         ">
-          {headers.length === 2 ? (
+          {headers.length === 2 && (
             <tr>
               <th key={headers[0].index} className="py-1">{headers[0]}</th>
               <th key={headers[1].index} className="pr-[45px] py-1 text-right">
                 {headers[1]}
               </th>
             </tr>
-          ) : (
+          ) || charterList && (
+            <tr>
+              <th key={headers[0].index} className="py-1">{headers[0]}</th>
+              <th key={headers[1].index} className="py-1">{headers[1]}</th>
+              <th key={headers[2].index} className="pr-[45px] py-1 text-right">
+                {headers[2]}
+              </th>
+            </tr>
+          ) || (
             <tr>
               {headers.map((header, index) => (
                 <th key={index}>{header}</th>
@@ -97,11 +105,14 @@ export default function Table({
                   <td key={Object.keys(data)[1]} className="px-6 p-[6px]">
                     {Object.values(data)[1]}
                   </td>
+                  <td key={Object.keys(data)[4]} className="px-28 p-[6px]">
+                    {Object.values(data)[4]}
+                  </td>
                   <td 
-                    key={Object.keys(data)[4]} 
+                    key={Object.keys(data)[5]} 
                     className="flex justify-end px-6 p-[6px]"
                   >
-                    {Object.values(data)[4]}
+                    {Object.values(data)[5]}
                   </td>
                 </>
               ) || (

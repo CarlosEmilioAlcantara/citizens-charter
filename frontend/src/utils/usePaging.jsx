@@ -5,7 +5,7 @@ export default function usePaging(api) {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");
   const [pageSize, setPageSize] = useState(10);
-  const [order, setOrder] = useState("");
+  const [ordering, setOrdering] = useState("");
   const [prev, setPrev] = useState("");
   const [next, setNext] = useState("");
   const [count, setCount] = useState(null);
@@ -29,7 +29,7 @@ export default function usePaging(api) {
   useEffect(() => {
     if (route) {
       api(
-        `${route}?page=${currentPage}&search=${search}&page_size=${pageSize}&ordering=${order}`
+        `${route}?page=${currentPage}&search=${search}&page_size=${pageSize}&ordering=${ordering}`
       )
       .then(data => {
         setItems(data.results);
@@ -38,11 +38,11 @@ export default function usePaging(api) {
         setCount(data.count);
     }).catch(() => {
       handlePaging(
-        `${route}?search=${search}&page_size=${pageSize}&ordering=${order}`
+        `${route}?search=${search}&page_size=${pageSize}&ordering=${ordering}`
       );
     });
     }
-  }, [api, route, search, currentPage, handlePaging, pageSize, order])
+  }, [api, route, search, currentPage, handlePaging, pageSize, ordering])
 
   useEffect(() => {
     setTotal(items.length)
@@ -56,8 +56,8 @@ export default function usePaging(api) {
     setSearch,
     pageSize,
     setPageSize,
-    order,
-    setOrder,
+    ordering,
+    setOrdering,
     prev,
     next,
     count,

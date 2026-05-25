@@ -59,8 +59,14 @@ export default function ListMobile({
                   >
                     <p className="mb-2">{Object.values(data)[1]}</p>
                   </span>
-                  <span key={Object.keys(data)[4]}>
-                    {Object.values(data)[4]}
+                  <span 
+                    key={Object.keys(data)[4]} 
+                    className="font-bold text-center"
+                  >
+                    <p className="mb-2">{Object.values(data)[4]}</p>
+                  </span>
+                  <span key={Object.keys(data)[5]}>
+                    {Object.values(data)[5]}
                   </span>
                 </>
             ) || (

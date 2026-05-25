@@ -1,19 +1,33 @@
-import { useEffect } from "react";
 import useToggle from "../../utils/useToggle";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
-export default function TableHeader({ label, order, setOrder, onClick }) {
+export default function TableHeader({ 
+  label, 
+  order, 
+  setOrdering, 
+  onClick 
+}) {
   const [state, toggle] = useToggle(true);
 
-  useEffect(() => {
-    setOrder(
-      state ? order.replace("-", "") : `-${order.replace("-", "")}`
-    )
-  }, [state, order, setOrder]);
+  const addOrder = (ordering, order, nextState) => {
+    const labels = ordering ? ordering.split(",") : [];
+    const filtered = labels.filter(
+      label => label !== order && label !== `-${order}`
+    );
+
+    filtered.push(nextState ? order : `-${order}`);
+    return filtered.join(",");
+  }
+
+  const handleClick = () => {
+    onClick();
+    toggle();
+    setOrdering(prev => addOrder(prev, order, !state));
+  }
 
   return(
     <span 
-      onClick={() => {onClick(); toggle();}}
+      onClick={handleClick}
       className="relative inline-flex items-center cursor-pointer z-10"
     >
       <span className="font-bold">{label}</span>

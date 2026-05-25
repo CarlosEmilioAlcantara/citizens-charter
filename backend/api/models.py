@@ -231,6 +231,15 @@ class CitizensCharter(models.Model):
         related_name='charters'
     )
 
+    sector = models.ForeignKey(
+        Sector,
+        on_delete=models.CASCADE,
+        related_name='sectors',
+        blank=True,
+        null=True,
+        unique=False,
+    )
+
     def save(self, *args, **kwargs):
         try:
             old = CitizensCharter.objects.get(pk=self.pk)
