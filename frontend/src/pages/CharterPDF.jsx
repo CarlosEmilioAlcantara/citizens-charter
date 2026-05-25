@@ -288,7 +288,7 @@ export default function CharterPDF() {
                 />, 
                 <TableHeader 
                   label={"Sector"} 
-                  order={"sector"}
+                  order={"sector__name"}
                   setOrdering={setOrdering} 
                   onClick={closeControls}
                 />, 
@@ -308,7 +308,7 @@ export default function CharterPDF() {
                 />, 
                 <TableHeader 
                   label={"Sector"} 
-                  order={"sector"}
+                  order={"sector__name"}
                   setOrdering={setOrdering} 
                   onClick={closeControls}
                 />, 

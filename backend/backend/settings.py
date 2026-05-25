@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'multiselectfield',
     'mathfilters',
     'auditlog',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

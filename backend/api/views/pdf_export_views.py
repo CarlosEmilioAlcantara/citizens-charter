@@ -7,6 +7,7 @@ from django.http import StreamingHttpResponse
 from django.db.models import Prefetch, OuterRef, Sum, Count, Subquery
 from django.core.files import File
 from django.template.loader import render_to_string
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, filters
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
@@ -32,6 +33,7 @@ from ..utils.pdf_utils import create_pdf
 from ..utils.report_utils import create_office_report
 from ..utils.time_utils import create_total_time
 from ..serializers import CitizensCharterSerializer
+from ..filters import CitizensCharterFilter
 from ..permissions import IsInOffice
 from ..pagers import MyCustomPagination
 
@@ -282,9 +284,14 @@ class CitizensCharterListView(ListAPIView):
     queryset = CitizensCharter.objects.all().order_by('name')
     serializer_class = CitizensCharterSerializer
     pagination_class = MyCustomPagination
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        filters.SearchFilter, 
+        filters.OrderingFilter, 
+        DjangoFilterBackend,
+    ]
     search_fields = ['name']
-    ordering_fields = ['name', 'sector']
+    ordering_fields = ['name', 'sector__name']
+    filterset_class = CitizensCharterFilter
 
     def get_queryset(self):
         return self.queryset
