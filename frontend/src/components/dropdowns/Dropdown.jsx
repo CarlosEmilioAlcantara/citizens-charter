@@ -79,6 +79,7 @@ export default function Dropdown({
             {items.map((item, index) => (
               <li 
                 key={index}
+                onClick={item.function}
                 className={`
                   flex
                   ${sizeSelector ? 'justify-center' : 'justify-end'}
@@ -90,7 +91,6 @@ export default function Dropdown({
                   hover:bg-active
               `}>
                 <button 
-                  onClick={item.function}
                   className="px-2 py-1 cursor-pointer text-right"
                 >
                   {item.label}

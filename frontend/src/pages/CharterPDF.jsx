@@ -63,8 +63,10 @@ export default function CharterPDF() {
   const {
     dropdown, 
     pageSizeSelector, 
+    filterSelector,
     closeControls,
     togglePageSizeSelector,
+    toggleFilterSelector,
     toggleDropdown,
   } = useTableControls();
   const [toast, setToast, loading, handleLoading] = useLoader();
@@ -289,8 +291,8 @@ export default function CharterPDF() {
 
               <FilterSelector 
                 setFilter={setFilter}
-                isOpen={pageSizeSelector}
-                toggle={togglePageSizeSelector}
+                isOpen={filterSelector}
+                toggle={toggleFilterSelector}
                 filters={filters}
               />
 
