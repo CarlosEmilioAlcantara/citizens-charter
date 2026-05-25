@@ -281,7 +281,7 @@ export default function CharterPDF() {
               }}
             />
 
-            <div className="flex gap-3 w-full">
+            <div className="flex flex-col gap-3 w-full sm:flex-row">
               <Search 
                 placeholder={"Ngalan ng opisina"} 
                 value={search} 
@@ -289,19 +289,28 @@ export default function CharterPDF() {
                 onClick={closeControls}
               />
 
-              <FilterSelector 
-                setFilter={setFilter}
-                isOpen={filterSelector}
-                toggle={toggleFilterSelector}
-                filters={filters}
-              />
+              <div className="
+                flex 
+                flex-col
+                gap-1 
+                justify-between 
+                sm:justify-end
+                sm:flex-row
+              ">
+                <FilterSelector 
+                  setFilter={setFilter}
+                  isOpen={filterSelector}
+                  toggle={toggleFilterSelector}
+                  filters={filters}
+                />
 
-              <PageSizeSelector 
-                label={pageSize} 
-                setPageSize={setPageSize} 
-                isOpen={pageSizeSelector}
-                toggle={togglePageSizeSelector}
-              />
+                <PageSizeSelector 
+                  label={pageSize} 
+                  setPageSize={setPageSize} 
+                  isOpen={pageSizeSelector}
+                  toggle={togglePageSizeSelector}
+                />
+              </div>
             </div>
           </div>
 

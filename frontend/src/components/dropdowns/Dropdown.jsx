@@ -6,6 +6,7 @@ export default function Dropdown({
   toggle,
   label = "Action", 
   sizeSelector = false, 
+  full = false,
   items,
 }) {
   return(
@@ -17,11 +18,18 @@ export default function Dropdown({
       />
       <div 
         onClick={toggle} 
-        className="relative flex flex-col items-center gap-1"
-      >
+        className={`
+          relative 
+          ${full && 'w-full'}
+          flex 
+          flex-col 
+          items-center 
+          gap-1
+      `}>
         <div 
           className={`
             ${sizeSelector && 'w-30'}
+            ${full && 'w-full'}
             relative
             flex
             justify-center
@@ -54,13 +62,16 @@ export default function Dropdown({
               />
             )}
           </span>
-          <span className={`${sizeSelector && 'w-md'} text-nowrap`}>
+          <span className={`
+            ${(sizeSelector && !full) && 'w-md'}
+            text-nowrap
+          `}>
             {label}
           </span>
         </div>
 
         <div className={`
-          ${sizeSelector && 'w-full'}
+          ${(sizeSelector || full) && 'w-full'}
           absolute
           top-8
           right-0
@@ -82,7 +93,7 @@ export default function Dropdown({
                 onClick={item.function}
                 className={`
                   flex
-                  ${sizeSelector ? 'justify-center' : 'justify-end'}
+                  ${(sizeSelector || full) ? 'justify-center' : 'justify-end'}
                   ${isOpen ? 'cursor-pointer' : ''}
                   ${isOpen ? 'z-10' : '-z-10'
                   }

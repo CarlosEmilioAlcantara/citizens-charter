@@ -1,4 +1,6 @@
 import Dropdown from "../dropdowns/Dropdown";
+import { isTablet } from "../../utils/isTablet";
+import useWindowWidth from "../../utils/useWindowWidth";
 
 export default function PageSizeSelector({ 
   label, 
@@ -6,12 +8,15 @@ export default function PageSizeSelector({
   toggle, 
   setPageSize,
 }) {
+  const [windowWidth] = useWindowWidth();
+
   return(
     <Dropdown 
       isOpen={isOpen}
       toggle={toggle}
       label={`${label} Rows`} 
       sizeSelector={true} 
+      full={!isTablet(windowWidth)}
       items={[
       {
         "label": "10 Rows",

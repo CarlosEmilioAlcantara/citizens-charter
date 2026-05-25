@@ -1,4 +1,6 @@
 import Dropdown from "../dropdowns/Dropdown";
+import { isTablet } from "../../utils/isTablet";
+import useWindowWidth from "../../utils/useWindowWidth";
 
 export default function FilterSelector({ 
   label = "Filter", 
@@ -7,11 +9,14 @@ export default function FilterSelector({
   setFilter, 
   filters, 
 }) {
+  const [windowWidth] = useWindowWidth();
+
   return(
     <Dropdown
       isOpen={isOpen}
       toggle={toggle}
       label={label}
+      full={!isTablet(windowWidth)}
       items={[
         {"label": "None", "function": () => setFilter("")},
         ...filters.map((filter) => ({
