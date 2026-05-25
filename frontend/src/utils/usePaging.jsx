@@ -6,6 +6,10 @@ export default function usePaging(api) {
   const [search, setSearch] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [ordering, setOrdering] = useState("");
+  const [field, setField] = useState("");
+  const [filter, setFilter] = useState("");
+  const [filters, setFilters] = useState([]);
+  const [filtersRoute, setFiltersRoute] = useState("");
   const [prev, setPrev] = useState("");
   const [next, setNext] = useState("");
   const [count, setCount] = useState(null);
@@ -29,7 +33,7 @@ export default function usePaging(api) {
   useEffect(() => {
     if (route) {
       api(
-        `${route}?page=${currentPage}&search=${search}&page_size=${pageSize}&ordering=${ordering}`
+        `${route}?page=${currentPage}&search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`
       )
       .then(data => {
         setItems(data.results);
@@ -38,15 +42,31 @@ export default function usePaging(api) {
         setCount(data.count);
     }).catch(() => {
       handlePaging(
-        `${route}?search=${search}&page_size=${pageSize}&ordering=${ordering}`
+        `${route}?search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`
       );
     });
     }
-  }, [api, route, search, currentPage, handlePaging, pageSize, ordering])
+  }, [
+    api, 
+    route, 
+    search, 
+    currentPage, 
+    handlePaging, 
+    pageSize, 
+    ordering, 
+    field, 
+    filter,
+  ])
 
   useEffect(() => {
     setTotal(items.length)
   }, [items])
+
+  useEffect(() => {
+    if (filtersRoute) {
+      api(filtersRoute).then(data => setFilters([...data]));
+    }
+  }, [api, filtersRoute])
 
   return [
     route,
@@ -58,6 +78,12 @@ export default function usePaging(api) {
     setPageSize,
     ordering,
     setOrdering,
+    field,
+    setField,
+    filter,
+    setFilter,
+    filters,
+    setFiltersRoute,
     prev,
     next,
     count,

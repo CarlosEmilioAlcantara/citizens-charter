@@ -69,6 +69,7 @@ export default function Dropdown({
           border-accent
           rounded-sm
           ${isOpen ? 'opacity-100 z-20' : 'opacity-0 -z-10'}
+          text-nowrap
           transition-all
           duration-300
         `}>

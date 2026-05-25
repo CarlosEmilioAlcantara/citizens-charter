@@ -20,6 +20,7 @@ import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
 import Button from "../components/buttons/Button";
 import Search from "../components/inputs/Search";
+import FilterSelector from "../components/table_controls/FilterSelector";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import TableHeader from "../components/table/TableHeader";
 import Table from "../components/table/Table";
@@ -45,6 +46,12 @@ export default function CharterPDF() {
     setPageSize,
     ordering,
     setOrdering,
+    field,
+    setField,
+    filter,
+    setFilter,
+    filters,
+    setFiltersRoute,
     prev,
     next,
     count,
@@ -66,7 +73,9 @@ export default function CharterPDF() {
 
   useEffect(() => {
     setRoute("/api/pdf/citizens-charters");
-  }, [setRoute]);
+    setField("sector__name");
+    setFiltersRoute("/api/filters/citizens-charter");
+  }, [setRoute, setField, setFiltersRoute]);
 
   isTablet(windowWidth) && Object.entries(items).map(([key, data]) => {
     data["actions"] = (
@@ -111,6 +120,8 @@ export default function CharterPDF() {
                 search: search,
                 pageSize: pageSize,
                 ordering: ordering,
+                field: field,
+                filter: filter,
                 timeout: 300,
               });
             },
@@ -137,6 +148,8 @@ export default function CharterPDF() {
                 search: search,
                 pageSize: pageSize,
                 ordering: ordering,
+                field: field,
+                filter: filter,
                 timeout: 300,
               });
             },
@@ -178,6 +191,8 @@ export default function CharterPDF() {
               search: search,
               pageSize: pageSize,
               ordering: ordering,
+              field: field,
+              filter: filter,
               timeout: 300,
             });
           }}
@@ -203,6 +218,8 @@ export default function CharterPDF() {
               search: search,
               pageSize: pageSize,
               ordering: ordering,
+              field: field,
+              filter: filter,
               timeout: 300,
             });
           }}
@@ -255,6 +272,8 @@ export default function CharterPDF() {
                   search: search,
                   pageSize: pageSize,
                   ordering: ordering,
+                  field: field,
+                  filter: filter,
                   timeout: 300,
                 });
               }}
@@ -266,6 +285,13 @@ export default function CharterPDF() {
                 value={search} 
                 setValue={setSearch}
                 onClick={closeControls}
+              />
+
+              <FilterSelector 
+                setFilter={setFilter}
+                isOpen={pageSizeSelector}
+                toggle={togglePageSizeSelector}
+                filters={filters}
               />
 
               <PageSizeSelector 

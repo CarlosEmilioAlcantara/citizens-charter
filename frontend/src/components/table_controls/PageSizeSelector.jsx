@@ -4,7 +4,7 @@ export default function PageSizeSelector({
   label, 
   isOpen, 
   toggle, 
-  setPageSize 
+  setPageSize,
 }) {
   return(
     <Dropdown 
