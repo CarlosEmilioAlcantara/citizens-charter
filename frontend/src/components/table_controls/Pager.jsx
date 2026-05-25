@@ -18,25 +18,28 @@ export default function Pager({
 
   const getPages = (currentPage, totalPages) => {
     if (totalPages === 1 || totalPages === 0) { return [1] }
-
-    const pages = [];
-    const firstPage = 1;
-    const lastPage = totalPages;
-    const prevPage = currentPage - 1;
-    const nextPage = currentPage + 1;
-    pages.push(firstPage);
-
-    if (Math.abs(firstPage - prevPage) > 1) { pages.push("...") }
-    if (firstPage < prevPage) { pages.push(prevPage) }
-
-    if (currentPage !== firstPage && currentPage !== lastPage) {
-      pages.push(currentPage);
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 
-    if (nextPage < lastPage) { pages.push(nextPage) }
-    if (Math.abs(nextPage - lastPage) > 1) { pages.push("...") }
+    let start = currentPage - 2;
+    let end = currentPage + 2;
 
-    pages.push(lastPage);
+    if (start < 1) {
+      start = 1;
+      end = 5;
+    }
+
+    if (end > totalPages) {
+      end = totalPages;
+      start = totalPages - 4;
+    }
+
+    const pages = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
     return pages;
   };
 
