@@ -265,14 +265,14 @@ export default function CharterPDF() {
                 placeholder={"Ngalan ng opisina"} 
                 value={search} 
                 setValue={setSearch}
-                onClick={() => closeControls()}
+                onClick={closeControls}
               />
 
               <PageSizeSelector 
                 label={pageSize} 
                 setPageSize={setPageSize} 
                 isOpen={pageSizeSelector}
-                toggle={() => togglePageSizeSelector()}
+                toggle={togglePageSizeSelector}
               />
             </div>
           </div>
@@ -284,13 +284,13 @@ export default function CharterPDF() {
                   label={"PDF"} 
                   order={"name"}
                   setOrdering={setOrdering} 
-                  onClick={() => closeControls()}
+                  onClick={closeControls}
                 />, 
                 <TableHeader 
                   label={"Sector"} 
                   order={"sector"}
                   setOrdering={setOrdering} 
-                  onClick={() => closeControls()}
+                  onClick={closeControls}
                 />, 
                 "Actions",
               ]}
@@ -304,13 +304,13 @@ export default function CharterPDF() {
                   label={"PDF"} 
                   order={"name"}
                   setOrdering={setOrdering} 
-                  onClick={() => closeControls()}
+                  onClick={closeControls}
                 />, 
                 <TableHeader 
                   label={"Sector"} 
                   order={"sector"}
                   setOrdering={setOrdering} 
-                  onClick={() => closeControls()}
+                  onClick={closeControls}
                 />, 
               ]}
               body={items}
@@ -341,7 +341,7 @@ export default function CharterPDF() {
               route={route}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              onClick={() => closeControls()}
+              onClick={closeControls}
             />
           </div>
 

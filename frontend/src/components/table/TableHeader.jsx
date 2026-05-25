@@ -1,4 +1,5 @@
 import useToggle from "../../utils/useToggle";
+import { addOrder } from "../../utils/addOrder";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
 export default function TableHeader({ 
@@ -9,15 +10,6 @@ export default function TableHeader({
 }) {
   const [state, toggle] = useToggle(true);
 
-  const addOrder = (ordering, order, nextState) => {
-    const labels = ordering ? ordering.split(",") : [];
-    const filtered = labels.filter(
-      label => label !== order && label !== `-${order}`
-    );
-
-    filtered.push(nextState ? order : `-${order}`);
-    return filtered.join(",");
-  }
 
   const handleClick = () => {
     onClick();
