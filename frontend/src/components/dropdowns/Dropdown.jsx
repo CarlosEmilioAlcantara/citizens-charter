@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import Overlay from "../reusables/Overlay";
 
@@ -9,6 +10,8 @@ export default function Dropdown({
   full = false,
   items,
 }) {
+  const [selected, setSelected] = useState("");
+
   return(
     <>
       <Overlay 
@@ -90,10 +93,11 @@ export default function Dropdown({
             {items.map((item, index) => (
               <li 
                 key={index}
-                onClick={item.function}
+                onClick={() => {item.function(); setSelected(item.label)}}
                 className={`
                   flex
                   ${(sizeSelector || full) ? 'justify-center' : 'justify-end'}
+                  ${selected === item.label && 'bg-active'}
                   ${isOpen ? 'cursor-pointer' : ''}
                   ${isOpen ? 'z-10' : '-z-10'
                   }
@@ -101,9 +105,7 @@ export default function Dropdown({
                   duration-300
                   hover:bg-active
               `}>
-                <button 
-                  className="px-2 py-1 cursor-pointer text-right"
-                >
+                <button className="px-2 py-1 cursor-pointer text-right">
                   {item.label}
                 </button>
               </li>
