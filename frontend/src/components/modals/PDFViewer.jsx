@@ -2,7 +2,7 @@ import ReactDom from 'react-dom';
 import { FaXmark } from "react-icons/fa6";
 import { FaPrint } from "react-icons/fa";
 import Overlay from '../reusables/Overlay';
-import useShow from '../../utils/useShow';
+import useShow from '../../hooks/useShow';
 
 export default function PDFViewer({ url, onClose }) {
   const [show, handleClose] = useShow({initialValue: false, onClose: onClose});

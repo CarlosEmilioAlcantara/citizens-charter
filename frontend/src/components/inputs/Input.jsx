@@ -1,5 +1,5 @@
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import useToggle from "../../utils/useToggle";
+import useToggle from "../../hooks/useToggle";
 
 export default function Input({
   label,

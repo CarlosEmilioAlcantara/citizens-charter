@@ -26,7 +26,7 @@ export default function useTableControls() {
   const toggleDropdown = (key) => {
     setPageSizeSelector(false);
     setFilterSelector(false);
-    setDropdown(dropdown === key ? null : key);
+    setDropdown(prev => (prev === key ? null : key));
   }
 
   return {

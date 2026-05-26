@@ -1,6 +1,6 @@
 import Dropdown from "../dropdowns/Dropdown";
 import { isTablet } from "../../utils/isTablet";
-import useWindowWidth from "../../utils/useWindowWidth";
+import useWindowWidth from "../../hooks/useWindowWidth";
 
 export default function PageSizeSelector({ 
   label, 

@@ -5,8 +5,8 @@ import Overlay from "../reusables/Overlay";
 import Topbar from "../layout/Topbar";
 import NavbarMobile from "./NavbarMobile";
 import NavbarDesktop from "./NavbarDesktop";
-import useToggle from "../../utils/useToggle";
-import useWindowWidth from "../../utils/useWindowWidth";
+import useToggle from "../../hooks/useToggle";
+import useWindowWidth from "../../hooks/useWindowWidth";
 import { isDesktop } from "../../utils/isDesktop";
 
 export default function Navigation() {

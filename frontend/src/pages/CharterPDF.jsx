@@ -11,11 +11,11 @@ import {
 } from "../apis/CharterPDFAPI";
 import { FaEye, FaFileDownload, FaPrint, FaTrashAlt } from "react-icons/fa";
 import { TbReload } from "react-icons/tb";
-import useLoader from "../utils/useLoader";
-import usePaging from "../utils/usePaging";
-import useTableControls from "../utils/useTableControls";
+import useLoader from "../hooks/useLoader";
+import usePaging from "../hooks/usePaging";
+import useTableControls from "../hooks/useTableControls";
 import refreshList from "../utils/refreshList";
-import useWindowWidth from "../utils/useWindowWidth";
+import useWindowWidth from "../hooks/useWindowWidth";
 import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
 import Button from "../components/buttons/Button";

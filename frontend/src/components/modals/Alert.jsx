@@ -1,7 +1,7 @@
 import ReactDom from 'react-dom';
 import { FaCheckCircle  } from "react-icons/fa";
 import { FaCircleXmark } from "react-icons/fa6";
-import useTimeout from '../../utils/useTimeout';
+import useTimeout from '../../hooks/useTimeout';
 
 export default function Alert({ success, message, onClose }) {
   const show = useTimeout({onClose: onClose});
