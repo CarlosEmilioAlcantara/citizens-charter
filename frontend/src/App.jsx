@@ -4,6 +4,7 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CharterPDF from "./pages/CharterPDF";
+import Home from "./pages/Home";
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
             />
 
             <Route element={<Login />} path="/login" />
+            <Route element={<Home />} path="/" />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
