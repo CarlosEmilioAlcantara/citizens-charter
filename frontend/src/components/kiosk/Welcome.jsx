@@ -23,7 +23,8 @@ export default function Welcome({ isOpen, toggle }) {
         text-background
         transition-opacity
         duration-300
-        ${isOpen ? 'opacity-100' : 'opacity-0'}
+        ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+        z-50
     `}>
       <div className="
         flex 
@@ -44,8 +45,8 @@ export default function Welcome({ isOpen, toggle }) {
           duration-500
           ${show ? 'opacity-100 translatey-y-0' : 'opacity-0 -translate-y-10'}
         `}>
-          <p className="font-bold text-2xl">Karta ng Mamamayan</p>
-          <p className="text-lg">Lungsod ng San Pablo</p>
+          <p className="font-bold text-2xl md:text-4xl">Karta ng Mamamayan</p>
+          <p className="text-lg md:text-2xl">Lungsod ng San Pablo</p>
         </div>
 
         <img 
@@ -68,15 +69,15 @@ export default function Welcome({ isOpen, toggle }) {
           duration-500
           ${show ? 'opacity-100 translatey-y-0' : 'opacity-0 translate-y-10'}
         `}>
-          <div className="">
-            <p className="font-bold text-xl">
+          <div className="font-bold text-xl md:text-3xl">
+            <p >
               Tuloy po kayo!
             </p>
-            <p className="font-bold text-xl">
+            <p>
               Sa bagong San Pablo!
             </p>
           </div>
-          <p className="text-xs animate-pulse">Click Anywhere...</p>
+          <p className="text-xs animate-pulse md:text-md">Click Anywhere...</p>
         </div>
       </div>
     </div>

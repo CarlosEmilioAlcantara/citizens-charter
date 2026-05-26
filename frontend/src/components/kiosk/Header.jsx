@@ -23,7 +23,7 @@ export default function Header({ toggle }) {
           />
 
           <div className="
-            flex flex-col items-start justify-start text-sm md:text-lg
+            flex flex-col text-sm md:text-lg
           ">
             <h1 className="font-bold">Karta ng Mamamayan</h1>
             <p>Lungsod ng San Pablo</p>
@@ -32,11 +32,12 @@ export default function Header({ toggle }) {
 
         <RiLogoutBoxRFill 
           onClick={toggle}
-          size={24} 
           className="
+            text-2xl
             cursor-pointer 
             transition-all 
             duration-300 
+            md:text-3xl
             hover:text-popup-header
         "/>
       </div>
