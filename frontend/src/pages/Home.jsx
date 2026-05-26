@@ -115,109 +115,128 @@ export default function Home() {
     <>
       <Welcome isOpen={state} toggle={toggle}/>
       <Header toggle={toggle} />
-      <div className="flex flex-col gap-3 w-full sm:flex-row">
-        <Search 
-          placeholder={"Ngalan ng opisina"} 
-          value={search} 
-          setValue={setSearch}
-          onClick={closeControls}
-        />
-
-        <div className="
-          flex 
-          flex-col
-          gap-1 
-          justify-between 
-          sm:justify-end
-          sm:flex-row
-        ">
-          <FilterSelector 
-            setFilter={setFilter}
-            isOpen={filterSelector}
-            toggle={toggleFilterSelector}
-            filters={filters}
-          />
-
-          <PageSizeSelector 
-            label={pageSize} 
-            setPageSize={setPageSize} 
-            isOpen={pageSizeSelector}
-            toggle={togglePageSizeSelector}
-          />
-        </div>
-      </div>
-
-      {isTablet(windowWidth) ? (
-        <Table 
-          headers={[
-            <TableHeader 
-              label={"Opisina"} 
-              order={"name"}
-              setOrdering={setOrdering} 
-              onClick={closeControls}
-            />, 
-            <TableHeader 
-              label={"Sector"} 
-              order={"sector__name"}
-              setOrdering={setOrdering} 
-              onClick={closeControls}
-            />, 
-            "Actions",
-          ]}
-          body={items}
-          charterList={true}
-        />
-      ) : (
-        <ListMobile 
-          headers={[
-            <TableHeader 
-              label={"PDF"} 
-              order={"name"}
-              setOrdering={setOrdering} 
-              onClick={closeControls}
-            />, 
-            <TableHeader 
-              label={"Sector"} 
-              order={"sector__name"}
-              setOrdering={setOrdering} 
-              onClick={closeControls}
-            />, 
-          ]}
-          body={items}
-          charterList={true}
-        />
-      )}
-
       <div className="
         flex 
         flex-col 
-        justify-between 
-        items-center 
-        p-3 
-        gap-3
-        md:flex-row
+        justify-center 
+        items-center
+        mt-3 
       ">
-        <EntriesCounter
-          total={total}
-          count={count}
-        /> 
-        <Pager
-          count={count}
-          next={next}
-          prev={prev}
-          search={search}
-          pageSize={pageSize}
-          fetchItems={handlePaging}
-          route={route}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          onClick={closeControls}
-        />
-      </div>
+        <div className="
+          flex 
+          flex-col 
+          w-[98%]
+          gap-2
+        ">
+          <h2 className="text-sm font-bold md:text-xl">
+            Karta ng Mamamayan ng Lahat ng Opisina
+          </h2>
+          
+          <div className="flex flex-col gap-3 w-full sm:flex-row">
+            <Search 
+              placeholder={"Ngalan ng opisina"} 
+              value={search} 
+              setValue={setSearch}
+              onClick={closeControls}
+            />
 
-      {url && (
-        <PDFViewer url={url} onClose={() => {setUrl(null)}}/>
-      )}
+            <div className="
+              flex 
+              flex-col
+              gap-1 
+              justify-between 
+              sm:justify-end
+              sm:flex-row
+            ">
+              <FilterSelector 
+                setFilter={setFilter}
+                isOpen={filterSelector}
+                toggle={toggleFilterSelector}
+                filters={filters}
+              />
+
+              <PageSizeSelector 
+                label={pageSize} 
+                setPageSize={setPageSize} 
+                isOpen={pageSizeSelector}
+                toggle={togglePageSizeSelector}
+              />
+            </div>
+          </div>
+
+          {isTablet(windowWidth) ? (
+            <Table 
+              headers={[
+                <TableHeader 
+                  label={"Opisina"} 
+                  order={"name"}
+                  setOrdering={setOrdering} 
+                  onClick={closeControls}
+                />, 
+                <TableHeader 
+                  label={"Sector"} 
+                  order={"sector__name"}
+                  setOrdering={setOrdering} 
+                  onClick={closeControls}
+                />, 
+                "Actions",
+              ]}
+              body={items}
+              charterList={true}
+            />
+          ) : (
+            <ListMobile 
+              headers={[
+                <TableHeader 
+                  label={"Opisina"} 
+                  order={"name"}
+                  setOrdering={setOrdering} 
+                  onClick={closeControls}
+                />, 
+                <TableHeader 
+                  label={"Sector"} 
+                  order={"sector__name"}
+                  setOrdering={setOrdering} 
+                  onClick={closeControls}
+                />, 
+              ]}
+              body={items}
+              charterList={true}
+            />
+          )}
+
+          <div className="
+            flex 
+            flex-col 
+            justify-between 
+            items-center 
+            p-3 
+            gap-3
+            md:flex-row
+          ">
+            <EntriesCounter
+              total={total}
+              count={count}
+            /> 
+            <Pager
+              count={count}
+              next={next}
+              prev={prev}
+              search={search}
+              pageSize={pageSize}
+              fetchItems={handlePaging}
+              route={route}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              onClick={closeControls}
+            />
+          </div>
+
+          {url && (
+            <PDFViewer url={url} onClose={() => {setUrl(null)}}/>
+          )}
+        </div>
+      </div>
     </>
   );
 }
