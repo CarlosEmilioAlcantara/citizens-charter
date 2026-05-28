@@ -4,7 +4,7 @@ import { FaPrint } from "react-icons/fa";
 import Overlay from '../reusables/Overlay';
 import useShow from '../../hooks/useShow';
 
-export default function PDFViewer({ url, onClose }) {
+export default function PDFViewer({ url, onClose, full = false }) {
   const [show, handleClose] = useShow({initialValue: false, onClose: onClose});
 
   return ReactDom.createPortal(
@@ -25,17 +25,18 @@ export default function PDFViewer({ url, onClose }) {
         z-50
       `}>
         <Overlay show={show} zIndex={40} toggle={handleClose} />
-        <div className="
+        <div className={`
           relative
           flex
           flex-col
+          ${full && 'w-full h-full'}
           pt-8
           p-4
           rounded-lg
           bg-background
           overflow-hidden
           z-50
-        ">
+        `}>
           <div className="
             absolute 
             top-0 
@@ -63,13 +64,13 @@ export default function PDFViewer({ url, onClose }) {
 
           <iframe
             src={url}
-            className="
+            className={`
               mt-3 
-              md:w-[600px] 
-              md:h-[400px] 
-              lg:w-[800px] 
-              lg:h-[600px]
-          "/>
+              ${!full ?
+                'md:w-[600px] md:h-[400px] lg:w-[800px] lg:h-[600px]' :
+                'h-full'
+              }
+          `}/>
         </div>
       </div>
     </>,

@@ -68,7 +68,7 @@ export default function usePaging(api) {
     }
   }, [api, filtersRoute])
 
-  return [
+  return {
     route,
     setRoute,
     items,
@@ -91,5 +91,5 @@ export default function usePaging(api) {
     setCurrentPage,
     total,
     handlePaging,
-  ];
+  };
 }

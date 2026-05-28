@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
 import { downloadCharterPDF } from "../apis/CharterPDFAPI";
 import Welcome from "../components/kiosk/Welcome";
@@ -16,16 +16,17 @@ import Button from "../components/buttons/Button";
 import ButtonGroup from "../components/buttons/ButtonGroup";
 import Dropdown from "../components/dropdowns/Dropdown";
 import DropdownItem from "../components/dropdowns/DropdownItem";
+import Alert from "../components/modals/Alert";
 import useToggle from "../hooks/useToggle";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useWindowWidth from "../hooks/useWindowWidth";
-import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
+import { isDesktop } from "../utils/isDesktop";
 import { FaEye, FaFileDownload } from "react-icons/fa";
 
 export default function Home() {
-  const [
+  const {
     route,
     setRoute,
     items,
@@ -33,11 +34,8 @@ export default function Home() {
     setSearch,
     pageSize,
     setPageSize,
-    ordering,
     setOrdering,
-    field,
     setField,
-    filter,
     setFilter,
     filters,
     setFiltersRoute,
@@ -48,19 +46,56 @@ export default function Home() {
     setCurrentPage,
     total,
     handlePaging,
-  ] = usePaging(fetchAPI)
+   } = usePaging(fetchAPI)
   const {
-    dropdown,
     pageSizeSelector, 
     filterSelector,
     closeControls,
     togglePageSizeSelector,
     toggleFilterSelector,
-    toggleDropdown,
   } = useTableControls();
+  const [toast, setToast] = useState(null);
   const [state, toggle] = useToggle(true);
   const [windowWidth] = useWindowWidth();
+  const tap = useRef(0);
+  const [kiosk, setKiosk] = useState(false);
   const [url, setUrl] = useState("");
+
+  const handleKiosk = () => {
+    if (tap.current < 5 ) { tap.current++ };
+    if (tap.current === 5 ) {
+      setToast({ 
+        success: null, message: "Press 5 more times to enter Kiosk Mode" 
+      });
+      tap.current++;
+    } else if (tap.current > 5 && tap.current < 11 ) { 
+      setToast({ 
+        success: null,
+        message: 
+        `Press ${10 - tap.current} more ${10 - tap.current > 1 ? 'times' : 'time'} to enter Kiosk Mode`,
+      });
+      tap.current++;
+    };
+
+    if (tap.current === 11 ) {
+      setToast({ success: true, message: "Switched to Kiosk Mode" });
+      setKiosk(true);
+      tap.current++;
+    } else if (tap.current > 11 && tap.current < 17 ) { 
+      setToast({ 
+        success: null,
+        message: `Press ${17 - tap.current} more ${17 - tap.current > 1 ? 'times' : 'time'} to leave Kiosk Mode`,
+      });
+      tap.current++;
+    } else if (tap.current === 17) {
+      setToast({ 
+        success: true, 
+        message: "Left Kiosk Mode",
+      });
+      setKiosk(false);
+      tap.current = 0;
+    };
+  }
 
   useEffect(() => {
     setRoute("/api/pdf/citizens-charters");
@@ -68,38 +103,17 @@ export default function Home() {
     setFiltersRoute("/api/filters/citizens-charter");
   }, [setRoute, setField, setFiltersRoute]);
 
-  isTablet(windowWidth) && Object.entries(items).map(([key, data]) => {
-    data["actions"] = (
-      <Dropdown 
-        key={key} 
-        label={"Aksyon"} 
-        isOpen={dropdown === key}
-        toggle={() => toggleDropdown(key)}
-        items={[
-          {
-            "label": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
-            "function": () => {
-              isDesktop(windowWidth) ? 
-              setUrl(data["pdf"]) : window.open(data["pdf"], "_blank");
-            },
-          },
-          {
-            "label": <DropdownItem 
-              icon={<FaFileDownload />} 
-              label={"Download PDF"}
-            />, 
-            "function": () => downloadCharterPDF(data["id"]),
-          },
-        ]}
-    />);
-  }) || Object.entries(items).map(([key, data]) => {
+  Object.entries(items).map(([key, data]) => {
     data["actions"] = (
       <ButtonGroup key={key} buttons={[
         <Button 
           label={"Tingnan PDF"} 
           icon={<FaEye />} 
           full={true} 
-          onClick={() => window.open(data["pdf"], "_blank")}
+          onClick={() => {
+            isDesktop(windowWidth) ? 
+            setUrl(data["pdf"]) : window.open(data["pdf"], "_blank");
+          }}
         />,
         <Button 
           label={"Download PDF"} 
@@ -110,6 +124,24 @@ export default function Home() {
       ]} />
     )
   })
+
+  const kioskItems = Object.fromEntries(
+    Object.entries(items).map(([key, data]) => [
+      key,
+      {
+        ...data,
+        ...(kiosk && {
+          actions: (
+            <Button 
+              label={"Tingnan PDF"} 
+              icon={<FaEye />} 
+              onClick={() => setUrl(data["pdf"])}
+            />
+          )
+        })
+      }
+    ])
+  )
 
   return(
     <>
@@ -128,8 +160,8 @@ export default function Home() {
           w-[98%]
           gap-2
         ">
-          <h2 className="text-sm font-bold md:text-xl">
-            Karta ng Mamamayan ng Lahat ng Opisina
+          <h2 onClick={handleKiosk} className="text-sm font-bold md:text-xl">
+            Karta ng Mamamayan ng Lungsod ng San Pablo
           </h2>
           
           <div className="flex flex-col gap-3 w-full sm:flex-row">
@@ -181,7 +213,7 @@ export default function Home() {
                 />, 
                 "Actions",
               ]}
-              body={items}
+              body={kiosk ? kioskItems : items}
               charterList={true}
             />
           ) : (
@@ -233,7 +265,18 @@ export default function Home() {
           </div>
 
           {url && (
-            <PDFViewer url={url} onClose={() => {setUrl(null)}}/>
+            <PDFViewer 
+              url={url} 
+              full={kiosk && true} 
+              onClose={() => {setUrl(null)}}
+            />
+          )}
+          {toast && (
+            <Alert 
+              success={toast.success} 
+              message={toast.message} 
+              onClose={() => setToast(null)}
+            />
           )}
         </div>
       </div>

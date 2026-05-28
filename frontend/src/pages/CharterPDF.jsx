@@ -69,7 +69,7 @@ export default function CharterPDF() {
     toggleFilterSelector,
     toggleDropdown,
   } = useTableControls();
-  const [toast, setToast, loading, handleLoading] = useLoader();
+  const {toast, setToast, loading, handleLoading} = useLoader();
   const [windowWidth] = useWindowWidth();
   const [url, setUrl] = useState("");
 
@@ -389,7 +389,6 @@ export default function CharterPDF() {
             <Alert 
               success={toast.success} 
               message={toast.message} 
-              timeout={3000} 
               onClose={() => setToast(null)}
             />
           )}

@@ -24,5 +24,5 @@ export default function useLoader() {
     }
   }
 
-  return [toast, setToast, loading, handleLoading];
+  return {toast, setToast, loading, handleLoading};
 }
