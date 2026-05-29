@@ -77,6 +77,7 @@ export default function Table({
               {Object.values(data)[3]}
             </div>
           </td>
+          <td>{Object.values(data)[4]}</td>
         </>
       );
     }

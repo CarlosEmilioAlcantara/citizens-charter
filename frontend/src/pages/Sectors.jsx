@@ -64,6 +64,7 @@ export default function Sectors() {
     toggleDropdown,
   } = useTableControls();
   const {toast, setToast, loading, handleLoading} = useLoader();
+  const [tableInputs, setTableInputs] = useState({});
   const [windowWidth] = useWindowWidth();
   const [url, setUrl] = useState("");
 
@@ -71,6 +72,17 @@ export default function Sectors() {
     setRoute("/api/sectors")
     setAccessToken(authTokens.access)
   }, [setRoute, setAccessToken, authTokens.access])
+
+  Object.entries(items).forEach(([key, data]) => {
+    data["actions"] = (
+      <textarea 
+        key={key} 
+        value={data["number"]}
+        className="border border-foreground rounded-sm"
+      >
+      </textarea>
+    )
+  })
 
   return(
     <>
