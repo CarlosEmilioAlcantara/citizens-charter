@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export default function useLoader() {
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
   const [toast, setToast] = useState(null);
   
   const handleLoading = async ({
@@ -24,5 +25,12 @@ export default function useLoader() {
     }
   }
 
-  return {toast, setToast, loading, handleLoading};
+  return {
+    toast, 
+    setToast, 
+    loading, 
+    handleLoading, 
+    loadingMessage, 
+    setLoadingMessage,
+  };
 }

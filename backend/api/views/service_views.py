@@ -5,7 +5,11 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..models import Office, Service
-from ..serializers import ServiceBulkUpdateSerializer, ServiceSerializer
+from ..serializers import (
+    ServiceBulkUpdateSerializer, 
+    ServiceSerializer,
+    ServiceListSerializer,
+)
 from ..permissions import IsInOffice, IsSuperuser
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
 from ..utils.view_utils import audit_save, audit_delete
@@ -67,9 +71,17 @@ class UpdateServiceView(BulkUpdateMixin, APIView):
 class ServiceListView(ListAPIView):
     queryset = Service.objects.all().order_by('id')
     permission_classes = [IsAuthenticated]
-    serializer_class = ServiceSerializer
-    filter_backends = [filters.SearchFilter]
+    serializer_class = ServiceListSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
+    ordering_fields = [
+        'number',
+        'name', 
+        'description', 
+        'transaction', 
+        'classification_types',
+        'availers',
+    ]
 
     def get_queryset(self):
         excluded_queryset = self.queryset.filter(

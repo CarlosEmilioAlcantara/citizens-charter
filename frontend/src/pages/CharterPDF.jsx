@@ -1,7 +1,4 @@
-import { useEffect, useState } from "react";
-import Navigation from "../components/navigation/Navigation";
-import { useContext } from "react";
-import AuthContext from "../context/AuthContext";
+import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
 import { 
   downloadCharterPDF, 
@@ -9,15 +6,8 @@ import {
   regenerateCharterPDF,
   deleteCharterPDF,
 } from "../apis/CharterPDFAPI";
-import { FaEye, FaFileDownload, FaPrint, FaTrashAlt } from "react-icons/fa";
-import { TbReload } from "react-icons/tb";
-import useLoader from "../hooks/useLoader";
-import usePaging from "../hooks/usePaging";
-import useTableControls from "../hooks/useTableControls";
-import refreshList from "../utils/refreshList";
-import useWindowWidth from "../hooks/useWindowWidth";
-import { isDesktop } from "../utils/isDesktop";
-import { isTablet } from "../utils/isTablet";
+import AuthContext from "../context/AuthContext";
+import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
 import Search from "../components/inputs/Search";
 import FilterSelector from "../components/table_controls/FilterSelector";
@@ -33,10 +23,19 @@ import PDFViewer from "../components/modals/PDFViewer";
 import Loader from "../components/modals/Loader";
 import Alert from "../components/modals/Alert";
 import ButtonGroup from "../components/buttons/ButtonGroup";
+import useLoader from "../hooks/useLoader";
+import usePaging from "../hooks/usePaging";
+import useTableControls from "../hooks/useTableControls";
+import useWindowWidth from "../hooks/useWindowWidth";
+import refreshList from "../utils/refreshList";
+import { isDesktop } from "../utils/isDesktop";
+import { isTablet } from "../utils/isTablet";
+import { FaEye, FaFileDownload, FaPrint, FaTrashAlt } from "react-icons/fa";
+import { TbReload } from "react-icons/tb";
 
 export default function CharterPDF() {
   const { authTokens } = useContext(AuthContext);
-  const [
+  const {
     route,
     setRoute,
     items,
@@ -59,7 +58,7 @@ export default function CharterPDF() {
     setCurrentPage,
     total,
     handlePaging,
-  ] = usePaging(fetchAPI)
+  } = usePaging(fetchAPI)
   const {
     dropdown, 
     pageSizeSelector, 

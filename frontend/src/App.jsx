@@ -3,6 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Charter from "./pages/Charter";
 import CharterPDF from "./pages/CharterPDF";
 import Home from "./pages/Home";
 
@@ -19,6 +20,15 @@ export default function App() {
                 </ProtectedRoute>
               }
               path="/dashboard"
+              exact
+            />
+            <Route
+              element={
+                <ProtectedRoute>
+                  <Charter />
+                </ProtectedRoute>
+              }
+              path="/charter"
               exact
             />
             <Route

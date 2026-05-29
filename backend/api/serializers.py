@@ -25,6 +25,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['id'] = user.pk
         token['name'] = user.name
         token['office_id'] = user.office.pk
+        token['office_name'] = user.office.name
         token['is_staff'] = user.is_staff
         token['is_superuser'] = user.is_superuser
 
@@ -364,6 +365,18 @@ class ServiceSerializer(serializers.ModelSerializer):
             )
 
         return data
+
+class ServiceListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = [
+            'number',
+            'name', 
+            'description', 
+            'transaction', 
+            'classification_types',
+            'availers',
+        ]
 
 class ServiceBulkUpdateSerializer(serializers.ModelSerializer):
     # pk = serializers.IntegerField()

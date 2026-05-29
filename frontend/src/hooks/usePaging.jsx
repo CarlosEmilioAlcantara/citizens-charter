@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 
 export default function usePaging(api) {
+  const [accessToken, setAccessToken] = useState("");
   const [route, setRoute] = useState("");
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");
@@ -16,9 +17,9 @@ export default function usePaging(api) {
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(null);
 
-  const handlePaging = useCallback(async (route) => {
+  const handlePaging = useCallback(async (route, accessToken = "") => {
     try {
-      const data = await api(route);
+      const data = await api(route, accessToken);
 
       setItems(data.results);
       setPrev(data.previous);
@@ -33,7 +34,8 @@ export default function usePaging(api) {
   useEffect(() => {
     if (route) {
       api(
-        `${route}?page=${currentPage}&search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`
+        `${route}?page=${currentPage}&search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`,
+        accessToken
       )
       .then(data => {
         setItems(data.results);
@@ -42,13 +44,15 @@ export default function usePaging(api) {
         setCount(data.count);
     }).catch(() => {
       handlePaging(
-        `${route}?search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`
+        `${route}?search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`,
+        accessToken
       );
     });
     }
   }, [
     api, 
     route, 
+    accessToken,
     search, 
     currentPage, 
     handlePaging, 
@@ -64,11 +68,13 @@ export default function usePaging(api) {
 
   useEffect(() => {
     if (filtersRoute) {
-      api(filtersRoute).then(data => setFilters([...data]));
+      api(filtersRoute, accessToken).then(data => setFilters([...data]));
     }
-  }, [api, filtersRoute])
+  }, [api, filtersRoute, accessToken])
 
   return {
+    accessToken,
+    setAccessToken,
     route,
     setRoute,
     items,

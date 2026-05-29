@@ -6,129 +6,128 @@ export default function Table({
   hideID = false, 
   charterList = false,
 }) {
-  return (
-    <div className="rounded-t-lg overflow-y-hidden">
-      <table className="table-fixed w-full">
-        <thead className="
-          table 
-          table-fixed 
-          w-full 
-          border-b-2 
-          border-b-unfocused 
-          bg-popup-header
-        ">
-          {headers.length === 2 && (
-            <tr>
-              <th key={headers[0].index} className="py-1">{headers[0]}</th>
-              <th key={headers[1].index} className="pr-[45px] py-1 text-right">
-                {headers[1]}
-              </th>
-            </tr>
-          ) || charterList && (
-            <tr>
-              <th key={headers[0].index} className="py-1">{headers[0]}</th>
-              <th key={headers[1].index} className="py-1">{headers[1]}</th>
-              <th key={headers[2].index} className="pr-[45px] py-1 text-right">
-                {headers[2]}
-              </th>
-            </tr>
-          ) || (
-            <tr>
-              {headers.map((header, index) => (
-                <th key={index}>{header}</th>
-              ))}
-            </tr>
-          )}
-        </thead>
+  const renderHeaders = () => {
+    if (charterList) {
+      return (
+        <tr>
+          <th className="p-1 pl-[24px] text-left">
+            {headers[0]}
+          </th>
 
-        <tbody className="
-          block 
-          w-full 
-          h-[500px] 
-          overflow-y-auto 
-          [&::-webkit-scrollbar]:w-1
-          [&::-webkit-scrollbar-track]:bg-transparent
-          [&::-webkit-scrollbar-track]:rounded-full
-          [&::-webkit-scrollbar-thumb]:rounded-full
-        hover:[&::-webkit-scrollbar-thumb]:bg-accent
+          <th className="p-1 text-left">
+            {headers[1]}
+          </th>
+
+          <th className="p-1 pr-[24px] text-right">
+            {headers[2]}
+          </th>
+        </tr>
+      );
+    }
+
+    return (
+      <tr>
+        {headers.map((header, index) => (
+          <th 
+            key={index} 
+            className="p-1 text-center"
+          >
+            {header}
+          </th>
+        ))}
+      </tr>
+    );
+  };
+
+  const renderRow = (data) => {
+    if (charterList) {
+      return (
+        <>
+          <td className="p-1 pl-[24px]">
+            {Object.values(data)[1]}
+          </td>
+
+          <td className="p-1">
+            {Object.values(data)[4]}
+          </td>
+
+          <td className="p-1">
+            <div className="flex justify-end">
+              {Object.values(data)[5]}
+            </div>
+          </td>
+        </>
+      );
+    }
+
+    return Object.entries(data).map(([key, value]) => {
+      if (hideID && key === "id") {
+        return (
+          <td key={key} className="hidden">
+            {value}
+          </td>
+        );
+      }
+
+      return (
+        <td 
+          key={key}
+          className="p-1 text-center wrap-break-word"
+        >
+          {String(value).replace(/\.0$/, "")}
+        </td>
+      );
+    });
+  };
+
+  return (
+    <div className="rounded-t-lg overflow-hidden">
+      <table className="
+        w-full
+        table-fixed
+        text-sm
+        border-collapse
+      ">
+        <thead className="
+          bg-popup-header
+          border-b-2
+          border-b-unfocused
         ">
-          {Object.entries(body).map(([key, data]) => (
-            <tr key={key} className="
-              table 
-              table-fixed 
-              w-full 
-              text-md 
-              border-b 
-              border-b-unfocused
-            ">
-              {/* {Object.keys(data).length === 3 ? ( */}
-              {Object.keys(data).length === 2 && (
-                hideID && Object.keys(data)[0] == "id" ? (
-                  <>
-                    <td key={Object.keys(data)[0]} className="hidden">
-                      {Object.values(data)[0]}
-                    </td>
-                    <td 
-                      key={Object.keys(data)[1]} 
-                      className="px-6 p-[6px]"
-                    >
-                      {Object.values(data)[1]}
-                    </td>
-                    <td 
-                      key={Object.keys(data)[2]} 
-                      className="flex justify-end px-6 p-[6px]"
-                    >
-                      {Object.values(data)[2]}
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    <td key={Object.keys(data)[0]} className="px-6 p-[6px]">
-                      {Object.values(data)[0]}
-                    </td>
-                    <td 
-                      key={Object.keys(data)[1]} 
-                      className="px-6 p-[6px]"
-                    >
-                      {Object.values(data)[1]}
-                    </td>
-                    <td 
-                      key={Object.keys(data)[2]} 
-                      className="flex justify-end px-6 p-[6px]"
-                    >
-                      {Object.values(data)[2]}
-                    </td>
-                  </>
-                )
-              ) || charterList && (
-                <>
-                  <td key={Object.keys(data)[1]} className="px-6 p-[6px]">
-                    {Object.values(data)[1]}
-                  </td>
-                  <td key={Object.keys(data)[4]} className="px-28 p-[6px]">
-                    {Object.values(data)[4]}
-                  </td>
-                  <td 
-                    key={Object.keys(data)[5]} 
-                    className="flex justify-end px-6 p-[6px]"
-                  >
-                    {Object.values(data)[5]}
-                  </td>
-                </>
-              ) || (
-                Object.entries(data).map(([key, value]) => (
-                  hideID && key == "id" ? (
-                    <td className="hidden" key={key}>{value}</td>
-                  ) : (
-                    <td className="px-6 p-[6px]" key={key}>{value}</td>
-                  )
-                ))
-              )}
-            </tr>
-            )
-          )}
-        </tbody>
+          {renderHeaders()}
+        </thead>
       </table>
+
+      <div className="
+        h-[500px]
+        overflow-y-auto
+        [&::-webkit-scrollbar]:w-1
+        [&::-webkit-scrollbar-track]:bg-transparent
+        [&::-webkit-scrollbar-track]:rounded-full
+        [&::-webkit-scrollbar-thumb]:rounded-full
+        hover:[&::-webkit-scrollbar-thumb]:bg-accent
+      ">
+        <table className="
+          w-full
+          table-fixed
+          text-sm
+          border-collapse
+        ">
+          <tbody>
+            {Object.entries(body).map(([key, data]) => (
+              <tr
+                key={key}
+                className="
+                  border-b
+                  border-b-unfocused
+                  align-top
+                "
+              >
+                {renderRow(data)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
