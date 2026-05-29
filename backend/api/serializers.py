@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -194,8 +195,19 @@ class SectorBulkUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Must have a sector first before a subsector.'
             )
+
+        if data.get('number') % 1 != 0:
+            data['is_subsector'] = True
+        else:
+            data['is_subsector'] = False
     
         return data
+
+class SectorListSerializer(serializers.ModelSerializer):
+    office_count = serializers.IntegerField(read_only=True)
+    class Meta:
+        model = Sector
+        fields = ['id', 'number', 'name', 'office_count']
 
 class OfficeSerializer(serializers.ModelSerializer):
     service_count = serializers.IntegerField(read_only=True)

@@ -6,7 +6,11 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..models import Sector
-from ..serializers import SectorSerializer, SectorBulkUpdateSerializer
+from ..serializers import (
+    SectorSerializer, 
+    SectorBulkUpdateSerializer, 
+    SectorListSerializer,
+)
 from ..permissions import IsSuperuser
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
 from ..utils.view_utils import audit_save, audit_delete
@@ -60,7 +64,7 @@ class SectorListView(ListAPIView):
         office_count=Count('offices')
     ).order_by('id')
     permission_classes = [IsAuthenticated, IsSuperuser]
-    serializer_class = SectorSerializer
+    serializer_class = SectorListSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 

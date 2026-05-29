@@ -33,7 +33,7 @@ import { isTablet } from "../utils/isTablet";
 import { FaEye, FaFileDownload, FaPrint, FaTrashAlt } from "react-icons/fa";
 import { TbReload } from "react-icons/tb";
 
-export default function CharterPDF() {
+export default function CharterPDFs() {
   const { authTokens } = useContext(AuthContext);
   const {
     route,

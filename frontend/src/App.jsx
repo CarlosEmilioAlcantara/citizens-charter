@@ -3,8 +3,9 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Sectors from "./pages/Sectors";
 import Charter from "./pages/Charter";
-import CharterPDF from "./pages/CharterPDF";
+import CharterPDFs from "./pages/CharterPDFs";
 import Home from "./pages/Home";
 
 export default function App() {
@@ -20,7 +21,6 @@ export default function App() {
                 </ProtectedRoute>
               }
               path="/dashboard"
-              exact
             />
             <Route
               element={
@@ -29,16 +29,22 @@ export default function App() {
                 </ProtectedRoute>
               }
               path="/charter"
-              exact
             />
             <Route
               element={
                 <ProtectedRoute>
-                  <CharterPDF />
+                  <Sectors />
+                </ProtectedRoute>
+              }
+              path="/sectors"
+            />
+            <Route
+              element={
+                <ProtectedRoute>
+                  <CharterPDFs />
                 </ProtectedRoute>
               }
               path="/charter-pdfs"
-              exact
             />
 
             <Route element={<Login />} path="/login" />

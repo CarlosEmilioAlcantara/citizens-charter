@@ -5,9 +5,10 @@ export default function Table({
   body, 
   hideID = false, 
   charterList = false,
+  sectorList = false,
 }) {
   const renderHeaders = () => {
-    if (charterList) {
+    if (charterList || sectorList) {
       return (
         <tr>
           <th className="p-1 pl-[24px] text-left">
@@ -54,6 +55,26 @@ export default function Table({
           <td className="p-1">
             <div className="flex justify-end">
               {Object.values(data)[5]}
+            </div>
+          </td>
+        </>
+      );
+    }
+
+    if (sectorList) {
+      return (
+        <>
+          <td className="p-1 pl-[24px]">
+            {String(Object.values(data)[1]).replace(/\.0$/, "")}
+          </td>
+
+          <td className="p-1">
+            {Object.values(data)[2]}
+          </td>
+
+          <td className="p-1 pr-[72px]">
+            <div className="flex justify-end">
+              {Object.values(data)[3]}
             </div>
           </td>
         </>

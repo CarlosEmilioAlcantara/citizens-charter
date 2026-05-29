@@ -1,0 +1,240 @@
+import { useContext, useEffect, useState } from "react";
+import { fetchAPI } from "../apis/fetchAPI";
+import AuthContext from "../context/AuthContext";
+import Navigation from "../components/navigation/Navigation";
+import Button from "../components/buttons/Button";
+import Search from "../components/inputs/Search";
+import FilterSelector from "../components/table_controls/FilterSelector";
+import PageSizeSelector from "../components/table_controls/PageSizeSelector";
+import TableHeader from "../components/table/TableHeader";
+import Table from "../components/table/Table";
+import ListMobile from "../components/list/ListMobile";
+import Dropdown from "../components/dropdowns/Dropdown";
+import DropdownItem from "../components/dropdowns/DropdownItem";
+import EntriesCounter from "../components/table_controls/EntriesCounter";
+import Pager from "../components/table_controls/Pager";
+import PDFViewer from "../components/modals/PDFViewer";
+import Loader from "../components/modals/Loader";
+import Alert from "../components/modals/Alert";
+import ButtonGroup from "../components/buttons/ButtonGroup";
+import useLoader from "../hooks/useLoader";
+import usePaging from "../hooks/usePaging";
+import useTableControls from "../hooks/useTableControls";
+import useWindowWidth from "../hooks/useWindowWidth";
+import refreshList from "../utils/refreshList";
+import { isDesktop } from "../utils/isDesktop";
+import { isTablet } from "../utils/isTablet";
+import { FaEye, FaFileDownload, FaPrint, FaTrashAlt, FaPlus } from "react-icons/fa";
+
+export default function Sectors() {
+  const { user, authTokens } = useContext(AuthContext);
+  const {
+    accessToken,
+    setAccessToken,
+    route,
+    setRoute,
+    items,
+    search,
+    setSearch,
+    pageSize,
+    setPageSize,
+    ordering,
+    setOrdering,
+    field,
+    setField,
+    filter,
+    setFilter,
+    filters,
+    setFiltersRoute,
+    prev,
+    next,
+    count,
+    currentPage,
+    setCurrentPage,
+    total,
+    handlePaging,
+  } = usePaging(fetchAPI)
+  const {
+    dropdown, 
+    pageSizeSelector, 
+    filterSelector,
+    closeControls,
+    togglePageSizeSelector,
+    toggleFilterSelector,
+    toggleDropdown,
+  } = useTableControls();
+  const {toast, setToast, loading, handleLoading} = useLoader();
+  const [windowWidth] = useWindowWidth();
+  const [url, setUrl] = useState("");
+
+  useEffect(() => {
+    setRoute("/api/sectors")
+    setAccessToken(authTokens.access)
+  }, [setRoute, setAccessToken, authTokens.access])
+
+  return(
+    <>
+      <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
+      <Navigation />
+      <div className="
+        flex 
+        flex-col 
+        justify-center 
+        items-center
+        mt-16 
+        md:mt-5 
+        md:ml-22
+      ">
+        <div className="
+          flex 
+          flex-col 
+          w-[98%]
+          gap-2
+        ">
+          <div className="flex flex-col items-start gap-2">
+            <h2 className="text-sm font-bold md:text-xl">
+              {`Karta ng Mamamayan ng ${user.office_name}`}
+            </h2>
+            <Button 
+              label={"Magdagdag"} 
+              icon={<FaPlus />} 
+              onClick={async () => {
+                // closeControls();
+
+                // await handleLoading({
+                //   api: generateCharterPDFs, 
+                //   authTokens: authTokens, 
+                //   messageSuccess: "PDFs Nalikha", 
+                //   messageFail:"PDFs Paglikha Fail",
+                // }); 
+
+                // refreshList({
+                //   handlePaging: handlePaging,
+                //   route: route,
+                //   currentPage: currentPage,
+                //   setCurrentPage: setCurrentPage,
+                //   search: search,
+                //   pageSize: pageSize,
+                //   ordering: ordering,
+                //   field: field,
+                //   filter: filter,
+                //   timeout: 300,
+                // });
+              }}
+            />
+
+            <div className="flex flex-col gap-3 w-full sm:flex-row">
+              <Search 
+                placeholder={"Ngalan ng sector"} 
+                value={search} 
+                setValue={setSearch}
+                onClick={closeControls}
+              />
+
+              <div className="
+                flex 
+                flex-col
+                gap-1 
+                justify-between 
+                sm:justify-end
+                sm:flex-row
+              ">
+                <FilterSelector 
+                  setFilter={setFilter}
+                  isOpen={filterSelector}
+                  toggle={toggleFilterSelector}
+                  filters={filters}
+                />
+
+                <PageSizeSelector 
+                  label={pageSize} 
+                  setPageSize={setPageSize} 
+                  isOpen={pageSizeSelector}
+                  toggle={togglePageSizeSelector}
+                />
+              </div>
+            </div>
+          </div>
+
+          {isTablet(windowWidth) ? (
+            <Table 
+              headers={[
+                <TableHeader 
+                  label={"#"} 
+                  order={"number"}
+                  setOrdering={setOrdering} 
+                  onClick={closeControls}
+                />, 
+                <TableHeader 
+                  label={"Sector"} 
+                  order={"name"}
+                  setOrdering={setOrdering} 
+                  onClick={closeControls}
+                />, 
+                "Rami ng Opisina",
+              ]}
+              body={items}
+              sectorList={true}
+            />
+          ) : (
+            <ListMobile 
+              headers={[
+                <TableHeader 
+                  label={"PDF"} 
+                  order={"name"}
+                  setOrdering={setOrdering} 
+                  onClick={closeControls}
+                />, 
+                <TableHeader 
+                  label={"Sector"} 
+                  order={"sector__name"}
+                  setOrdering={setOrdering} 
+                  onClick={closeControls}
+                />, 
+              ]}
+              body={items}
+            />
+          )}
+
+          <div className="
+            flex 
+            flex-col 
+            justify-between 
+            items-center 
+            p-3 
+            gap-3
+            md:flex-row
+          ">
+            <EntriesCounter
+              total={total}
+              count={count}
+            /> 
+            <Pager
+              count={count}
+              next={next}
+              prev={prev}
+              search={search}
+              pageSize={pageSize}
+              fetchItems={handlePaging}
+              route={route}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              onClick={closeControls}
+            />
+          </div>
+
+          {url && (
+            <PDFViewer url={url} onClose={() => {setUrl(null)}}/>
+          )}
+          {toast && (
+            <Alert 
+              success={toast.success} 
+              message={toast.message} 
+              onClose={() => setToast(null)}
+            />
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
