@@ -8,13 +8,21 @@ export default function useLoader() {
   const handleLoading = async ({
     api, 
     id = null,
+    body = "",
+    route = "",
     authTokens, 
     messageSuccess, 
     messageFail,
   }) => { 
     setLoading(true);
     try {
-      const res = await (id ? api(authTokens, id) : api(authTokens));
+      const res = await (
+        id ? 
+          api(authTokens, id) : 
+        body ?
+          api(route, authTokens, body) :
+        api(authTokens)
+      );
 
       setToast({ 
         success: res.ok, 

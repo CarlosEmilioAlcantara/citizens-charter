@@ -78,6 +78,7 @@ export default function usePaging(api) {
     route,
     setRoute,
     items,
+    setItems,
     search,
     setSearch,
     pageSize,

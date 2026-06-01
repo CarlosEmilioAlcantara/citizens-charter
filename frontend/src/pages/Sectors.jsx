@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
+import { updateAPI } from "../apis/updateAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
@@ -16,6 +17,8 @@ import Pager from "../components/table_controls/Pager";
 import PDFViewer from "../components/modals/PDFViewer";
 import Loader from "../components/modals/Loader";
 import Alert from "../components/modals/Alert";
+import Checkbox from "../components/buttons/Checkbox";
+import TextArea from "../components/inputs/TextArea";
 import ButtonGroup from "../components/buttons/ButtonGroup";
 import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
@@ -24,7 +27,14 @@ import useWindowWidth from "../hooks/useWindowWidth";
 import refreshList from "../utils/refreshList";
 import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
-import { FaEye, FaFileDownload, FaPrint, FaTrashAlt, FaPlus } from "react-icons/fa";
+import { 
+  FaEye, 
+  FaFileDownload, 
+  FaPrint, 
+  FaTrashAlt, 
+  FaPlus,
+  FaSave,
+} from "react-icons/fa";
 
 export default function Sectors() {
   const { user, authTokens } = useContext(AuthContext);
@@ -34,6 +44,7 @@ export default function Sectors() {
     route,
     setRoute,
     items,
+    setItems,
     search,
     setSearch,
     pageSize,
@@ -64,25 +75,43 @@ export default function Sectors() {
     toggleDropdown,
   } = useTableControls();
   const {toast, setToast, loading, handleLoading} = useLoader();
-  const [tableInputs, setTableInputs] = useState({});
   const [windowWidth] = useWindowWidth();
   const [url, setUrl] = useState("");
+  const [selectedRows, setSelectedRows] = useState({});
 
   useEffect(() => {
     setRoute("/api/sectors")
     setAccessToken(authTokens.access)
   }, [setRoute, setAccessToken, authTokens.access])
 
-  Object.entries(items).forEach(([key, data]) => {
-    data["actions"] = (
-      <textarea 
-        key={key} 
-        value={data["number"]}
-        className="border border-foreground rounded-sm"
-      >
-      </textarea>
-    )
-  })
+  const tableItems = Object.fromEntries(
+    Object.entries(items).map(([key, data]) => [
+      key,
+      { checkbox: (
+        <Checkbox 
+          selectedRows={selectedRows} 
+          setSelectedRows={setSelectedRows}
+          data={data}
+        />
+      ),
+      ...Object.fromEntries(
+        Object.entries(data).map(([field, value]) => [
+        field,
+        field !== "office_count" ? (
+          <TextArea 
+            rowkey={key} 
+            field={field} 
+            value={/\.0$/.test(value) ? value.replace(/\.0$/, "") : value}
+            selectedRows={selectedRows}
+            data={data}
+            setItems={setItems}
+          />
+        ) : (
+          value
+        )
+      ])
+    )}])
+  )
 
   return(
     <>
@@ -104,7 +133,10 @@ export default function Sectors() {
           gap-2
         ">
           <div className="flex flex-col items-start gap-2">
-            <h2 className="text-sm font-bold md:text-xl">
+            <h2 
+              onClick={() => console.log(items)}
+              className="text-sm font-bold md:text-xl"
+            >
               {`Karta ng Mamamayan ng ${user.office_name}`}
             </h2>
             <Button 
@@ -137,6 +169,7 @@ export default function Sectors() {
 
             <div className="flex flex-col gap-3 w-full sm:flex-row">
               <Search 
+                className="flex-1"
                 placeholder={"Ngalan ng sector"} 
                 value={search} 
                 setValue={setSearch}
@@ -148,6 +181,7 @@ export default function Sectors() {
                 flex-col
                 gap-1 
                 justify-between 
+                shrink-0
                 sm:justify-end
                 sm:flex-row
               ">
@@ -164,6 +198,38 @@ export default function Sectors() {
                   isOpen={pageSizeSelector}
                   toggle={togglePageSizeSelector}
                 />
+
+                <Button 
+                  label={"Save Inedit"} 
+                  icon={<FaSave />} 
+                  // full={true}
+                  onClick={async () => {
+                    closeControls();
+
+                    await handleLoading({
+                      api: updateAPI, 
+                      body: items,
+                      route: "/api/sector/update",
+                      authTokens: authTokens, 
+                      messageSuccess: "Sectors Update Matagumpay", 
+                      messageFail:"Sectors Update Pumalya",
+                    }); 
+
+                    refreshList({
+                      handlePaging: handlePaging,
+                      acessToken: accessToken,
+                      route: route,
+                      currentPage: currentPage,
+                      setCurrentPage: setCurrentPage,
+                      search: search,
+                      pageSize: pageSize,
+                      ordering: ordering,
+                      field: field,
+                      filter: filter,
+                      timeout: 300,
+                    });
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -171,6 +237,7 @@ export default function Sectors() {
           {isTablet(windowWidth) ? (
             <Table 
               headers={[
+                "",
                 <TableHeader 
                   label={"#"} 
                   order={"number"}
@@ -185,7 +252,8 @@ export default function Sectors() {
                 />, 
                 "Rami ng Opisina",
               ]}
-              body={items}
+              body={tableItems}
+              // body={items}
               sectorList={true}
             />
           ) : (

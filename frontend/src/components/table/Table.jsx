@@ -8,7 +8,7 @@ export default function Table({
   sectorList = false,
 }) {
   const renderHeaders = () => {
-    if (charterList || sectorList) {
+    if (charterList) {
       return (
         <tr>
           <th className="p-1 pl-[24px] text-left">
@@ -21,6 +21,28 @@ export default function Table({
 
           <th className="p-1 pr-[24px] text-right">
             {headers[2]}
+          </th>
+        </tr>
+      );
+    }
+
+    if (sectorList) {
+      return (
+        <tr>
+          <th className="w-px">
+            {headers[0]}
+          </th>
+
+          <th className="w-[86px] p-1 pl-[25px] text-left">
+            {headers[1]}
+          </th>
+
+          <th className="p-1 text-left">
+            {headers[2]}
+          </th>
+
+          <th className="p-1 pr-[24px] text-right">
+            {headers[3]}
           </th>
         </tr>
       );
@@ -64,20 +86,24 @@ export default function Table({
     if (sectorList) {
       return (
         <>
-          <td className="p-1 pl-[24px]">
-            {String(Object.values(data)[1]).replace(/\.0$/, "")}
+          <td className="w-[24px] align-middle text-center">
+            {/* {String(Object.values(data)[1]).replace(/\.0$/, "")} */}
+            {Object.values(data)[0]}
+          </td>
+
+          <td className="w-[64px] p-1">
+            {Object.values(data)[2]}
           </td>
 
           <td className="p-1">
-            {Object.values(data)[2]}
+            {Object.values(data)[3]}
           </td>
 
           <td className="p-1 pr-[72px]">
             <div className="flex justify-end">
-              {Object.values(data)[3]}
+              {Object.values(data)[4]}
             </div>
           </td>
-          <td>{Object.values(data)[4]}</td>
         </>
       );
     }

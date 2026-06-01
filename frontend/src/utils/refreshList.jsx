@@ -1,5 +1,6 @@
 export default function refreshList({
   handlePaging, 
+  acessToken,
   route, 
   currentPage,
   setCurrentPage,
@@ -13,20 +14,24 @@ export default function refreshList({
   setTimeout( async () => {
     let status;
     status = await handlePaging(
-      `${route}?page=${currentPage}&search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`
+      `${route}?page=${currentPage}&search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`,
+      acessToken
     );
     if (!status) {
       status = await handlePaging(
-        `${route}?page=${currentPage - 1}&search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`
+        `${route}?page=${currentPage - 1}&search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`,
+        acessToken
       );
 
       if (!status) {
         handlePaging(
-          `${route}?search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`
+          `${route}?search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`,
+          acessToken
         );
       } else {
         handlePaging(
-          `${route}?page=${currentPage - 1}&search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`
+          `${route}?page=${currentPage - 1}&search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`,
+          acessToken
         );
         setCurrentPage(currentPage - 1);
       }
