@@ -9,24 +9,24 @@ export default function Input({
   name,
   value, 
   setValue,
-  size,
+  small = false,
   password = false,
 }) {
   const [state, toggle] = useToggle(false);
 
   return (
     <div 
-      className="
+      className={`
         flex 
         flex-col 
         w-full
-        p-2
+        ${small ? 'p-1' : 'p-2'}
         border 
         border-foreground 
         rounded-sm
         focus-within:ring-2
         focus-within:ring-accent/50
-      ">
+      `}>
       <div className="flex gap-1">
         <label className="text-[8px] md:text-[10px]">{ label }</label>
         <label className="text-[8px] text-danger italic md:text-[10px]">
@@ -41,14 +41,14 @@ export default function Input({
           name={name}
           value={value}
           onChange={(e) => setValue(value=>({...value,[name]:e.target.value}))}
-          className="
+          className={`
             w-full
           text-foreground 
             text-md 
-            md:text-xl 
+            ${small ? '' : 'md:text-xl'}
             focus:outline-none 
             active:outline-none
-          "
+          `}
         />
 
         {password && (

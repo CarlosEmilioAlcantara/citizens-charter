@@ -1,10 +1,11 @@
 import ReactDom from 'react-dom';
-import { FaXmark } from "react-icons/fa6";
-import { FaPrint } from "react-icons/fa";
+import { FaXmark } from 'react-icons/fa6';
+import { FaPlus } from 'react-icons/fa';
 import Overlay from '../reusables/Overlay';
 import useShow from '../../hooks/useShow';
+import Input from '../inputs/Input';
 
-export default function PDFViewer({ url, onClose, full = false }) {
+export default function AddItem({ onClose, label, values, setValues }) {
   const [show, handleClose] = useShow({initialValue: false, onClose: onClose});
 
   return ReactDom.createPortal(
@@ -28,7 +29,6 @@ export default function PDFViewer({ url, onClose, full = false }) {
           relative
           flex
           flex-col
-          ${full && 'w-full h-full'}
           pt-8
           p-4
           rounded-lg
@@ -54,25 +54,30 @@ export default function PDFViewer({ url, onClose, full = false }) {
             font-bold
           ">
             <div className="flex items-center gap-2">
-              <FaPrint />
-              <span>Karta ng Mamamayan</span>
+              <FaPlus />
+              <span>{label}</span>
             </div>
 
             <FaXmark size={20} onClick={handleClose} className="cursor-pointer"/>
           </div>
 
-          <iframe
-            src={url}
-            className={`
-              mt-3 
-              ${!full ?
-                'md:w-[600px] md:h-[400px] lg:w-[800px] lg:h-[600px]' :
-                'h-full'
-              }
-          `}/>
+          <div className="w-[600px]">
+            {Object.entries(values).map(([key, value]) => (
+              <Input 
+                key={key}
+                label={key.charAt(0).toUpperCase() + key.slice(1)}
+                type={"text"}
+                placeholder={`${key.charAt(0).toUpperCase() + key.slice(1)}...`}
+                name={key}
+                value={value}
+                setValue={setValues} 
+                small={true}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </>,
     document.getElementById('portal')
-  )
+  );
 }

@@ -11,7 +11,7 @@ export default function Login() {
   const [value, setValue] = useState({
     name: '',
     password: '',
-  })
+  });
   const [toast, setToast] = useState(null);
   const [data, setData] = useState({});
 

@@ -20,6 +20,7 @@ import Alert from "../components/modals/Alert";
 import Checkbox from "../components/buttons/Checkbox";
 import TextArea from "../components/inputs/TextArea";
 import ButtonGroup from "../components/buttons/ButtonGroup";
+import AddItem from "../components/modals/AddItem";
 import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
@@ -78,6 +79,11 @@ export default function Sectors() {
   const [windowWidth] = useWindowWidth();
   const [url, setUrl] = useState("");
   const [selectedRows, setSelectedRows] = useState({});
+  const [showAdd, setShowAdd] = useState(false);
+  const [values, setValues] = useState({
+    number: '',
+    name: '',
+  });
 
   useEffect(() => {
     setRoute("/api/sectors")
@@ -142,29 +148,7 @@ export default function Sectors() {
             <Button 
               label={"Magdagdag"} 
               icon={<FaPlus />} 
-              onClick={async () => {
-                // closeControls();
-
-                // await handleLoading({
-                //   api: generateCharterPDFs, 
-                //   authTokens: authTokens, 
-                //   messageSuccess: "PDFs Nalikha", 
-                //   messageFail:"PDFs Paglikha Fail",
-                // }); 
-
-                // refreshList({
-                //   handlePaging: handlePaging,
-                //   route: route,
-                //   currentPage: currentPage,
-                //   setCurrentPage: setCurrentPage,
-                //   search: search,
-                //   pageSize: pageSize,
-                //   ordering: ordering,
-                //   field: field,
-                //   filter: filter,
-                //   timeout: 300,
-                // });
-              }}
+              onClick={() => setShowAdd(true)}
             />
 
             <div className="flex flex-col gap-3 w-full sm:flex-row">
@@ -202,7 +186,6 @@ export default function Sectors() {
                 <Button 
                   label={"Save Inedit"} 
                   icon={<FaSave />} 
-                  // full={true}
                   onClick={async () => {
                     closeControls();
 
@@ -253,7 +236,6 @@ export default function Sectors() {
                 "Rami ng Opisina",
               ]}
               body={tableItems}
-              // body={items}
               sectorList={true}
             />
           ) : (
@@ -304,13 +286,21 @@ export default function Sectors() {
           </div>
 
           {url && (
-            <PDFViewer url={url} onClose={() => {setUrl(null)}}/>
+            <PDFViewer url={url} onClose={() => {setUrl(null)}} />
           )}
           {toast && (
             <Alert 
               success={toast.success} 
               message={toast.message} 
               onClose={() => setToast(null)}
+            />
+          )}
+          {showAdd && (
+            <AddItem 
+              onClose={() => {setShowAdd(false)}} 
+              label={"Magdagdag ng Sector"}
+              values={values}
+              setValue={() => setValues()}
             />
           )}
         </div>
