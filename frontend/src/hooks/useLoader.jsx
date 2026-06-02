@@ -28,6 +28,8 @@ export default function useLoader() {
         success: res.ok, 
         message: `${res.ok && messageSuccess || messageFail}` 
       });
+
+      return res;
     } finally {
       setLoading(false);
     }

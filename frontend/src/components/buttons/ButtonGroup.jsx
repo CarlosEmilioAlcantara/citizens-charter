@@ -9,7 +9,10 @@ export default function ButtonGroup({ buttons }) {
   return(
     <div className="flex flex-col gap-1">
       {rows.map((row, index) => (
-        <div key={index} className="flex gap-1 w-full justify-between md:flex-col">
+        <div 
+          key={index} 
+          className="flex gap-1 w-full justify-between md:flex-col"
+        >
           {row.map((button, index) => (
             <span key={index} className="w-1/2 md:w-full">{button}</span>
           ))}

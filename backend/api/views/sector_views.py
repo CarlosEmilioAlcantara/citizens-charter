@@ -13,6 +13,7 @@ from ..serializers import (
 )
 from ..permissions import IsSuperuser
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
+from ..pagers import MyCustomPagination
 from ..utils.view_utils import audit_save, audit_delete
 
 class SectorView(APIView):
@@ -62,9 +63,10 @@ class SectorListView(ListAPIView):
         'offices',
     ).annotate(
         office_count=Count('offices')
-    ).order_by('id')
+    ).order_by('number')
     permission_classes = [IsAuthenticated, IsSuperuser]
     serializer_class = SectorListSerializer
+    pagination_class = MyCustomPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 

@@ -2,11 +2,24 @@ import ReactDom from 'react-dom';
 import { FaXmark } from 'react-icons/fa6';
 import { FaPlus } from 'react-icons/fa';
 import Overlay from '../reusables/Overlay';
-import useShow from '../../hooks/useShow';
 import Input from '../inputs/Input';
+import Button from '../buttons/Button';
+import useShow from '../../hooks/useShow';
+import { useState } from 'react';
 
-export default function AddItem({ onClose, label, values, setValues }) {
+export default function AddItem({ 
+  onClose, 
+  label, 
+  values, 
+  setValues,
+  addFunc,
+}) {
   const [show, handleClose] = useShow({initialValue: false, onClose: onClose});
+  const rows = []
+  for (let i = 0; i < Object.entries(values).length; i += 2) {
+    rows.push(Object.entries(values).slice(i, i + 2));
+  }
+  const [data, setData] = useState({});
 
   return ReactDom.createPortal(
     <>
@@ -61,19 +74,47 @@ export default function AddItem({ onClose, label, values, setValues }) {
             <FaXmark size={20} onClick={handleClose} className="cursor-pointer"/>
           </div>
 
-          <div className="w-[600px]">
-            {Object.entries(values).map(([key, value]) => (
-              <Input 
-                key={key}
-                label={key.charAt(0).toUpperCase() + key.slice(1)}
-                type={"text"}
-                placeholder={`${key.charAt(0).toUpperCase() + key.slice(1)}...`}
-                name={key}
-                value={value}
-                setValue={setValues} 
-                small={true}
-              />
+          <div className="w-[600px] mt-3">
+            {rows.map((row, index) => (
+              <div 
+                key={index} 
+                className="flex gap-1 w-full mb-2 justify-between"
+              >
+                {row.map(([key, value]) => (
+                  <span key={key} className="w-1/2 md:w-full">
+                    <Input 
+                      key={key}
+                      label={key.charAt(0).toUpperCase() + key.slice(1)}
+                      warning={
+                        Object.keys(data).includes(key) && data[key]
+                      }
+                      type={"text"}
+                      placeholder={`${key.charAt(0).toUpperCase() + key.slice(1)}...`}
+                      name={key}
+                      value={value}
+                      setValue={setValues} 
+                      small={true}
+                    />
+                  </span>
+                ))}
+              </div>
             ))}
+          </div>
+
+          <div className="flex gap-3 justify-end items-center">
+            <Button 
+              label={"Kanselahin"} 
+              remove={true}
+              onClick={handleClose}
+            /> 
+
+            <Button 
+              label={"Idagdag"}
+              onClick={async () => {
+                const data = await addFunc();
+                setData(data);
+              }}
+            /> 
           </div>
         </div>
       </div>

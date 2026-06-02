@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
 import { updateAPI } from "../apis/updateAPI";
+import { createAPI } from "../apis/createAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
@@ -148,7 +149,7 @@ export default function Sectors() {
             <Button 
               label={"Magdagdag"} 
               icon={<FaPlus />} 
-              onClick={() => setShowAdd(true)}
+              onClick={() => {closeControls(); setShowAdd(true);}}
             />
 
             <div className="flex flex-col gap-3 w-full sm:flex-row">
@@ -300,7 +301,34 @@ export default function Sectors() {
               onClose={() => {setShowAdd(false)}} 
               label={"Magdagdag ng Sector"}
               values={values}
-              setValue={() => setValues()}
+              setValues={setValues}
+              addFunc={async () => {
+                const res = await handleLoading({
+                  api: createAPI, 
+                  body: values,
+                  route: "/api/sector/create",
+                  authTokens: authTokens, 
+                  messageSuccess: "Sector Dagdag Matagumpay", 
+                  messageFail:"Sectors Dagdag Pumalya",
+                }); 
+
+                if (!res.ok) {return res.json()}
+
+                refreshList({
+                  handlePaging: handlePaging,
+                  acessToken: accessToken,
+                  route: route,
+                  currentPage: currentPage,
+                  setCurrentPage: setCurrentPage,
+                  search: search,
+                  pageSize: pageSize,
+                  ordering: ordering,
+                  field: field,
+                  filter: filter,
+                  timeout: 300,
+                });
+                setShowAdd(false);
+              }}
             />
           )}
         </div>
