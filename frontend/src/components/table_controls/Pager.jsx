@@ -9,6 +9,7 @@ export default function Pager({
   search,
   pageSize,
   fetchItems, 
+  accessToken = null,
   route, 
   currentPage,
   setCurrentPage, 
@@ -63,7 +64,10 @@ export default function Pager({
     ">
       <span 
         onClick={() => {
-          fetchItems(`${route}?page=1&search=${search}&page_size=${pageSize}`);
+          fetchItems(
+            `${route}?page=1&search=${search}&page_size=${pageSize}`,
+            accessToken
+          );
           setCurrentPage(1);
         }}
         className={`
@@ -82,7 +86,7 @@ export default function Pager({
       </span>
       <span 
         onClick={() => {
-          fetchItems(prev); 
+          fetchItems(prev, accessToken); 
           setCurrentPage(Number(prev.match(/page=(\d+)/)?.pop()) || 1);
         }}
         className={`
@@ -106,7 +110,7 @@ export default function Pager({
             key={index} 
             onClick={() => {
               if (!isNaN(page)) {
-                fetchItems(`${route}?page=${page}&search=${search}&page_size=${pageSize}`);
+                fetchItems(`${route}?page=${page}&search=${search}&page_size=${pageSize}`, accessToken);
                 setCurrentPage(page);
               }
             }}
@@ -127,7 +131,7 @@ export default function Pager({
 
       <span 
         onClick={() => {
-          fetchItems(next);
+          fetchItems(next, accessToken);
           setCurrentPage(Number(next.match(/page=(\d+)/).pop()) || totalPages);
         }}
         className={`
@@ -149,7 +153,8 @@ export default function Pager({
       <span 
         onClick={() => {
           fetchItems(
-            `${route}?page=last&search=${search}&page_size=${pageSize}`
+            `${route}?page=last&search=${search}&page_size=${pageSize}`,
+            accessToken
           );
           setCurrentPage(totalPages);
         }}

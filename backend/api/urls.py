@@ -76,6 +76,7 @@ from .views.pdf_export_views import (
     CitizensCharterListView,
 )
 from .views.filter_views import (
+    SectorFiltersView,
     CitizensCharterFiltersView,
 )
 from .views.audit_log_views import AuditLogListView, SuperadminAuditLogListView
@@ -299,6 +300,11 @@ urlpatterns = [
     ),
 
     # Filter urls
+    path(
+        'filters/sector',
+        SectorFiltersView.as_view(),
+        name='fetch_sector_filters'
+    ),
     path(
         'filters/citizens-charter',
         CitizensCharterFiltersView.as_view(),

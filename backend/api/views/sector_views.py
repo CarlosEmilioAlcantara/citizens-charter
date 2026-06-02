@@ -15,6 +15,7 @@ from ..serializers import (
 from ..permissions import IsSuperuser
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
 from ..pagers import MyCustomPagination
+from ..filters import SectorFilter
 from ..utils.view_utils import audit_save, audit_delete
 
 class SectorView(APIView):
@@ -75,6 +76,7 @@ class SectorListView(ListAPIView):
     ]
     search_fields = ['name']
     ordering_fields = ['number', 'name']
+    filterset_class = SectorFilter
 
     def get_queryset(self):
         return self.queryset

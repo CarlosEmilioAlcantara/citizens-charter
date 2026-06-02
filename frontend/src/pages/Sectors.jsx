@@ -68,13 +68,11 @@ export default function Sectors() {
     handlePaging,
   } = usePaging(fetchAPI)
   const {
-    dropdown, 
     pageSizeSelector, 
     filterSelector,
     closeControls,
     togglePageSizeSelector,
     toggleFilterSelector,
-    toggleDropdown,
   } = useTableControls();
   const {toast, setToast, loading, handleLoading} = useLoader();
   const [windowWidth] = useWindowWidth();
@@ -87,9 +85,11 @@ export default function Sectors() {
   });
 
   useEffect(() => {
-    setRoute("/api/sectors")
-    setAccessToken(authTokens.access)
-  }, [setRoute, setAccessToken, authTokens.access])
+    setRoute("/api/sectors");
+    setField("office_count_range");
+    setFiltersRoute("/api/filters/sector");
+    setAccessToken(authTokens.access);
+  }, [setRoute, setAccessToken, setField, setFiltersRoute, authTokens.access])
 
   const tableItems = Object.fromEntries(
     Object.entries(items).map(([key, data]) => [
@@ -140,11 +140,8 @@ export default function Sectors() {
           gap-2
         ">
           <div className="flex flex-col items-start gap-2">
-            <h2 
-              onClick={() => console.log(items)}
-              className="text-sm font-bold md:text-xl"
-            >
-              {`Karta ng Mamamayan ng ${user.office_name}`}
+            <h2 className="text-sm font-bold md:text-xl">
+              Mga Sector ng Pamahalaang Lungsod
             </h2>
             <Button 
               label={"Magdagdag"} 
@@ -175,6 +172,7 @@ export default function Sectors() {
                   isOpen={filterSelector}
                   toggle={toggleFilterSelector}
                   filters={filters}
+                  centerItems={true}
                 />
 
                 <PageSizeSelector 
@@ -279,6 +277,7 @@ export default function Sectors() {
               search={search}
               pageSize={pageSize}
               fetchItems={handlePaging}
+              accessToken={accessToken}
               route={route}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}

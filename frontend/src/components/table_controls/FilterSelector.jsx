@@ -8,6 +8,7 @@ export default function FilterSelector({
   toggle, 
   setFilter, 
   filters, 
+  centerItems = false,
 }) {
   const [windowWidth] = useWindowWidth();
 
@@ -16,6 +17,7 @@ export default function FilterSelector({
       isOpen={isOpen}
       toggle={toggle}
       label={label}
+      centerItems={centerItems}
       full={!isTablet(windowWidth)}
       items={[
         {"label": "None", "function": () => setFilter("")},

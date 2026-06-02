@@ -7,6 +7,7 @@ export default function Dropdown({
   toggle,
   label = "Action", 
   sizeSelector = false, 
+  centerItems = false,
   full = false,
   items,
 }) {
@@ -74,7 +75,7 @@ export default function Dropdown({
         </div>
 
         <div className={`
-          ${(sizeSelector || full) && 'w-full'}
+          ${(sizeSelector || full || centerItems) && 'w-full'}
           absolute
           top-8
           right-0
@@ -96,7 +97,9 @@ export default function Dropdown({
                 onClick={() => {item.function(); setSelected(item.label)}}
                 className={`
                   flex
-                  ${(sizeSelector || full) ? 'justify-center' : 'justify-end'}
+                  ${(sizeSelector || full || centerItems) ? 
+                    'justify-center' : 'justify-end'
+                  }
                   ${selected === item.label && 'bg-active'}
                   ${isOpen ? 'cursor-pointer' : ''}
                   ${isOpen ? 'z-10' : '-z-10'
