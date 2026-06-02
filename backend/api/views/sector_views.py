@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 from ..models import Sector
 from ..serializers import (
     SectorSerializer, 
@@ -67,8 +68,13 @@ class SectorListView(ListAPIView):
     permission_classes = [IsAuthenticated, IsSuperuser]
     serializer_class = SectorListSerializer
     pagination_class = MyCustomPagination
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [
+        filters.SearchFilter, 
+        filters.OrderingFilter, 
+        DjangoFilterBackend,
+    ]
     search_fields = ['name']
+    ordering_fields = ['number', 'name']
 
     def get_queryset(self):
         return self.queryset
