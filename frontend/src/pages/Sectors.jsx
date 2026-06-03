@@ -78,6 +78,7 @@ export default function Sectors() {
   const [windowWidth] = useWindowWidth();
   const [url, setUrl] = useState("");
   const [selectedRows, setSelectedRows] = useState({});
+  const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [values, setValues] = useState({
     number: '',
@@ -91,6 +92,10 @@ export default function Sectors() {
     setAccessToken(authTokens.access);
   }, [setRoute, setAccessToken, setField, setFiltersRoute, authTokens.access])
 
+  useEffect(() => {
+    setItemIDs(Object.values(items).map(item => item.id));
+  }, [setItemIDs, items])
+
   const tableItems = Object.fromEntries(
     Object.entries(items).map(([key, data]) => [
       key,
@@ -99,6 +104,7 @@ export default function Sectors() {
           selectedRows={selectedRows} 
           setSelectedRows={setSelectedRows}
           data={data}
+          itemIDs={itemIDs}
         />
       ),
       ...Object.fromEntries(
@@ -112,7 +118,6 @@ export default function Sectors() {
             selectedRows={selectedRows}
             data={data}
             setItems={setItems}
-            items={items}
           />
         ) : (
           value
@@ -186,7 +191,11 @@ export default function Sectors() {
                 />
 
                 <Button 
-                  disabled={Object.keys(selectedRows).length === 0}
+                  disabled={
+                    !Object.keys(selectedRows).some(
+                      id => selectedRows[id] && itemIDs.includes(Number(id))
+                    )
+                  }
                   label={"Save Inedit"} 
                   icon={<FaSave />} 
                   onClick={async () => {
@@ -223,7 +232,11 @@ export default function Sectors() {
                 />
 
                 <Button 
-                  disabled={Object.keys(selectedRows).length === 0}
+                  disabled={
+                    !Object.keys(selectedRows).some(
+                      id => selectedRows[id] && itemIDs.includes(Number(id))
+                    )
+                  }
                   label={"Tanggalin"} 
                   icon={<FaTrashAlt />} 
                   remove={true}

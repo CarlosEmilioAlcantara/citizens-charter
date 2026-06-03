@@ -1,7 +1,11 @@
-export const toggleRow = (setSelectedRows, id) => {
+export const toggleRow = (setSelectedRows, itemIDs, id) => {
   setSelectedRows((prev) => {
     const prevRows = {...prev}
-    if (prevRows[id]) { delete prevRows[id] } else { prevRows[id] = true };
+    if (prevRows[id]) { 
+      delete prevRows[id] 
+    } else if (itemIDs.includes(id)) { 
+      prevRows[id] = true 
+    };
     return prevRows;
   })
 }
