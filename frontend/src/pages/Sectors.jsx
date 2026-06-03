@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
-import { updateAPI } from "../apis/updateAPI";
-import { createAPI } from "../apis/createAPI";
+import { genericAPI } from "../apis/genericAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
@@ -29,6 +28,7 @@ import useWindowWidth from "../hooks/useWindowWidth";
 import refreshList from "../utils/refreshList";
 import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
+import { checkResponse } from "../utils/checkResponse";
 import { 
   FaEye, 
   FaFileDownload, 
@@ -39,7 +39,7 @@ import {
 } from "react-icons/fa";
 
 export default function Sectors() {
-  const { user, authTokens } = useContext(AuthContext);
+  const { authTokens } = useContext(AuthContext);
   const {
     accessToken,
     setAccessToken,
@@ -112,6 +112,7 @@ export default function Sectors() {
             selectedRows={selectedRows}
             data={data}
             setItems={setItems}
+            items={items}
           />
         ) : (
           value
@@ -140,7 +141,9 @@ export default function Sectors() {
           gap-2
         ">
           <div className="flex flex-col items-start gap-2">
-            <h2 className="text-sm font-bold md:text-xl">
+            <h2 
+              className="text-sm font-bold md:text-xl"
+            >
               Mga Sector ng Pamahalaang Lungsod
             </h2>
             <Button 
@@ -152,7 +155,7 @@ export default function Sectors() {
             <div className="flex flex-col gap-3 w-full sm:flex-row">
               <Search 
                 className="flex-1"
-                placeholder={"Ngalan ng sector"} 
+                placeholder={"Ngalan/Numero ng sector"} 
                 value={search} 
                 setValue={setSearch}
                 onClick={closeControls}
@@ -183,33 +186,74 @@ export default function Sectors() {
                 />
 
                 <Button 
+                  disabled={Object.keys(selectedRows).length === 0}
                   label={"Save Inedit"} 
                   icon={<FaSave />} 
                   onClick={async () => {
                     closeControls();
 
-                    await handleLoading({
-                      api: updateAPI, 
-                      body: items,
+                    const editedItems = Object.values(items).filter(
+                      item => selectedRows[item.id]
+                    );
+                    const res = await handleLoading({
+                      api: genericAPI, 
+                      body: editedItems,
                       route: "/api/sector/update",
+                      method: "PUT",
                       authTokens: authTokens, 
                       messageSuccess: "Sectors Update Matagumpay", 
                       messageFail:"Sectors Update Pumalya",
                     }); 
 
-                    refreshList({
-                      handlePaging: handlePaging,
-                      acessToken: accessToken,
-                      route: route,
-                      currentPage: currentPage,
-                      setCurrentPage: setCurrentPage,
-                      search: search,
-                      pageSize: pageSize,
-                      ordering: ordering,
-                      field: field,
-                      filter: filter,
-                      timeout: 300,
-                    });
+                    checkResponse(res, setToast) &&
+                      refreshList({
+                        handlePaging: handlePaging,
+                        acessToken: accessToken,
+                        route: route,
+                        currentPage: currentPage,
+                        setCurrentPage: setCurrentPage,
+                        search: search,
+                        pageSize: pageSize,
+                        ordering: ordering,
+                        field: field,
+                        filter: filter,
+                        timeout: 300,
+                      });
+                  }}
+                />
+
+                <Button 
+                  disabled={Object.keys(selectedRows).length === 0}
+                  label={"Tanggalin"} 
+                  icon={<FaTrashAlt />} 
+                  remove={true}
+                  onClick={async () => {
+                    closeControls();
+
+                    const res = await handleLoading({
+                      api: genericAPI, 
+                      body: selectedRows,
+                      route: "/api/sector/delete",
+                      method: "DELETE",
+                      authTokens: authTokens, 
+                      messageSuccess: "Sectors Delete Matagumpay", 
+                      messageFail:"Sectors Delete Pumalya",
+                    }); 
+
+                    checkResponse(res, setToast) && 
+                      refreshList({
+                        handlePaging: handlePaging,
+                        acessToken: accessToken,
+                        route: route,
+                        currentPage: currentPage,
+                        setCurrentPage: setCurrentPage,
+                        search: search,
+                        pageSize: pageSize,
+                        ordering: ordering,
+                        field: field,
+                        filter: filter,
+                        timeout: 300,
+                      });
                   }}
                 />
               </div>
@@ -281,7 +325,7 @@ export default function Sectors() {
               route={route}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              onClick={closeControls}
+              onClick={() => {closeControls(); setSelectedRows({});}}
             />
           </div>
 
@@ -303,9 +347,10 @@ export default function Sectors() {
               setValues={setValues}
               addFunc={async () => {
                 const res = await handleLoading({
-                  api: createAPI, 
+                  api: genericAPI, 
                   body: values,
                   route: "/api/sector/create",
+                  method: "POST",
                   authTokens: authTokens, 
                   messageSuccess: "Sector Dagdag Matagumpay", 
                   messageFail:"Sectors Dagdag Pumalya",

@@ -63,7 +63,7 @@ export default function usePaging(api) {
   ])
 
   useEffect(() => {
-    setTotal(items.length)
+    setTotal(Object.keys(items).length);
   }, [items])
 
   useEffect(() => {

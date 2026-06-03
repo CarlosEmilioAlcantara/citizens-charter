@@ -10,6 +10,7 @@ export default function useLoader() {
     id = null,
     body = "",
     route = "",
+    method = "",
     authTokens, 
     messageSuccess, 
     messageFail,
@@ -19,8 +20,8 @@ export default function useLoader() {
       const res = await (
         id ? 
           api(authTokens, id) : 
-        body ?
-          api(route, authTokens, body) :
+        method ?
+          api(route, method, authTokens, body) :
         api(authTokens)
       );
 

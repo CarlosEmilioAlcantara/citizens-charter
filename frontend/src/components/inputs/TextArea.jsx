@@ -6,6 +6,7 @@ export default function TextArea({
   value, 
   selectedRows, 
   data,
+  items,
   setItems,
 }) {
   return(
@@ -13,7 +14,7 @@ export default function TextArea({
       disabled={!selectedRows[data.id]}
       key={`${rowkey}-${field}`}
       value={value}
-      onChange={(e) => changeValue(e, setItems, rowkey, field)}
+      onChange={(e) => changeValue(e, items, setItems, rowkey, field )}
       className={`
         w-[98%] 
         p-2 

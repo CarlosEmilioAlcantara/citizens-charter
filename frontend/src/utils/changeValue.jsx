@@ -1,4 +1,4 @@
-export const changeValue = (e, setItems, rowkey, field) => {
+export const changeValue = (e, items, setItems, rowkey, field) => {
   setItems((prev) => ({
     ...prev,
     [rowkey]: {

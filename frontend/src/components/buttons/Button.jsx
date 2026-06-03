@@ -5,9 +5,11 @@ export default function Button({
   large = false,
   full = false,
   remove = false,
+  disabled = false,
 }) {
   return(
     <button
+      disabled={disabled}
       onClick={onClick}
       className={`
         flex
@@ -25,9 +27,16 @@ export default function Button({
         duration-300
         z-10
         ${large && 'md:text-lg'}
-        ${remove ? 'hover:bg-cancel-hover' : 'hover:bg-confirm-hover'}
-        ${remove ? 'focus:bg-cancel-hover' : 'focus:bg-confirm-hover'}
-        ${remove ? 'active:bg-cancel-hover' : 'active:bg-confirm-hover'}
+        ${remove ? `
+          hover:bg-cancel-hover 
+          focus:bg-cancel-hover 
+          active:bg-cancel-hover
+        ` :  `
+          hover:bg-confirm-hover
+          focus:bg-confirm-hover
+          active:bg-confirm-hover
+        `}
+        ${disabled && 'pointer-events-none bg-unfocused'}
       `}
     >
       {icon && (<span>{icon}</span>)}

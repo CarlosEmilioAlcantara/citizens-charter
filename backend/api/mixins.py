@@ -56,7 +56,6 @@ class BulkDeleteMixin:
                 self.service_child and obj.service or obj
             )
 
-
         with transaction.atomic():
             existing_values = list(queryset.filter(id__in=existing).values())
             changes = {}

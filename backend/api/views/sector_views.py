@@ -74,7 +74,7 @@ class SectorListView(ListAPIView):
         filters.OrderingFilter, 
         DjangoFilterBackend,
     ]
-    search_fields = ['name']
+    search_fields = ['number', 'name']
     ordering_fields = ['number', 'name']
     filterset_class = SectorFilter
 
