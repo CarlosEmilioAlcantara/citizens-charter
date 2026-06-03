@@ -21,6 +21,7 @@ import Checkbox from "../components/buttons/Checkbox";
 import TextArea from "../components/inputs/TextArea";
 import ButtonGroup from "../components/buttons/ButtonGroup";
 import AddItem from "../components/modals/AddItem";
+import Confirmation from "../components/modals/Confirmation";
 import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
@@ -80,6 +81,7 @@ export default function Sectors() {
   const [selectedRows, setSelectedRows] = useState({});
   const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
+  const [confirmation, setConfirmation] = useState(null);
   const [values, setValues] = useState({
     number: '',
     name: '',
@@ -198,37 +200,7 @@ export default function Sectors() {
                   }
                   label={"Save Inedit"} 
                   icon={<FaSave />} 
-                  onClick={async () => {
-                    closeControls();
-
-                    const editedItems = Object.values(items).filter(
-                      item => selectedRows[item.id]
-                    );
-                    const res = await handleLoading({
-                      api: genericAPI, 
-                      body: editedItems,
-                      route: "/api/sector/update",
-                      method: "PUT",
-                      authTokens: authTokens, 
-                      messageSuccess: "Sectors Update Matagumpay", 
-                      messageFail:"Sectors Update Pumalya",
-                    }); 
-
-                    checkResponse(res, setToast) &&
-                      refreshList({
-                        handlePaging: handlePaging,
-                        acessToken: accessToken,
-                        route: route,
-                        currentPage: currentPage,
-                        setCurrentPage: setCurrentPage,
-                        search: search,
-                        pageSize: pageSize,
-                        ordering: ordering,
-                        field: field,
-                        filter: filter,
-                        timeout: 300,
-                      });
-                  }}
+                  onClick={() => setConfirmation({label: "Edit ng Sector"})}
                 />
 
                 <Button 
@@ -240,34 +212,10 @@ export default function Sectors() {
                   label={"Tanggalin"} 
                   icon={<FaTrashAlt />} 
                   remove={true}
-                  onClick={async () => {
-                    closeControls();
-
-                    const res = await handleLoading({
-                      api: genericAPI, 
-                      body: selectedRows,
-                      route: "/api/sector/delete",
-                      method: "DELETE",
-                      authTokens: authTokens, 
-                      messageSuccess: "Sectors Delete Matagumpay", 
-                      messageFail:"Sectors Delete Pumalya",
-                    }); 
-
-                    checkResponse(res, setToast) && 
-                      refreshList({
-                        handlePaging: handlePaging,
-                        acessToken: accessToken,
-                        route: route,
-                        currentPage: currentPage,
-                        setCurrentPage: setCurrentPage,
-                        search: search,
-                        pageSize: pageSize,
-                        ordering: ordering,
-                        field: field,
-                        filter: filter,
-                        timeout: 300,
-                      });
-                  }}
+                  onClick={() => setConfirmation({
+                    label: "Magtanggal ng Sector",
+                    remove: true
+                  })}
                 />
               </div>
             </div>
@@ -342,16 +290,6 @@ export default function Sectors() {
             />
           </div>
 
-          {url && (
-            <PDFViewer url={url} onClose={() => {setUrl(null)}} />
-          )}
-          {toast && (
-            <Alert 
-              success={toast.success} 
-              message={toast.message} 
-              onClose={() => setToast(null)}
-            />
-          )}
           {showAdd && (
             <AddItem 
               onClose={() => {setShowAdd(false)}} 
@@ -386,6 +324,91 @@ export default function Sectors() {
                 });
                 setShowAdd(false);
               }}
+            />
+          )}
+          {confirmation && (
+            <Confirmation 
+              label={confirmation.label}
+              func={
+                confirmation.remove
+                  ? async () => {
+                      closeControls();
+
+                      const res = await handleLoading({
+                        api: genericAPI, 
+                        body: selectedRows,
+                        route: "/api/sector/delete",
+                        method: "DELETE",
+                        authTokens: authTokens, 
+                        messageSuccess: "Sectors Delete Matagumpay", 
+                        messageFail:"Sectors Delete Pumalya",
+                      }); 
+
+                      checkResponse(res, setToast) && 
+                        refreshList({
+                          handlePaging: handlePaging,
+                          acessToken: accessToken,
+                          route: route,
+                          currentPage: currentPage,
+                          setCurrentPage: setCurrentPage,
+                          search: search,
+                          pageSize: pageSize,
+                          ordering: ordering,
+                          field: field,
+                          filter: filter,
+                          timeout: 300,
+                        });
+
+                      setConfirmation(null);
+                    }
+                  : async () => {
+                      closeControls();
+
+                      const editedItems = Object.values(items).filter(
+                        item => selectedRows[item.id]
+                      );
+
+                      const res = await handleLoading({
+                        api: genericAPI,
+                        body: editedItems,
+                        route: "/api/sector/update",
+                        method: "PUT",
+                        authTokens: authTokens,
+                        messageSuccess: "Sectors Update Matagumpay",
+                        messageFail: "Sectors Update Pumalya",
+                      });
+
+                      checkResponse(res, setToast) &&
+                        refreshList({
+                          handlePaging: handlePaging,
+                          acessToken: accessToken,
+                          route: route,
+                          currentPage: currentPage,
+                          setCurrentPage: setCurrentPage,
+                          search: search,
+                          pageSize: pageSize,
+                          ordering: ordering,
+                          field: field,
+                          filter: filter,
+                          timeout: 300,
+                        });
+
+                      setConfirmation(null);
+                    }
+              }
+              remove={confirmation.remove}
+              onClose={() => setConfirmation(null)}
+            />
+          )}
+
+          {url && (
+            <PDFViewer url={url} onClose={() => setUrl(null)} />
+          )}
+          {toast && (
+            <Alert 
+              success={toast.success} 
+              message={toast.message} 
+              onClose={() => setToast(null)}
             />
           )}
         </div>
