@@ -359,7 +359,6 @@ export default function Sectors() {
                           timeout: 300,
                         });
 
-                      setConfirmation(null);
                     }
                   : async () => {
                       closeControls();
@@ -392,8 +391,6 @@ export default function Sectors() {
                           filter: filter,
                           timeout: 300,
                         });
-
-                      setConfirmation(null);
                     }
               }
               remove={confirmation.remove}

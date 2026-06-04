@@ -64,7 +64,22 @@ export default function Confirmation({
               <span>{label}</span>
             </div>
 
-            <FaXmark size={20} onClick={handleClose} className="cursor-pointer"/>
+            <FaXmark 
+              size={24} 
+              onClick={handleClose} 
+              className={`
+                border-2
+                border-transparent 
+                rounded-xl 
+                cursor-pointer 
+                transition-all
+                duration-600
+                ${remove ? 
+                  'hover:bg-cancel-hover hover:border-cancel-hover' :
+                  'hover:bg-active hover:border-active'
+                }
+              `}
+            />
           </div>
 
           <div className="
@@ -89,7 +104,7 @@ export default function Confirmation({
 
               <Button 
                 label={"Sigurado"}
-                onClick={async () => func()}
+                onClick={async () => {await func(); handleClose();}}
               /> 
             </div>
           </div>

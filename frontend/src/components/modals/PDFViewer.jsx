@@ -58,7 +58,20 @@ export default function PDFViewer({ url, onClose, full = false }) {
               <span>Karta ng Mamamayan</span>
             </div>
 
-            <FaXmark size={20} onClick={handleClose} className="cursor-pointer"/>
+            <FaXmark 
+              size={24} 
+              onClick={handleClose} 
+              className="
+                border-2
+                border-transparent 
+                rounded-xl 
+                cursor-pointer 
+                transition-all
+                duration-600
+                hover:bg-active 
+                hover:border-active
+              "
+            />
           </div>
 
           <iframe

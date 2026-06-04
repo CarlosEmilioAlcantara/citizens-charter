@@ -71,7 +71,20 @@ export default function AddItem({
               <span>{label}</span>
             </div>
 
-            <FaXmark size={20} onClick={handleClose} className="cursor-pointer"/>
+            <FaXmark 
+              size={24} 
+              onClick={handleClose} 
+              className="
+                border-2
+                border-transparent 
+                rounded-xl 
+                cursor-pointer 
+                transition-all
+                duration-600
+                hover:bg-active 
+                hover:border-active
+              "
+            />
           </div>
 
           <div className="w-[600px] mt-3">
