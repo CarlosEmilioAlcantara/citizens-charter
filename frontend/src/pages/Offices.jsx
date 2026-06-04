@@ -39,7 +39,7 @@ import {
   FaSave,
 } from "react-icons/fa";
 
-export default function Sectors() {
+export default function Offices() {
   const { authTokens } = useContext(AuthContext);
   const {
     accessToken,
@@ -88,9 +88,9 @@ export default function Sectors() {
   });
 
   useEffect(() => {
-    setRoute("/api/sectors");
-    setField("office_count_range");
-    setFiltersRoute("/api/filters/sector");
+    setRoute("/api/offices");
+    // setField("office_count_range");
+    // setFiltersRoute("/api/filters/sector");
     setAccessToken(authTokens.access);
   }, [setRoute, setAccessToken, setField, setFiltersRoute, authTokens.access])
 
@@ -122,7 +122,12 @@ export default function Sectors() {
               items: data["office_names"].map((office) => ({office})),
             })}
           />
-        ) : field === "office_count" ? (
+        ) : (
+          field === "sector_name" ||
+          field === "service_count" || 
+          field === "user_count" || 
+          field === "position_count"
+        ) ? (
           value
         ) : (
           <TextArea 
@@ -161,7 +166,7 @@ export default function Sectors() {
             <h2 
               className="text-sm font-bold md:text-xl"
             >
-              Mga Sector ng Pamahalaang Lungsod
+              Mga Opisina ng Pamahalaang Lungsod
             </h2>
             <Button 
               label={"Magdagdag"} 
@@ -172,7 +177,7 @@ export default function Sectors() {
             <div className="flex flex-col gap-3 w-full sm:flex-row">
               <Search 
                 className="flex-1"
-                placeholder={"Ngalan/Numero ng sector"} 
+                placeholder={"Ngalan ng opisina"} 
                 value={search} 
                 setValue={setSearch}
                 onClick={closeControls}
@@ -223,7 +228,7 @@ export default function Sectors() {
                   icon={<FaTrashAlt />} 
                   remove={true}
                   onClick={() => setConfirmation({
-                    label: "Magtanggal ng Sector",
+                    label: "Magtanggal ng Opisina",
                     remove: true
                   })}
                 />
@@ -234,24 +239,19 @@ export default function Sectors() {
           {isTablet(windowWidth) ? (
             <Table 
               headers={[
-                "",
                 <TableHeader 
-                  label={"#"} 
-                  order={"number"}
-                  setOrdering={setOrdering} 
-                  onClick={closeControls}
-                />, 
-                <TableHeader 
-                  label={"Sector"} 
+                  label={"Opisina"} 
                   order={"name"}
                   setOrdering={setOrdering} 
                   onClick={closeControls}
                 />, 
-                "Rami ng Opisina",
-                "Aksyon",
+                "Sector",
+                "Rami ng Serbisyo",
+                "Rami ng Kawani",
+                "Rami ng Posisyon",
               ]}
               body={tableItems}
-              sectorList={true}
+              hideID={true}
             />
           ) : (
             // <ListMobile 
@@ -305,18 +305,18 @@ export default function Sectors() {
           {showAdd && (
             <AddItem 
               onClose={() => {setShowAdd(false)}} 
-              label={"Magdagdag ng Sector"}
+              label={"Magdagdag ng Opisina"}
               values={values}
               setValues={setValues}
               addFunc={async () => {
                 const res = await handleLoading({
                   api: genericAPI, 
                   body: values,
-                  route: "/api/sector/create",
+                  route: "/api/office/create",
                   method: "POST",
                   authTokens: authTokens, 
-                  messageSuccess: "Sector Dagdag Matagumpay", 
-                  messageFail:"Sectors Dagdag Pumalya",
+                  messageSuccess: "Opisina Dagdag Matagumpay", 
+                  messageFail:"Opisina Dagdag Pumalya",
                 }); 
 
                 if (!res.ok) {return res.json()}
@@ -354,11 +354,11 @@ export default function Sectors() {
                       const res = await handleLoading({
                         api: genericAPI, 
                         body: selectedRows,
-                        route: "/api/sector/delete",
+                        route: "/api/office/delete",
                         method: "DELETE",
                         authTokens: authTokens, 
-                        messageSuccess: "Sectors Delete Matagumpay", 
-                        messageFail:"Sectors Delete Pumalya",
+                        messageSuccess: "Opisina Delete Matagumpay", 
+                        messageFail:"Opisina Delete Pumalya",
                       }); 
 
                       checkResponse(res, setToast) && 
@@ -387,11 +387,11 @@ export default function Sectors() {
                       const res = await handleLoading({
                         api: genericAPI,
                         body: editedItems,
-                        route: "/api/sector/update",
+                        route: "/api/office/update",
                         method: "PUT",
                         authTokens: authTokens,
-                        messageSuccess: "Sectors Update Matagumpay",
-                        messageFail: "Sectors Update Pumalya",
+                        messageSuccess: "Opisina Update Matagumpay",
+                        messageFail: "Opisina Update Pumalya",
                       });
 
                       checkResponse(res, setToast) &&

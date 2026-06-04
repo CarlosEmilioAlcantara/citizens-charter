@@ -219,9 +219,6 @@ class SectorListSerializer(serializers.ModelSerializer):
         fields = ['id', 'number', 'name', 'office_count', 'office_names']
 
 class OfficeSerializer(serializers.ModelSerializer):
-    service_count = serializers.IntegerField(read_only=True)
-    user_count = serializers.IntegerField(read_only=True)
-    position_count = serializers.IntegerField(read_only=True)
     sector = serializers.PrimaryKeyRelatedField(
         queryset=Sector.objects.all()
     )
@@ -232,6 +229,20 @@ class OfficeSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'sector',
+        ]
+
+class OfficeListSerializer(serializers.ModelSerializer):
+    service_count = serializers.IntegerField(read_only=True)
+    user_count = serializers.IntegerField(read_only=True)
+    position_count = serializers.IntegerField(read_only=True)
+    sector_name = serializers.CharField(source='sector.name', read_only=True)
+
+    class Meta:
+        model = Office
+        fields = [
+            'id',
+            'name',
+            'sector_name',
             'service_count',
             'user_count',
             'position_count',

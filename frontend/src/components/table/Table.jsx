@@ -128,7 +128,12 @@ export default function Table({
       return (
         <td 
           key={key}
-          className="p-1 text-center wrap-break-word"
+          className={`
+            ${key === 'checkbox' ? 
+              'w-[24px] align-middle text-center' : 
+              'p-1 align-middle text-center wrap-break-word'
+            }
+          `}
         >
           {value}
         </td>

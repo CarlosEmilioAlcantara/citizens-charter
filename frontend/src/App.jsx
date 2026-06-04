@@ -4,6 +4,7 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Sectors from "./pages/Sectors";
+import Offices from "./pages/Offices";
 import Charter from "./pages/Charter";
 import CharterPDFs from "./pages/CharterPDFs";
 import Home from "./pages/Home";
@@ -37,6 +38,14 @@ export default function App() {
                 </ProtectedRoute>
               }
               path="/sectors"
+            />
+            <Route
+              element={
+                <ProtectedRoute>
+                  <Offices />
+                </ProtectedRoute>
+              }
+              path="/offices"
             />
             <Route
               element={

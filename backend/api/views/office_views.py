@@ -6,7 +6,11 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..models import Office
-from ..serializers import OfficeBulkUpdateSerializer, OfficeSerializer
+from ..serializers import (
+    OfficeBulkUpdateSerializer, 
+    OfficeSerializer,
+    OfficeListSerializer,
+)
 from ..permissions import IsSuperuser
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
 from ..utils.view_utils import audit_save, audit_delete
@@ -59,12 +63,12 @@ class OfficeListView(ListAPIView):
         'users',
         'positions'
     ).annotate(
-        service_count=Count('services'),
-        user_count=Count('users'),
-        position_count=Count('positions')
+        service_count=Count('services', distinct=True),
+        user_count=Count('users', distinct=True),
+        position_count=Count('positions', distinct=True)
     ).order_by('id')
     permission_classes = [IsAuthenticated, IsSuperuser]
-    serializer_class = OfficeSerializer
+    serializer_class = OfficeListSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
