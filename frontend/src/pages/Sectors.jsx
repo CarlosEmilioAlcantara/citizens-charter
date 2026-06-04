@@ -14,11 +14,11 @@ import Dropdown from "../components/dropdowns/Dropdown";
 import DropdownItem from "../components/dropdowns/DropdownItem";
 import EntriesCounter from "../components/table_controls/EntriesCounter";
 import Pager from "../components/table_controls/Pager";
-import PDFViewer from "../components/modals/PDFViewer";
 import Loader from "../components/modals/Loader";
 import Alert from "../components/modals/Alert";
 import Checkbox from "../components/buttons/Checkbox";
 import TextArea from "../components/inputs/TextArea";
+import Preview from "../components/modals/Preview";
 import ButtonGroup from "../components/buttons/ButtonGroup";
 import AddItem from "../components/modals/AddItem";
 import Confirmation from "../components/modals/Confirmation";
@@ -77,7 +77,7 @@ export default function Sectors() {
   } = useTableControls();
   const {toast, setToast, loading, handleLoading} = useLoader();
   const [windowWidth] = useWindowWidth();
-  const [url, setUrl] = useState("");
+  const [preview, setPreview] = useState(null);
   const [selectedRows, setSelectedRows] = useState({});
   const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
@@ -116,6 +116,10 @@ export default function Sectors() {
           <Button 
             label={"Tingnan mga Opisina"} 
             icon={<FaEye />} 
+            onClick={() => setPreview({
+              label: data["name"],
+              items: data["office_names"],
+            })}
           />
         ) : field === "office_count" ? (
           value
@@ -133,7 +137,6 @@ export default function Sectors() {
     )}])
   )
 
-  console.log(tableItems)
   return(
     <>
       <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
@@ -405,9 +408,14 @@ export default function Sectors() {
             />
           )}
 
-          {url && (
-            <PDFViewer url={url} onClose={() => setUrl(null)} />
+          {preview && (
+            <Preview 
+              label={preview.label} 
+              items={preview.items}
+              onClose={() => setPreview(null)}
+            />
           )}
+
           {toast && (
             <Alert 
               success={toast.success} 
