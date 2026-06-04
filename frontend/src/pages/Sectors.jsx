@@ -114,12 +114,13 @@ export default function Sectors() {
         field,
         field === "office_names" ? (
           <Button 
+            disabled={data["office_names"].length < 1}
             label={"Tingnan mga Opisina"} 
             icon={<FaEye />} 
-            onClick={() => setPreview({
+            onClick={() => {console.log(Array.isArray(data["office_names"])); setPreview({
               label: data["name"],
-              items: data["office_names"],
-            })}
+              items: data["office_names"].map((office) => ({office})),
+            })}}
           />
         ) : field === "office_count" ? (
           value

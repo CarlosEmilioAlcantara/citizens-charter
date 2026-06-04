@@ -130,7 +130,7 @@ export default function Table({
           key={key}
           className="p-1 text-center wrap-break-word"
         >
-          {String(value).replace(/\.0$/, "")}
+          {value}
         </td>
       );
     });
