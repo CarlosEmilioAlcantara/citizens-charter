@@ -155,12 +155,16 @@ class BaseBulkUpdateSerializer(serializers.ListSerializer):
         return instances
 
 class SectorSerializer(serializers.ModelSerializer):
-    office_count = serializers.IntegerField(read_only=True)
     class Meta:
         model = Sector
-        fields = ['id', 'number', 'name', 'is_subsector', 'office_count']
+        fields = ['id', 'number', 'name', 'is_subsector']
     
     def validate(self, data):
+        if data.get('number') % 1 != 0:
+            data['is_subsector'] = True
+        else:
+            data['is_subsector'] = False
+
         first_sector = Sector.objects.all().first()
         if not first_sector and data.get('is_subsector'):
             raise serializers.ValidationError(
@@ -184,6 +188,11 @@ class SectorBulkUpdateSerializer(serializers.ModelSerializer):
         list_serializer_class = BaseBulkUpdateSerializer
 
     def validate(self, data):
+        if data.get('number') % 1 != 0:
+            data['is_subsector'] = True
+        else:
+            data['is_subsector'] = False
+
         first_sector = Sector.objects.all().first()
         if not first_sector and data.get('is_subsector'):
             raise serializers.ValidationError(
@@ -195,19 +204,19 @@ class SectorBulkUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Must have a sector first before a subsector.'
             )
-
-        if data.get('number') % 1 != 0:
-            data['is_subsector'] = True
-        else:
-            data['is_subsector'] = False
     
         return data
 
 class SectorListSerializer(serializers.ModelSerializer):
     office_count = serializers.IntegerField(read_only=True)
+    office_names = serializers.SerializerMethodField()
+
+    def get_office_names(self, obj):
+        return [office.name for office in obj.offices.all()]
+
     class Meta:
         model = Sector
-        fields = ['id', 'number', 'name', 'office_count']
+        fields = ['id', 'number', 'name', 'office_count', 'office_names']
 
 class OfficeSerializer(serializers.ModelSerializer):
     service_count = serializers.IntegerField(read_only=True)

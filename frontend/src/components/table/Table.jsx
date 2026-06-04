@@ -41,8 +41,12 @@ export default function Table({
             {headers[2]}
           </th>
 
-          <th className="p-1 pr-[24px] text-right">
+          <th className="p-1 text-center">
             {headers[3]}
+          </th>
+
+          <th className="p-1 pr-[72px] text-right">
+            {headers[4]}
           </th>
         </tr>
       );
@@ -99,9 +103,13 @@ export default function Table({
             {Object.values(data)[3]}
           </td>
 
-          <td className="p-1 pr-[72px]">
+          <td className="p-1 align-middle text-center">
+            {Object.values(data)[4]}
+          </td>
+
+          <td className="p-1 align-middle">
             <div className="flex justify-end">
-              {Object.values(data)[4]}
+              {Object.values(data)[5]}
             </div>
           </td>
         </>

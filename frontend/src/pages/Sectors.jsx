@@ -112,7 +112,14 @@ export default function Sectors() {
       ...Object.fromEntries(
         Object.entries(data).map(([field, value]) => [
         field,
-        field !== "office_count" ? (
+        field === "office_names" ? (
+          <Button 
+            label={"Tingnan mga Opisina"} 
+            icon={<FaEye />} 
+          />
+        ) : field === "office_count" ? (
+          value
+        ) : (
           <TextArea 
             rowkey={key} 
             field={field} 
@@ -121,13 +128,12 @@ export default function Sectors() {
             data={data}
             setItems={setItems}
           />
-        ) : (
-          value
         )
       ])
     )}])
   )
 
+  console.log(tableItems)
   return(
     <>
       <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
@@ -238,6 +244,7 @@ export default function Sectors() {
                   onClick={closeControls}
                 />, 
                 "Rami ng Opisina",
+                "Aksyon",
               ]}
               body={tableItems}
               sectorList={true}
