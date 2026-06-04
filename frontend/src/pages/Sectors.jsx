@@ -117,10 +117,10 @@ export default function Sectors() {
             disabled={data["office_names"].length < 1}
             label={"Tingnan mga Opisina"} 
             icon={<FaEye />} 
-            onClick={() => {console.log(Array.isArray(data["office_names"])); setPreview({
+            onClick={() => setPreview({
               label: data["name"],
               items: data["office_names"].map((office) => ({office})),
-            })}}
+            })}
           />
         ) : field === "office_count" ? (
           value
@@ -332,6 +332,11 @@ export default function Sectors() {
                   field: field,
                   filter: filter,
                   timeout: 300,
+                });
+
+                setValues((prev) => {
+                  const reset = Object.keys(prev).map(key => [key, '']);
+                  return Object.fromEntries(reset);
                 });
                 setShowAdd(false);
               }}
