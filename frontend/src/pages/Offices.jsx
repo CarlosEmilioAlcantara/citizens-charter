@@ -111,34 +111,39 @@ export default function Offices() {
       ),
       ...Object.fromEntries(
         Object.entries(data).map(([field, value]) => [
-        field,
-        field === "office_names" ? (
-          <Button 
-            disabled={data["office_names"].length < 1}
-            label={"Tingnan mga Opisina"} 
-            icon={<FaEye />} 
-            onClick={() => setPreview({
-              label: data["name"],
-              items: data["office_names"].map((office) => ({office})),
-            })}
+          field,
+          (field === "employee_names") ? 
+            <ButtonGroup key={key} buttons={[
+              <Button
+                label={"Tingnan mga Kawani"}
+                icon={<FaEye />}
+                full={true}
+              />,
+              <Button
+                label={"Tingnan mga Posiyon"}
+                icon={<FaEye />}
+                full={true}
+              />,
+            ]}
           />
-        ) : (
-          field === "sector_name" ||
-          field === "service_count" || 
-          field === "user_count" || 
-          field === "position_count"
-        ) ? (
-          value
-        ) : (
-          <TextArea 
-            rowkey={key} 
-            field={field} 
-            value={/\.0$/.test(value) ? value.replace(/\.0$/, "") : value}
-            selectedRows={selectedRows}
-            data={data}
-            setItems={setItems}
-          />
-        )
+          : (field === "position_names") ?
+            null :
+          ( field === "sector_name" ||
+              field === "service_count" || 
+              field === "user_count" || 
+              field === "position_count" 
+          ) ? 
+            <span key={key}>{value}</span> : 
+          (
+            <TextArea 
+              rowkey={key} 
+              field={field} 
+              value={/\.0$/.test(value) ? value.replace(/\.0$/, "") : value}
+              selectedRows={selectedRows}
+              data={data}
+              setItems={setItems}
+            />
+          )
       ])
     )}])
   )
@@ -245,13 +250,20 @@ export default function Offices() {
                   setOrdering={setOrdering} 
                   onClick={closeControls}
                 />, 
-                "Sector",
+                <TableHeader 
+                  label={"Sector"} 
+                  order={"sector__name"}
+                  setOrdering={setOrdering} 
+                  onClick={closeControls}
+                />, 
                 "Rami ng Serbisyo",
                 "Rami ng Kawani",
                 "Rami ng Posisyon",
+                "Aksyon",
               ]}
               body={tableItems}
               hideID={true}
+              officeList={true}
             />
           ) : (
             // <ListMobile 

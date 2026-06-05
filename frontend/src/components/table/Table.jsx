@@ -6,6 +6,7 @@ export default function Table({
   hideID = false, 
   charterList = false,
   sectorList = false,
+  officeList = false,
 }) {
   const renderHeaders = () => {
     if (charterList) {
@@ -50,6 +51,51 @@ export default function Table({
           </th>
         </tr>
       );
+    }
+
+    if (officeList) {
+      return (
+        <tr>
+          {headers.map((header, index) => (
+            index === 0 ? (
+              <th 
+                key={index} 
+                className="p-1 pl-[48px] text-center"
+              >
+                {header}
+              </th>
+            ) : index === 1 ? (
+              <th 
+                key={index} 
+                className="p-1 pl-[38px] text-center"
+              >
+                {header}
+              </th>
+            ) : index === 2 ? (
+              <th 
+                key={index} 
+                className="p-1 pl-[24px] text-center"
+              >
+                {header}
+              </th>
+            ) : index === 3 ? (
+              <th 
+                key={index} 
+                className="p-1 pl-[12px] text-center"
+              >
+                {header}
+              </th>
+            ) : (
+              <th 
+                key={index} 
+                className="p-1 text-center"
+              >
+                {header}
+              </th>
+            )
+          ))}
+        </tr>
+      )
     }
 
     return (
@@ -126,17 +172,19 @@ export default function Table({
       }
 
       return (
-        <td 
-          key={key}
-          className={`
-            ${key === 'checkbox' ? 
-              'w-[24px] align-middle text-center' : 
-              'p-1 align-middle text-center wrap-break-word'
-            }
-          `}
-        >
-          {value}
-        </td>
+        value !== null && (
+          <td 
+            key={key}
+            className={`
+              ${key === 'checkbox' ? 
+                'w-[24px] align-middle text-center' : 
+                'p-1 align-middle text-center wrap-break-word'
+              }
+            `}
+          >
+            {value}
+          </td>
+        )
       );
     });
   };

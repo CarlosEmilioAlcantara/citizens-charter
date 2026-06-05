@@ -236,6 +236,13 @@ class OfficeListSerializer(serializers.ModelSerializer):
     user_count = serializers.IntegerField(read_only=True)
     position_count = serializers.IntegerField(read_only=True)
     sector_name = serializers.CharField(source='sector.name', read_only=True)
+    employee_names = serializers.SerializerMethodField()
+    position_names = serializers.SerializerMethodField()
+
+    def get_employee_names(self, obj):
+        return [user.name for user in obj.users.all()]
+    def get_position_names(self, obj):
+        return [position.name for position in obj.positions.all()]
 
     class Meta:
         model = Office
@@ -246,6 +253,8 @@ class OfficeListSerializer(serializers.ModelSerializer):
             'service_count',
             'user_count',
             'position_count',
+            'employee_names',
+            'position_names',
         ]
 
 class OfficeBulkUpdateSerializer(serializers.ModelSerializer):
