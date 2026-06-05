@@ -225,11 +225,18 @@ class OfficeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Office
-        fields = [
-            'id',
-            'name',
-            'sector',
-        ]
+        fields = ['id', 'name', 'sector']
+
+class OfficeBulkUpdateSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+    sector = serializers.PrimaryKeyRelatedField(
+        queryset=Sector.objects.all()
+    )
+
+    class Meta:
+        model = Office
+        fields = ['id', 'name', 'sector']        
+        list_serializer_class = BaseBulkUpdateSerializer
 
 class OfficeListSerializer(serializers.ModelSerializer):
     service_count = serializers.IntegerField(read_only=True)
@@ -256,18 +263,6 @@ class OfficeListSerializer(serializers.ModelSerializer):
             'employee_names',
             'position_names',
         ]
-
-class OfficeBulkUpdateSerializer(serializers.ModelSerializer):
-    # pk = serializers.IntegerField()
-    id = serializers.IntegerField(required=False)
-    sector = serializers.PrimaryKeyRelatedField(
-        queryset=Sector.objects.all()
-    )
-
-    class Meta:
-        model = Office
-        fields = ['id', 'name', 'sector']        
-        list_serializer_class = BaseBulkUpdateSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     # Get all possible foreign keys

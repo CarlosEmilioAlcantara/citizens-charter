@@ -10,6 +10,7 @@ import Table from '../table/Table';
 export default function Preview({ 
   onClose, 
   label, 
+  tableLabel,
   items,
 }) {
   const [show, handleClose] = useShow({initialValue: false, onClose: onClose});
@@ -81,7 +82,7 @@ export default function Preview({
           </div>
 
           <div className="w-[600px] mt-3">
-            <Table headers={["Mga Opisina"]} body={items} />
+            <Table headers={[tableLabel]} body={items} />
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 from ..models import Office
 from ..serializers import (
     OfficeBulkUpdateSerializer, 
@@ -13,6 +14,8 @@ from ..serializers import (
 )
 from ..permissions import IsSuperuser
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
+from ..pagers import MyCustomPagination
+from ..filters import OfficeFilter
 from ..utils.view_utils import audit_save, audit_delete
 
 class OfficeView(APIView):
@@ -69,8 +72,15 @@ class OfficeListView(ListAPIView):
     ).order_by('id')
     permission_classes = [IsAuthenticated, IsSuperuser]
     serializer_class = OfficeListSerializer
-    filter_backends = [filters.SearchFilter]
+    pagination_class = MyCustomPagination
+    filter_backends = [
+        filters.SearchFilter, 
+        filters.OrderingFilter, 
+        DjangoFilterBackend,
+    ]
     search_fields = ['name']
+    ordering_fields = ['number', 'name']
+    filterset_class = OfficeFilter
 
     def get_queryset(self):
         return self.queryset

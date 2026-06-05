@@ -27,7 +27,7 @@ import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useWindowWidth from "../hooks/useWindowWidth";
 import refreshList from "../utils/refreshList";
-import { isDesktop } from "../utils/isDesktop";
+// import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
 import { checkResponse } from "../utils/checkResponse";
 import { 
@@ -119,6 +119,7 @@ export default function Sectors() {
             icon={<FaEye />} 
             onClick={() => setPreview({
               label: data["name"],
+              tableLabel: "Mga Opisina",
               items: data["office_names"].map((office) => ({office})),
             })}
           />
@@ -418,6 +419,7 @@ export default function Sectors() {
           {preview && (
             <Preview 
               label={preview.label} 
+              tableLabel={preview.tableLabel}
               items={preview.items}
               onClose={() => setPreview(null)}
             />

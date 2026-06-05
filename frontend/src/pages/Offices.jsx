@@ -27,7 +27,7 @@ import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useWindowWidth from "../hooks/useWindowWidth";
 import refreshList from "../utils/refreshList";
-import { isDesktop } from "../utils/isDesktop";
+// import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
 import { checkResponse } from "../utils/checkResponse";
 import { 
@@ -83,14 +83,14 @@ export default function Offices() {
   const [showAdd, setShowAdd] = useState(false);
   const [confirmation, setConfirmation] = useState(null);
   const [values, setValues] = useState({
-    number: '',
     name: '',
+    sector: '',
   });
 
   useEffect(() => {
     setRoute("/api/offices");
-    // setField("office_count_range");
-    // setFiltersRoute("/api/filters/sector");
+    setField("sector__name");
+    setFiltersRoute("/api/filters/citizens-charter");
     setAccessToken(authTokens.access);
   }, [setRoute, setAccessToken, setField, setFiltersRoute, authTokens.access])
 
@@ -115,14 +115,26 @@ export default function Offices() {
           (field === "employee_names") ? 
             <ButtonGroup key={key} buttons={[
               <Button
+                disabled={data["employee_names"].length < 1}
                 label={"Tingnan mga Kawani"}
                 icon={<FaEye />}
                 full={true}
+                onClick={() => setPreview({
+                  label: data["name"],
+                  tableLabel: "Mga Kawani",
+                  items: data["employee_names"].map((employee) => ({employee})),
+                })}
               />,
               <Button
+                disabled={data["position_names"].length < 1}
                 label={"Tingnan mga Posiyon"}
                 icon={<FaEye />}
                 full={true}
+                onClick={() => setPreview({
+                  label: data["name"],
+                  tableLabel: "Mga Posisyon",
+                  items: data["position_names"].map((position) => ({position})),
+                })}
               />,
             ]}
           />
@@ -202,7 +214,6 @@ export default function Offices() {
                   isOpen={filterSelector}
                   toggle={toggleFilterSelector}
                   filters={filters}
-                  centerItems={true}
                 />
 
                 <PageSizeSelector 
@@ -430,6 +441,7 @@ export default function Offices() {
           {preview && (
             <Preview 
               label={preview.label} 
+              tableLabel={preview.tableLabel}
               items={preview.items}
               onClose={() => setPreview(null)}
             />
