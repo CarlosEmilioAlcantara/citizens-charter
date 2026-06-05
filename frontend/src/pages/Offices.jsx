@@ -5,6 +5,7 @@ import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
 import Search from "../components/inputs/Search";
+import Input from "../components/inputs/Input";
 import FilterSelector from "../components/table_controls/FilterSelector";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import TableHeader from "../components/table/TableHeader";
@@ -22,6 +23,7 @@ import Preview from "../components/modals/Preview";
 import ButtonGroup from "../components/buttons/ButtonGroup";
 import AddItem from "../components/modals/AddItem";
 import Confirmation from "../components/modals/Confirmation";
+import useValues from "../hooks/useValues";
 import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
@@ -82,10 +84,9 @@ export default function Offices() {
   const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [confirmation, setConfirmation] = useState(null);
-  const [values, setValues] = useState({
-    name: '',
-    sector: '',
-  });
+  const {values, setValues, data, setData} = useValues([
+    "name", "sector"
+  ])
 
   useEffect(() => {
     setRoute("/api/offices");
@@ -329,8 +330,29 @@ export default function Offices() {
             <AddItem 
               onClose={() => {setShowAdd(false)}} 
               label={"Magdagdag ng Opisina"}
-              values={values}
-              setValues={setValues}
+              setData={setData}
+              inputs={[
+                <Input 
+                  label={"Name"}
+                  warning={data?.name}
+                  type={"text"}
+                  placeholder={"Name..."}
+                  name={"name"}
+                  value={values.name}
+                  setValue={setValues}
+                  small={true}
+                />,
+                <Input 
+                  label={"Sector"}
+                  warning={data?.sector}
+                  type={"text"}
+                  placeholder={"Sector..."}
+                  name={"sector"}
+                  value={values.sector}
+                  setValue={setValues}
+                  small={true}
+                />,
+              ]}
               addFunc={async () => {
                 const res = await handleLoading({
                   api: genericAPI, 

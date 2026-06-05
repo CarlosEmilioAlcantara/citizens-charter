@@ -62,21 +62,21 @@ export default function Login() {
           <p className="text-2xl font-bold text-accent md:text-4xl">Login</p>
 
           <Input 
-            label="Username" 
-            warning={Object.keys(data).includes("name") && data.name}
-            type="text" 
+            label={"Username"}
+            warning={data?.name}
+            type={"text"} 
             placeholder="Username..."
-            name="name"
+            name={"name"}
             value={value.name}
             setValue={setValue}
           />
 
           <Input 
-            label="Password" 
-            warning={Object.keys(data).includes("password") && data.password}
-            type="password" 
-            placeholder="Password..."
-            name="password"
+            label={"Password"}
+            warning={data?.password}
+            type={"password"} 
+            placeholder={"Password..."}
+            name={"password"}
             value={value.password}
             setValue={setValue}
             password={true}

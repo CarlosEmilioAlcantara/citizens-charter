@@ -69,7 +69,7 @@ class OfficeListView(ListAPIView):
         service_count=Count('services', distinct=True),
         user_count=Count('users', distinct=True),
         position_count=Count('positions', distinct=True)
-    ).order_by('id')
+    ).order_by('name')
     permission_classes = [IsAuthenticated, IsSuperuser]
     serializer_class = OfficeListSerializer
     pagination_class = MyCustomPagination

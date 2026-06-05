@@ -11,7 +11,7 @@ export const genericAPI = async (route, method, authTokens, body) => {
       body: 
         method === "POST" ? 
           JSON.stringify(body) :
-        method === "PUT" ? 
+        method === "PUT" || method === "PATCH" ? 
           [JSON.stringify(Object.values(body))] :
         method === "DELETE" &&
           JSON.stringify({ ids: Object.keys(body).map(Number) }),

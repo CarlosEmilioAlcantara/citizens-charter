@@ -4,6 +4,7 @@ import { genericAPI } from "../apis/genericAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
+import Input from "../components/inputs/Input";
 import Search from "../components/inputs/Search";
 import FilterSelector from "../components/table_controls/FilterSelector";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
@@ -22,6 +23,7 @@ import Preview from "../components/modals/Preview";
 import ButtonGroup from "../components/buttons/ButtonGroup";
 import AddItem from "../components/modals/AddItem";
 import Confirmation from "../components/modals/Confirmation";
+import useValues from "../hooks/useValues";
 import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
@@ -82,10 +84,9 @@ export default function Sectors() {
   const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [confirmation, setConfirmation] = useState(null);
-  const [values, setValues] = useState({
-    number: '',
-    name: '',
-  });
+  const {values, setValues, data, setData} = useValues([
+    "number", "name"
+  ])
 
   useEffect(() => {
     setRoute("/api/sectors");
@@ -307,8 +308,29 @@ export default function Sectors() {
             <AddItem 
               onClose={() => {setShowAdd(false)}} 
               label={"Magdagdag ng Sector"}
-              values={values}
-              setValues={setValues}
+              setData={setData}
+              inputs={[
+                <Input 
+                  label={"Number"}
+                  warning={data?.number}
+                  type={"text"}
+                  placeholder={"Number..."}
+                  name={"number"}
+                  value={values.number}
+                  setValue={setValues}
+                  small={true}
+                />,
+                <Input 
+                  label={"Name"}
+                  warning={data?.name}
+                  type={"text"}
+                  placeholder={"Name..."}
+                  name={"name"}
+                  value={values.name}
+                  setValue={setValues}
+                  small={true}
+                />,
+              ]}
               addFunc={async () => {
                 const res = await handleLoading({
                   api: genericAPI, 

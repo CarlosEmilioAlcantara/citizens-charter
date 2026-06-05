@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import ReactDom from 'react-dom';
 import { FaXmark } from 'react-icons/fa6';
 import { FaPlus } from 'react-icons/fa';
@@ -5,21 +6,19 @@ import Overlay from '../reusables/Overlay';
 import Input from '../inputs/Input';
 import Button from '../buttons/Button';
 import useShow from '../../hooks/useShow';
-import { useState } from 'react';
 
 export default function AddItem({ 
   onClose, 
   label, 
-  values, 
-  setValues,
+  inputs,
+  setData,
   addFunc,
 }) {
   const [show, handleClose] = useShow({initialValue: false, onClose: onClose});
   const rows = []
-  for (let i = 0; i < Object.entries(values).length; i += 2) {
-    rows.push(Object.entries(values).slice(i, i + 2));
+  for (let i = 0; i < Object.entries(inputs).length; i += 2) {
+    rows.push(Object.entries(inputs).slice(i, i + 2));
   }
-  const [data, setData] = useState({});
 
   return ReactDom.createPortal(
     <>
@@ -95,19 +94,7 @@ export default function AddItem({
               >
                 {row.map(([key, value]) => (
                   <span key={key} className="w-1/2 md:w-full">
-                    <Input 
-                      key={key}
-                      label={key.charAt(0).toUpperCase() + key.slice(1)}
-                      warning={
-                        Object.keys(data).includes(key) && data[key]
-                      }
-                      type={"text"}
-                      placeholder={`${key.charAt(0).toUpperCase() + key.slice(1)}...`}
-                      name={key}
-                      value={value}
-                      setValue={setValues} 
-                      small={true}
-                    />
+                    {value}
                   </span>
                 ))}
               </div>
