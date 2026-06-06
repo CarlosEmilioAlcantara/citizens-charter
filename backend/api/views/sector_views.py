@@ -60,6 +60,14 @@ class UpdateSectorView(BulkUpdateMixin, APIView):
     def get_serializer_context(self):
         return {'request': self.request}
 
+class SectorSelectorView(APIView):
+    def get(self, request):
+        data = Sector.objects.values(
+            'id',
+            'name',
+        ).order_by('name')
+        return Response(data=data, status=status.HTTP_200_OK)
+
 class SectorListView(ListAPIView):
     queryset = Sector.objects.prefetch_related(
         'offices',

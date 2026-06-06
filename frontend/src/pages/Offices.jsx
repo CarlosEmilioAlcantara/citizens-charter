@@ -13,6 +13,7 @@ import Table from "../components/table/Table";
 import ListMobile from "../components/list/ListMobile";
 import Dropdown from "../components/dropdowns/Dropdown";
 import DropdownItem from "../components/dropdowns/DropdownItem";
+import SectorSelector from "../components/dropdowns/SectorSelector";
 import EntriesCounter from "../components/table_controls/EntriesCounter";
 import Pager from "../components/table_controls/Pager";
 import Loader from "../components/modals/Loader";
@@ -28,10 +29,12 @@ import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useWindowWidth from "../hooks/useWindowWidth";
+import useSectorsInfo from "../hooks/useSectorsInfo";
 import refreshList from "../utils/refreshList";
 // import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
 import { checkResponse } from "../utils/checkResponse";
+import { changeSector } from "../utils/changeSector";
 import { 
   FaEye, 
   FaFileDownload, 
@@ -71,11 +74,13 @@ export default function Offices() {
     handlePaging,
   } = usePaging(fetchAPI)
   const {
+    dropdown,
     pageSizeSelector, 
     filterSelector,
     closeControls,
     togglePageSizeSelector,
     toggleFilterSelector,
+    toggleDropdown,
   } = useTableControls();
   const {toast, setToast, loading, handleLoading} = useLoader();
   const [windowWidth] = useWindowWidth();
@@ -87,6 +92,10 @@ export default function Offices() {
   const {values, setValues, data, setData} = useValues([
     "name", "sector"
   ])
+  const [sectorsInfo] = useSectorsInfo({
+    route: "/api/sectors-info", 
+    accessToken: authTokens.access,
+  });
 
   useEffect(() => {
     setRoute("/api/offices");
@@ -128,7 +137,7 @@ export default function Offices() {
               />,
               <Button
                 disabled={data["position_names"].length < 1}
-                label={"Tingnan mga Posiyon"}
+                label={"Tingnan mga Posisyon"}
                 icon={<FaEye />}
                 full={true}
                 onClick={() => setPreview({
@@ -139,15 +148,36 @@ export default function Offices() {
               />,
             ]}
           />
-          : (field === "position_names") ?
-            null :
-          ( field === "sector_name" ||
-              field === "service_count" || 
-              field === "user_count" || 
-              field === "position_count" 
-          ) ? 
-            <span key={key}>{value}</span> : 
-          (
+          : (
+            field === "sector" ||
+            field === "position_names"  
+          ) ?
+            null 
+          : (field === "sector_name") ?
+            <SectorSelector 
+              key={key}
+              rowkey={key}
+              label={data["sector_name"]}
+              sectors={sectorsInfo}
+              setItems={setItems}
+              changeSector={changeSector}
+              isOpen={dropdown === key}
+              toggle={() => toggleDropdown(key)}
+            />
+          : ( 
+            field === "service_count"
+          ) ? (
+            <span key={key}>
+              Serbisyo:{data["service_count"]}<br />
+              Kawani:{data["user_count"]}<br />
+              Posisyon:{data["position_count"]}<br />
+            </span>
+          ) : (
+            field === "user_count" || 
+            field === "position_count" 
+          ) ? (
+            null
+          ) : (
             <TextArea 
               rowkey={key} 
               field={field} 
@@ -268,9 +298,7 @@ export default function Offices() {
                   setOrdering={setOrdering} 
                   onClick={closeControls}
                 />, 
-                "Rami ng Serbisyo",
-                "Rami ng Kawani",
-                "Rami ng Posisyon",
+                "Rami ng Serbisyo, Kawani, Posisyon",
                 "Aksyon",
               ]}
               body={tableItems}

@@ -5,6 +5,7 @@ from .views.sector_views import (
     SectorView,
     DeleteSectorView,
     UpdateSectorView,
+    SectorSelectorView,
     SectorListView,
 )
 from .views.office_views import (
@@ -91,6 +92,11 @@ urlpatterns = [
     path('sector/<int:pk>', SectorView.as_view(), name='update_delete_sector'),
     path('sector/delete', DeleteSectorView.as_view(), name='delete_sector'),
     path('sector/update', UpdateSectorView.as_view(), name='update_sector'),
+    path(
+        'sectors-info', 
+        SectorSelectorView.as_view(), 
+        name='fetch_sectors_info'
+    ),
     path('sectors', SectorListView.as_view(), name='fetch_sectors'),
 
     # Office Urls

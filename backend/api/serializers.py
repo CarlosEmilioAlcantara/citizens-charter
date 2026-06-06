@@ -256,6 +256,7 @@ class OfficeListSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
+            'sector',
             'sector_name',
             'service_count',
             'user_count',
