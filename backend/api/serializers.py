@@ -339,17 +339,25 @@ class PositionSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'office']
         extra_kwargs = {'office': {'read_only': True}}
 
+class PositionListSerializer(serializers.ModelSerializer):
+    office_name = serializers.CharField(source='office.name', read_only=True)
+
+    class Meta:
+        model = Position
+        fields = ['id', 'name', 'office_name']
+
 class PositionBulkUpdateSerializer(serializers.ModelSerializer):
     # pk = serializers.IntegerField()
-    office = serializers.PrimaryKeyRelatedField(
-        queryset=Office.objects.all()
-    )
+    # office = serializers.PrimaryKeyRelatedField(
+    #     queryset=Office.objects.all()
+    # )
     id = serializers.IntegerField(required=False)
 
     class Meta:
         model = Position
-        fields = ['id', 'name', 'office']
-        extra_kwargs = {'office': {'read_only': True}}
+        # fields = ['id', 'name', 'office']
+        fields = ['id', 'name']
+        # extra_kwargs = {'office': {'read_only': True}}
         list_serializer_class = BaseBulkUpdateSerializer
 
 class ServiceSerializer(serializers.ModelSerializer):

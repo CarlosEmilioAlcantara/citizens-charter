@@ -1,6 +1,6 @@
 import django_filters
 from django.db.models import Count
-from .models import Sector, CitizensCharter, Office
+from .models import Sector, CitizensCharter, Office, Position
 
 class SectorFilter(django_filters.FilterSet):
     office_count_range = django_filters.CharFilter(
@@ -45,3 +45,13 @@ class OfficeFilter(SectorNameFilterSet):
     class Meta:
         model = Office
         fields = ['sector__name']
+
+class PositionFilter(django_filters.FilterSet):
+    office__name = django_filters.CharFilter(
+        field_name='office__name',
+        lookup_expr='icontains'
+    )
+
+    class Meta:
+        model = Position
+        fields = ['office__name']

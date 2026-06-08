@@ -6,7 +6,6 @@ import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
 import Search from "../components/inputs/Search";
 import Input from "../components/inputs/Input";
-import Listbox from "../components/inputs/Listbox";
 import FilterSelector from "../components/table_controls/FilterSelector";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import TableHeader from "../components/table/TableHeader";
@@ -45,7 +44,7 @@ import {
   FaSave,
 } from "react-icons/fa";
 
-export default function Offices() {
+export default function Positions() {
   const { authTokens } = useContext(AuthContext);
   const {
     accessToken,
@@ -90,34 +89,18 @@ export default function Offices() {
   const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [confirmation, setConfirmation] = useState(null);
-  const {values, setValues, data, setData} = useValues([
-    "name", "sector", "sector_name",
-  ])
-  const [sectorsInfo] = useSectorsInfo({
-    route: "/api/sectors-info", 
-    accessToken: authTokens.access,
-  });
+  const {values, setValues, data, setData} = useValues([ "name" ])
 
   useEffect(() => {
-    setRoute("/api/offices");
-    setField("sector__name");
-    setFiltersRoute("/api/filters/citizens-charter");
+    setRoute("/api/positions");
+    setField("office__name");
+    setFiltersRoute("/api/filters/position");
     setAccessToken(authTokens.access);
   }, [setRoute, setAccessToken, setField, setFiltersRoute, authTokens.access])
 
   useEffect(() => {
     setItemIDs(Object.values(items).map(item => item.id));
   }, [setItemIDs, items])
-
-  const sectorListboxItems = Object.entries(sectorsInfo).map(([key, data]) => ({
-    ...data,
-    onClick: () =>
-      setValues(prev => ({
-        ...prev,
-        sector: data.id,
-        sector_name: data.name,
-      })),
-  }));
 
   const tableItems = Object.fromEntries(
     Object.entries(items).map(([key, data]) => [
@@ -133,61 +116,8 @@ export default function Offices() {
       ...Object.fromEntries(
         Object.entries(data).map(([field, value]) => [
           field,
-          (field === "employee_names") ? 
-            <ButtonGroup key={key} buttons={[
-              <Button
-                disabled={data["employee_names"].length < 1}
-                label={"Tingnan mga Kawani"}
-                icon={<FaEye />}
-                full={true}
-                onClick={() => setPreview({
-                  label: data["name"],
-                  tableLabel: "Mga Kawani",
-                  items: data["employee_names"].map((employee) => ({employee})),
-                })}
-              />,
-              <Button
-                disabled={data["position_names"].length < 1}
-                label={"Tingnan mga Posisyon"}
-                icon={<FaEye />}
-                full={true}
-                onClick={() => setPreview({
-                  label: data["name"],
-                  tableLabel: "Mga Posisyon",
-                  items: data["position_names"].map((position) => ({position})),
-                })}
-              />,
-            ]}
-          />
-          : (
-            field === "sector" ||
-            field === "position_names"  
-          ) ?
-            null 
-          : (field === "sector_name") ?
-            <SectorSelector 
-              key={key}
-              rowkey={key}
-              label={data["sector_name"]}
-              sectors={sectorsInfo}
-              setItems={setItems}
-              changeSector={changeSector}
-              isOpen={dropdown === key}
-              toggle={() => toggleDropdown(key)}
-            />
-          : ( 
-            field === "service_count"
-          ) ? (
-            <span key={key}>
-              Serbisyo:{data["service_count"]}<br />
-              Kawani:{data["user_count"]}<br />
-              Posisyon:{data["position_count"]}<br />
-            </span>
-          ) : (
-            field === "user_count" || 
-            field === "position_count" 
-          ) ? (
-            null
+          (field === "office_name") ? (
+            value
           ) : (
             <TextArea 
               rowkey={key} 
@@ -225,7 +155,7 @@ export default function Offices() {
             <h2 
               className="text-sm font-bold md:text-xl"
             >
-              Mga Opisina ng Pamahalaang Lungsod
+              Mga Posisyon sa Pamahalaang Lungsod
             </h2>
             <Button 
               label={"Magdagdag"} 
@@ -236,7 +166,7 @@ export default function Offices() {
             <div className="flex flex-col gap-3 w-full sm:flex-row">
               <Search 
                 className="flex-1"
-                placeholder={"Ngalan ng opisina"} 
+                placeholder={"Ngalan ng posisyon"} 
                 value={search} 
                 setValue={setSearch}
                 onClick={closeControls}
@@ -273,7 +203,7 @@ export default function Offices() {
                   }
                   label={"Save Inedit"} 
                   icon={<FaSave />} 
-                  onClick={() => setConfirmation({label: "Edit ng Sector"})}
+                  onClick={() => setConfirmation({label: "Edit ng Posisyon"})}
                 />
 
                 <Button 
@@ -286,7 +216,7 @@ export default function Offices() {
                   icon={<FaTrashAlt />} 
                   remove={true}
                   onClick={() => setConfirmation({
-                    label: "Magtanggal ng Opisina",
+                    label: "Magtanggal ng Posisyon",
                     remove: true
                   })}
                 />
@@ -298,23 +228,20 @@ export default function Offices() {
             <Table 
               headers={[
                 <TableHeader 
-                  label={"Opisina"} 
+                  label={"Posisyon"} 
                   order={"name"}
                   setOrdering={setOrdering} 
                   onClick={closeControls}
                 />, 
                 <TableHeader 
-                  label={"Sector"} 
-                  order={"sector__name"}
+                  label={"Opisina"} 
+                  order={"office__name"}
                   setOrdering={setOrdering} 
                   onClick={closeControls}
                 />, 
-                "Rami ng Serbisyo, Kawani, Posisyon",
-                "Aksyon",
               ]}
               body={tableItems}
               hideID={true}
-              officeList={true}
             />
           ) : (
             // <ListMobile 
@@ -368,8 +295,7 @@ export default function Offices() {
           {showAdd && (
             <AddItem 
               onClose={() => {setShowAdd(false)}} 
-              label={"Magdagdag ng Opisina"}
-              sector={true}
+              label={"Magdagdag ng Posisyon"}
               setData={setData}
               inputs={[
                 <Input 
@@ -382,17 +308,26 @@ export default function Offices() {
                   setValue={setValues}
                   small={true}
                 />,
-                <Listbox items={sectorListboxItems} />
+                <Input 
+                  label={"Sector"}
+                  warning={data?.sector}
+                  type={"text"}
+                  placeholder={"Sector..."}
+                  name={"sector"}
+                  value={values.sector}
+                  setValue={setValues}
+                  small={true}
+                />,
               ]}
               addFunc={async () => {
                 const res = await handleLoading({
                   api: genericAPI, 
                   body: values,
-                  route: "/api/office/create",
+                  route: "/api/position/create",
                   method: "POST",
                   authTokens: authTokens, 
-                  messageSuccess: "Opisina Dagdag Matagumpay", 
-                  messageFail:"Opisina Dagdag Pumalya",
+                  messageSuccess: "Posisyon Dagdag Matagumpay", 
+                  messageFail:"Posisyon Dagdag Pumalya",
                 }); 
 
                 if (!res.ok) {return res.json()}
@@ -430,11 +365,11 @@ export default function Offices() {
                       const res = await handleLoading({
                         api: genericAPI, 
                         body: selectedRows,
-                        route: "/api/office/delete",
+                        route: "/api/position/delete",
                         method: "DELETE",
                         authTokens: authTokens, 
-                        messageSuccess: "Opisina Delete Matagumpay", 
-                        messageFail:"Opisina Delete Pumalya",
+                        messageSuccess: "Posisyon Delete Matagumpay", 
+                        messageFail:"Posisyon Delete Pumalya",
                       }); 
 
                       checkResponse(res, setToast) && 
@@ -463,11 +398,11 @@ export default function Offices() {
                       const res = await handleLoading({
                         api: genericAPI,
                         body: editedItems,
-                        route: "/api/office/update",
+                        route: "/api/position/update",
                         method: "PUT",
                         authTokens: authTokens,
-                        messageSuccess: "Opisina Update Matagumpay",
-                        messageFail: "Opisina Update Pumalya",
+                        messageSuccess: "Posisyon Update Matagumpay",
+                        messageFail: "Posisyon Update Pumalya",
                       });
 
                       checkResponse(res, setToast) &&

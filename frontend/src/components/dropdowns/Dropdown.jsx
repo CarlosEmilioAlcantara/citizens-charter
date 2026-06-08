@@ -98,7 +98,7 @@ export default function Dropdown({
           hover:[&::-webkit-scrollbar-thumb]:bg-accent
         `}>
           <ul 
-            className="flex flex-col"
+            className="flex flex-col overflow-hidden"
           >
             {items.map((item, index) => (
               <li 
@@ -111,14 +111,13 @@ export default function Dropdown({
                   }
                   ${sectorSelector && 'justify-start'}
                   ${selected === item.label && 'bg-active'}
-                  ${isOpen ? 'cursor-pointer' : ''}
-                  ${isOpen ? 'z-10' : '-z-10'
-                  }
+                  ${isOpen && 'cursor-pointer'}
+                  ${isOpen ? 'z-10' : '-z-10'}
                   transition-all 
                   duration-300
                   hover:bg-active
               `}>
-                <button className="px-2 py-1 cursor-pointer">
+                <button className="px-2 py-1 cursor-pointer wrap-break-word">
                   {item.label}
                 </button>
               </li>

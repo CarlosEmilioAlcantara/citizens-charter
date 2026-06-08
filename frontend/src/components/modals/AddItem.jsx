@@ -13,6 +13,7 @@ export default function AddItem({
   inputs,
   setData,
   addFunc,
+  sector = false,
 }) {
   const [show, handleClose] = useShow({initialValue: false, onClose: onClose});
   const rows = []
@@ -86,11 +87,21 @@ export default function AddItem({
             />
           </div>
 
-          <div className="w-[600px] mt-3">
+          <div className={`
+            ${sector ? 'w-[300px] pb-4' : 'w-[600px]'} 
+            mt-3
+          `}>
             {rows.map((row, index) => (
               <div 
                 key={index} 
-                className="flex gap-1 w-full mb-2 justify-between"
+                className={`
+                  flex 
+                  ${sector && 'flex-col'}
+                  gap-1 
+                  w-full 
+                  mb-2 
+                  justify-between
+                `}
               >
                 {row.map(([key, value]) => (
                   <span key={key} className="w-1/2 md:w-full">

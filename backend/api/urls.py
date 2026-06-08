@@ -79,6 +79,7 @@ from .views.pdf_export_views import (
 from .views.filter_views import (
     SectorFiltersView,
     CitizensCharterFiltersView,
+    PositionFiltersView,
 )
 from .views.audit_log_views import AuditLogListView, SuperadminAuditLogListView
 
@@ -310,6 +311,11 @@ urlpatterns = [
         'filters/sector',
         SectorFiltersView.as_view(),
         name='fetch_sector_filters'
+    ),
+    path(
+        'filters/position',
+        PositionFiltersView.as_view(),
+        name='fetch_position_filters'
     ),
     path(
         'filters/citizens-charter',

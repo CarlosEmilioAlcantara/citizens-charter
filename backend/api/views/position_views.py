@@ -4,9 +4,16 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 from ..models import Position
-from ..serializers import PositionBulkUpdateSerializer, PositionSerializer
+from ..serializers import (
+    PositionBulkUpdateSerializer, 
+    PositionSerializer,
+    PositionListSerializer,
+)
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
+from ..pagers import MyCustomPagination
+from ..filters import PositionFilter
 from ..utils.view_utils import audit_save, audit_delete
 
 class PositionView(APIView):
@@ -52,11 +59,17 @@ class UpdatePositionView(BulkUpdateMixin, APIView):
         return {'request': self.request}
 
 class PositionListView(ListAPIView):
-    queryset = Position.objects.all().order_by('id')
+    queryset = Position.objects.all().order_by('name')
     permission_classes = [IsAuthenticated, IsAdminUser]
-    serializer_class = PositionSerializer
-    filter_backends = [filters.SearchFilter]
+    serializer_class = PositionListSerializer
+    pagination_class = MyCustomPagination
+    filter_backends = [
+        filters.SearchFilter, 
+        filters.OrderingFilter, 
+        DjangoFilterBackend,
+    ]
     search_fields = ['name']
+    filterset_class = PositionFilter
 
     def get_queryset(self):
         return self.queryset
