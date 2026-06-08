@@ -79,7 +79,7 @@ class OfficeListView(ListAPIView):
         DjangoFilterBackend,
     ]
     search_fields = ['name']
-    ordering_fields = ['number', 'name']
+    ordering_fields = ['name', 'sector__name']
     filterset_class = OfficeFilter
 
     def get_queryset(self):
