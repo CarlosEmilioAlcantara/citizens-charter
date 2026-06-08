@@ -2,9 +2,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from ..models import CitizensCharter, Position
+from ..models import Sector, Office, CitizensCharter, Position
 
-class SectorFiltersView(APIView):
+class AmountFiltersView(APIView):
     def get(self, request):
         return Response(data=[
             '0-10', 
@@ -19,6 +19,20 @@ class CitizensCharterFiltersView(APIView):
     def get(self, request):
         data = CitizensCharter.objects.values_list(
             'sector__name', flat=True
+        ).distinct()
+        return Response(data=data, status=status.HTTP_200_OK)
+
+class SectorFiltersView(APIView):
+    def get(self, request):
+        data = Sector.objects.values_list(
+            'name', flat=True
+        ).distinct()
+        return Response(data=data, status=status.HTTP_200_OK)
+
+class OfficeFiltersView(APIView):
+    def get(self, request):
+        data = Office.objects.values_list(
+            'name', flat=True
         ).distinct()
         return Response(data=data, status=status.HTTP_200_OK)
 

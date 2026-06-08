@@ -30,7 +30,7 @@ import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useWindowWidth from "../hooks/useWindowWidth";
-import useSectorsInfo from "../hooks/useSectorsInfo";
+import useListInfo from "../hooks/useListInfo";
 import refreshList from "../utils/refreshList";
 // import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
@@ -93,7 +93,7 @@ export default function Offices() {
   const {values, setValues, data, setData} = useValues([
     "name", "sector", "sector_name",
   ])
-  const [sectorsInfo] = useSectorsInfo({
+  const [listInfo] = useListInfo({
     route: "/api/sectors-info", 
     accessToken: authTokens.access,
   });
@@ -101,7 +101,7 @@ export default function Offices() {
   useEffect(() => {
     setRoute("/api/offices");
     setField("sector__name");
-    setFiltersRoute("/api/filters/citizens-charter");
+    setFiltersRoute("/api/filters/sector");
     setAccessToken(authTokens.access);
   }, [setRoute, setAccessToken, setField, setFiltersRoute, authTokens.access])
 
@@ -109,13 +109,12 @@ export default function Offices() {
     setItemIDs(Object.values(items).map(item => item.id));
   }, [setItemIDs, items])
 
-  const sectorListboxItems = Object.entries(sectorsInfo).map(([key, data]) => ({
+  const listboxItems = Object.entries(listInfo).map(([_, data]) => ({
     ...data,
     onClick: () =>
       setValues(prev => ({
         ...prev,
         sector: data.id,
-        sector_name: data.name,
       })),
   }));
 
@@ -169,7 +168,8 @@ export default function Offices() {
               key={key}
               rowkey={key}
               label={data["sector_name"]}
-              sectors={sectorsInfo}
+              disabled={!selectedRows[data.id]}
+              sectors={listInfo}
               setItems={setItems}
               changeSector={changeSector}
               isOpen={dropdown === key}
@@ -382,7 +382,7 @@ export default function Offices() {
                   setValue={setValues}
                   small={true}
                 />,
-                <Listbox items={sectorListboxItems} />
+                <Listbox items={listboxItems} />
               ]}
               addFunc={async () => {
                 const res = await handleLoading({

@@ -60,6 +60,14 @@ class UpdateOfficeView(BulkUpdateMixin, APIView):
     def get_serializer_context(self):
         return {'request': self.request}
 
+class OfficeSelectorView(APIView):
+    def get(self, request):
+        data = Office.objects.values(
+            'id',
+            'name',
+        ).order_by('name')
+        return Response(data=data, status=status.HTTP_200_OK)
+
 class OfficeListView(ListAPIView):
     queryset = Office.objects.prefetch_related(
         'services',

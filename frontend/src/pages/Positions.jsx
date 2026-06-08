@@ -6,6 +6,7 @@ import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
 import Search from "../components/inputs/Search";
 import Input from "../components/inputs/Input";
+import Listbox from "../components/inputs/Listbox";
 import FilterSelector from "../components/table_controls/FilterSelector";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import TableHeader from "../components/table/TableHeader";
@@ -13,7 +14,6 @@ import Table from "../components/table/Table";
 import ListMobile from "../components/list/ListMobile";
 import Dropdown from "../components/dropdowns/Dropdown";
 import DropdownItem from "../components/dropdowns/DropdownItem";
-import SectorSelector from "../components/dropdowns/SectorSelector";
 import EntriesCounter from "../components/table_controls/EntriesCounter";
 import Pager from "../components/table_controls/Pager";
 import Loader from "../components/modals/Loader";
@@ -29,12 +29,11 @@ import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useWindowWidth from "../hooks/useWindowWidth";
-import useSectorsInfo from "../hooks/useSectorsInfo";
+import useListInfo from "../hooks/useListInfo";
 import refreshList from "../utils/refreshList";
 // import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
 import { checkResponse } from "../utils/checkResponse";
-import { changeSector } from "../utils/changeSector";
 import { 
   FaEye, 
   FaFileDownload, 
@@ -74,13 +73,11 @@ export default function Positions() {
     handlePaging,
   } = usePaging(fetchAPI)
   const {
-    dropdown,
     pageSizeSelector, 
     filterSelector,
     closeControls,
     togglePageSizeSelector,
     toggleFilterSelector,
-    toggleDropdown,
   } = useTableControls();
   const {toast, setToast, loading, handleLoading} = useLoader();
   const [windowWidth] = useWindowWidth();
@@ -89,12 +86,16 @@ export default function Positions() {
   const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [confirmation, setConfirmation] = useState(null);
-  const {values, setValues, data, setData} = useValues([ "name" ])
+  const {values, setValues, data, setData} = useValues([ "name", "office" ])
+  const [listInfo] = useListInfo({
+    route: "/api/offices-info", 
+    accessToken: authTokens.access,
+  });
 
   useEffect(() => {
     setRoute("/api/positions");
     setField("office__name");
-    setFiltersRoute("/api/filters/position");
+    setFiltersRoute("/api/filters/office");
     setAccessToken(authTokens.access);
   }, [setRoute, setAccessToken, setField, setFiltersRoute, authTokens.access])
 
@@ -102,6 +103,15 @@ export default function Positions() {
     setItemIDs(Object.values(items).map(item => item.id));
   }, [setItemIDs, items])
 
+  const listboxItems = Object.entries(listInfo).map(([_, data]) => ({
+    ...data,
+    onClick: () =>
+      setValues(prev => ({
+        ...prev,
+        office: data.id,
+      })),
+  }));
+ 
   const tableItems = Object.fromEntries(
     Object.entries(items).map(([key, data]) => [
       key,
@@ -296,6 +306,7 @@ export default function Positions() {
             <AddItem 
               onClose={() => {setShowAdd(false)}} 
               label={"Magdagdag ng Posisyon"}
+              sector={true}
               setData={setData}
               inputs={[
                 <Input 
@@ -308,16 +319,7 @@ export default function Positions() {
                   setValue={setValues}
                   small={true}
                 />,
-                <Input 
-                  label={"Sector"}
-                  warning={data?.sector}
-                  type={"text"}
-                  placeholder={"Sector..."}
-                  name={"sector"}
-                  value={values.sector}
-                  setValue={setValues}
-                  small={true}
-                />,
+                <Listbox items={listboxItems} />
               ]}
               addFunc={async () => {
                 const res = await handleLoading({

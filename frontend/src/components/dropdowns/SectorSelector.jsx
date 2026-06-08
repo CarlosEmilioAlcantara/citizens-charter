@@ -10,6 +10,7 @@ export default function SectorSelector({
   toggle, 
   setItems,
   changeSector,
+  disabled = false,
 }) {
   const [windowWidth] = useWindowWidth();
 
@@ -18,6 +19,7 @@ export default function SectorSelector({
       isOpen={isOpen}
       toggle={toggle}
       label={label}
+      disabled={disabled}
       full={!isTablet(windowWidth)}
       sectorSelector={true}
       items={[

@@ -12,6 +12,7 @@ from .views.office_views import (
     OfficeView,
     DeleteOfficeView,
     UpdateOfficeView,
+    OfficeSelectorView,
     OfficeListView,
 )
 from .views.user_views import (
@@ -77,8 +78,10 @@ from .views.pdf_export_views import (
     CitizensCharterListView,
 )
 from .views.filter_views import (
+    AmountFiltersView,
     SectorFiltersView,
     CitizensCharterFiltersView,
+    OfficeFiltersView,
     PositionFiltersView,
 )
 from .views.audit_log_views import AuditLogListView, SuperadminAuditLogListView
@@ -105,6 +108,11 @@ urlpatterns = [
     path('office/<int:pk>', OfficeView.as_view(), name='update_delete_office'),
     path('office/delete', DeleteOfficeView.as_view(), name='delete_office'),
     path('office/update', UpdateOfficeView.as_view(), name='update_office'),
+    path(
+        'offices-info', 
+        OfficeSelectorView.as_view(), 
+        name='fetch_offices_info'
+    ),
     path('offices', OfficeListView.as_view(), name='fetch_offices'),
 
     # User Urls
@@ -308,14 +316,19 @@ urlpatterns = [
 
     # Filter urls
     path(
+        'filters/amount',
+        AmountFiltersView.as_view(),
+        name='fetch_amount_filters'
+    ),
+    path(
         'filters/sector',
         SectorFiltersView.as_view(),
         name='fetch_sector_filters'
     ),
     path(
-        'filters/position',
-        PositionFiltersView.as_view(),
-        name='fetch_position_filters'
+        'filters/office',
+        OfficeFiltersView.as_view(),
+        name='fetch_office_filters'
     ),
     path(
         'filters/citizens-charter',

@@ -6,6 +6,7 @@ export default function Dropdown({
   isOpen,
   toggle,
   label = "Action", 
+  disabled = false,
   sizeSelector = false, 
   sectorSelector = false,
   centerItems = false,
@@ -30,6 +31,7 @@ export default function Dropdown({
           flex-col 
           items-center 
           gap-1
+          ${disabled && 'pointer-events-none'}
       `}>
         <div 
           className={`
@@ -44,9 +46,11 @@ export default function Dropdown({
             px-2
             py-1
             rounded-sm
-            bg-accent 
+            ${disabled ? 
+              'bg-unfocused border-unfocused' : 
+              'bg-accent border-accent'
+            }
             border
-            border-accent
             text-background 
             text-md
             cursor-pointer
@@ -82,12 +86,14 @@ export default function Dropdown({
           ${sectorSelector ? 'right-[9px]' : 'right-0'}
           ${(sizeSelector || full || centerItems) && 'w-full'}
           ${sectorSelector && 'w-70 h-[200px] overflow-auto'}
+          max-h-[400px]
           bg-background 
           border 
           border-accent
           rounded-sm
           ${isOpen ? 'opacity-100 z-20' : 'opacity-0 -z-10'}
           text-nowrap
+          overflow-y-auto
           transition-all
           duration-300
           [&::-webkit-scrollbar]:w-1

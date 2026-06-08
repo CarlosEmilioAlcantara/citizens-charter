@@ -91,7 +91,7 @@ export default function Sectors() {
   useEffect(() => {
     setRoute("/api/sectors");
     setField("office_count_range");
-    setFiltersRoute("/api/filters/sector");
+    setFiltersRoute("/api/filters/amount");
     setAccessToken(authTokens.access);
   }, [setRoute, setAccessToken, setField, setFiltersRoute, authTokens.access])
 

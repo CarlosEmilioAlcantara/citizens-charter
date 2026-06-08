@@ -112,7 +112,12 @@ export default function AddItem({
             ))}
           </div>
 
-          <div className="flex gap-3 justify-end items-center">
+          <div className={`
+            flex 
+            gap-3 
+            ${sector ? 'justify-center' : 'justify-end'}
+            items-center
+          `}>
             <Button 
               label={"Kanselahin"} 
               remove={true}
