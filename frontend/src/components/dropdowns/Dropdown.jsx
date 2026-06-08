@@ -7,6 +7,7 @@ export default function Dropdown({
   toggle,
   label = "Action", 
   sizeSelector = false, 
+  sectorSelector = false,
   centerItems = false,
   full = false,
   items,
@@ -33,11 +34,12 @@ export default function Dropdown({
         <div 
           className={`
             ${sizeSelector && 'w-30'}
+            ${sectorSelector && 'w-70'}
             ${full && 'w-full'}
             relative
             flex
-            justify-center
-            items-center 
+            ${sectorSelector ? 'justify-start' : 'justify-center'}
+            items-center
             gap-2
             px-2
             py-1
@@ -75,10 +77,11 @@ export default function Dropdown({
         </div>
 
         <div className={`
-          ${(sizeSelector || full || centerItems) && 'w-full'}
           absolute
           top-8
-          right-0
+          ${sectorSelector ? 'right-[9px]' : 'right-0'}
+          ${(sizeSelector || full || centerItems) && 'w-full'}
+          ${sectorSelector && 'w-70 h-[200px] overflow-auto'}
           bg-background 
           border 
           border-accent
@@ -87,6 +90,12 @@ export default function Dropdown({
           text-nowrap
           transition-all
           duration-300
+          [&::-webkit-scrollbar]:w-1
+          [&::-webkit-scrollbar]:h-1
+          [&::-webkit-scrollbar-track]:bg-transparent
+          [&::-webkit-scrollbar-track]:rounded-full
+          [&::-webkit-scrollbar-thumb]:rounded-full
+          hover:[&::-webkit-scrollbar-thumb]:bg-accent
         `}>
           <ul 
             className="flex flex-col"
@@ -100,6 +109,7 @@ export default function Dropdown({
                   ${(sizeSelector || full || centerItems) ? 
                     'justify-center' : 'justify-end'
                   }
+                  ${sectorSelector && 'justify-start'}
                   ${selected === item.label && 'bg-active'}
                   ${isOpen ? 'cursor-pointer' : ''}
                   ${isOpen ? 'z-10' : '-z-10'
@@ -108,7 +118,7 @@ export default function Dropdown({
                   duration-300
                   hover:bg-active
               `}>
-                <button className="px-2 py-1 cursor-pointer text-right">
+                <button className="px-2 py-1 cursor-pointer">
                   {item.label}
                 </button>
               </li>

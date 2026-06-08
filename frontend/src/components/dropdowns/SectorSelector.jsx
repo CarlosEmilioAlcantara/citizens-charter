@@ -19,6 +19,7 @@ export default function SectorSelector({
       toggle={toggle}
       label={label}
       full={!isTablet(windowWidth)}
+      sectorSelector={true}
       items={[
         ...sectors.map((sector) => ({
           "label": sector.name,
