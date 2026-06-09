@@ -12,8 +12,6 @@ import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import TableHeader from "../components/table/TableHeader";
 import Table from "../components/table/Table";
 import ListMobile from "../components/list/ListMobile";
-import Dropdown from "../components/dropdowns/Dropdown";
-import DropdownItem from "../components/dropdowns/DropdownItem";
 import EntriesCounter from "../components/table_controls/EntriesCounter";
 import Pager from "../components/table_controls/Pager";
 import Loader from "../components/modals/Loader";
@@ -35,6 +33,7 @@ import refreshList from "../utils/refreshList";
 import { isTablet } from "../utils/isTablet";
 import { checkResponse } from "../utils/checkResponse";
 import { 
+  FaPen,
   FaEye, 
   FaFileDownload, 
   FaPrint, 
@@ -132,13 +131,27 @@ export default function Users() {
             )
         ])),
         actions: (
-          <Button label={"test"}/>
+          <ButtonGroup buttons={[
+            <Button 
+              label={"Edit Kawani"} 
+              icon={<FaPen />} 
+              full={true} 
+              onClick={() => {
+              }}
+            />,
+            <Button 
+              label={"Delete Kawani"} 
+              icon={<FaTrashAlt />} 
+              full={true} 
+              onClick={() => {}}
+            />,
+          ]} />
         )
       }
     ])
   )
 
-  console.log(tableItems);
+  console.log(tableItems)
   return(
     <>
       <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
@@ -250,6 +263,7 @@ export default function Users() {
               ]}
               body={tableItems}
               hideID={true}
+              userList={true}
             />
           ) : (
             // <ListMobile 

@@ -7,6 +7,7 @@ export default function Table({
   charterList = false,
   sectorList = false,
   officeList = false,
+  userList = false,
 }) {
   const renderHeaders = () => {
     if (charterList) {
@@ -81,7 +82,7 @@ export default function Table({
             ) : index === 3 ? (
               <th 
                 key={index} 
-                className="p-1 pl-[12px] text-center"
+                className="p-1 pr-[82px] text-end"
               >
                 {header}
               </th>
@@ -96,6 +97,44 @@ export default function Table({
           ))}
         </tr>
       )
+    }
+
+    if (userList) {
+      return (
+        <tr>
+          {headers.map((header, index) => (
+            index === 0 ? (
+              <th 
+                key={index} 
+                className="p-1 text-center"
+              >
+                {header}
+              </th>
+            ) : index === 1 ? (
+              <th 
+                key={index} 
+                className="p-1 pr-[22px] text-center"
+              >
+                {header}
+              </th>
+            ) : index === 2 ? (
+              <th 
+                key={index} 
+                className="p-1 w-[146px]"
+              >
+                {header}
+              </th>
+            ) : (
+              <th 
+                key={index} 
+                className="p-1 text-center"
+              >
+                {header}
+              </th>
+            )
+          ))}
+        </tr>
+      );
     }
 
     return (
@@ -171,8 +210,17 @@ export default function Table({
         );
       }
 
+      if (userList && key === "office_name") {
+        return (
+          <td key={key} className="pl-[] align-middle text-center">
+            {value}
+          </td>
+        )
+      }
+
       const isCheckboxColumn = key === "checkbox"
       const isActionColumn = key === "actions"
+      const isEmployeeNames = key === "employee_names"
 
       return (
         value !== null && (
@@ -181,14 +229,16 @@ export default function Table({
             className={`align-middle 
               ${isCheckboxColumn ? 
                   'w-[24px] text-center' : 
-                isActionColumn === 'actions' ?
+                isActionColumn && userList ?
+                  'w-[164px]' :
+                isActionColumn ?
                   'p-1' :
                   'p-1 text-center wrap-break-word'
               }
             `}
           >
-            {isActionColumn ? (
-              <div className="flex justify-center">
+            {isActionColumn || isEmployeeNames ? (
+              <div className="flex justify-end">
                 {value}
               </div>
             ) : value }
