@@ -33,7 +33,7 @@ import { isTablet } from "../utils/isTablet";
 import { checkResponse } from "../utils/checkResponse";
 import { FaTrashAlt, FaPlus, FaSave } from "react-icons/fa";
 
-export default function Positions() {
+export default function CharterAudit() {
   const { authTokens } = useContext(AuthContext);
   const {
     accessToken,
@@ -83,7 +83,7 @@ export default function Positions() {
   });
 
   useEffect(() => {
-    setRoute("/api/positions");
+    setRoute("/api/audit-logs");
     setField("office__name");
     setFiltersRoute("/api/filters/office");
     setAccessToken(authTokens.access);
@@ -105,33 +105,17 @@ export default function Positions() {
   const tableItems = Object.fromEntries(
     Object.entries(items).map(([key, data]) => [
       key,
-      { checkbox: (
-        <Checkbox 
-          selectedRows={selectedRows} 
-          setSelectedRows={setSelectedRows}
-          data={data}
-          itemIDs={itemIDs}
-        />
-      ),
-      ...Object.fromEntries(
+      {...Object.fromEntries(
         Object.entries(data).map(([field, value]) => [
           field,
-          (field === "office_name") ? (
+          (typeof(value) === "object" && value !== null) ? 
+            JSON.stringify(value) :
             value
-          ) : (
-            <TextArea 
-              rowkey={key} 
-              field={field} 
-              value={value}
-              selectedRows={selectedRows}
-              data={data}
-              setItems={setItems}
-            />
-          )
       ])
     )}])
   )
 
+  console.log(tableItems);
   return(
     <>
       <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
@@ -155,7 +139,7 @@ export default function Positions() {
             <h2 
               className="text-sm font-bold md:text-xl"
             >
-              Mga Posisyon sa Pamahalaang Lungsod
+              Audit Log ng Karta ng Mamamayan
             </h2>
             <Button 
               label={"Magdagdag"} 
@@ -228,17 +212,14 @@ export default function Positions() {
             <Table 
               headers={[
                 <TableHeader 
-                  label={"Posisyon"} 
+                  label={"Model"} 
                   order={"name"}
                   setOrdering={setOrdering} 
                   onClick={closeControls}
                 />, 
-                <TableHeader 
-                  label={"Opisina"} 
-                  order={"office__name"}
-                  setOrdering={setOrdering} 
-                  onClick={closeControls}
-                />, 
+                "Aksyon",
+                "Data",
+                "Timestamp",
               ]}
               body={tableItems}
               hideID={true}

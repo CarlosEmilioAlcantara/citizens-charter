@@ -646,15 +646,32 @@ class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
 
 class AuditLogSerializer(serializers.ModelSerializer):
     content_type_model = serializers.SerializerMethodField()
+    action_name = serializers.SerializerMethodField()
+    actor_name = serializers.SerializerMethodField()
+    formatted_timestamp = serializers.SerializerMethodField()
+
+    def get_action_name(self, obj):
+        if obj.action == 0:
+            return "CREATE"
+        elif obj.action == 1:
+            return "UPDATE"
+        elif obj.action == 2:
+            return "DELETE"
+        else:
+            return "Error"
+
+    def get_actor_name(self, obj):
+        user = User.objects.filter(id=obj.actor_id).first()
+        return user.name if user else None
 
     class Meta:
         model = LogEntry
         fields = [
             'id',
             'content_type_model',
-            'action',
+            'action_name',
             'changes',
-            'actor',
+            'actor_name',
             'timestamp',
         ]
 

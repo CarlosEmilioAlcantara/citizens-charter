@@ -341,6 +341,6 @@ urlpatterns = [
     path(
         'admin-audit-logs', 
         SuperadminAuditLogListView.as_view(), 
-        name='fetch_audit_logs'
+        name='fetch_admin_audit_logs'
     )
 ]

@@ -254,7 +254,10 @@ class CitizensCharter(models.Model):
 
 auditlog.register(Sector, exclude_fields=['created_at', 'updated_at'])
 auditlog.register(Office, exclude_fields=['created_at', 'updated_at'])
-auditlog.register(User, exclude_fields=['created_at', 'updated_at'])
+auditlog.register(
+    User, 
+    exclude_fields=['password', 'created_at', 'updated_at']
+)
 auditlog.register(Position, exclude_fields=['created_at', 'updated_at'])
 auditlog.register(Service, exclude_fields=['created_at', 'updated_at'])
 auditlog.register(Requirement, exclude_fields=['created_at', 'updated_at'])

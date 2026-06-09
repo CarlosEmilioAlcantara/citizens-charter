@@ -3,11 +3,12 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Charter from "./pages/Charter";
 import Sectors from "./pages/Sectors";
 import Offices from "./pages/Offices";
 import Positions from "./pages/Positions";
 import Users from "./pages/Users";
-import Charter from "./pages/Charter";
+import CharterAudit from "./pages/CharterAudit";
 import CharterPDFs from "./pages/CharterPDFs";
 import Home from "./pages/Home";
 
@@ -64,6 +65,14 @@ export default function App() {
                 </ProtectedRoute>
               }
               path="/users"
+            />
+            <Route
+              element={
+                <ProtectedRoute>
+                  <CharterAudit />
+                </ProtectedRoute>
+              }
+              path="/charter-audit"
             />
             <Route
               element={
