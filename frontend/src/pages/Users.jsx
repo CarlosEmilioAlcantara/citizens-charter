@@ -75,7 +75,9 @@ export default function Users() {
   const [preview, setPreview] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [confirmation, setConfirmation] = useState(null);
-  const {values, setValues, data, setData} = useValues([ "name", "office" ])
+  const {values, setValues, data, setData} = useValues([ 
+    "name", "office", "password"
+  ])
   const [user, setUser] = useState(null);
   const [listInfo] = useListInfo({
     route: "/api/offices-info", 
@@ -112,11 +114,7 @@ export default function Users() {
               label={"Edit Kawani"} 
               icon={<FaPen />} 
               full={true} 
-              onClick={() => {
-                setConfirmation({label: "Edit ng Kawani"});
-                setUser(data["id"]);
-                console.log(data["id"]);
-              }}
+              onClick={() => setShowAdd(true)}
             />,
             <Button 
               label={"Delete Kawani"} 
@@ -273,8 +271,7 @@ export default function Users() {
           {showAdd && (
             <AddItem 
               onClose={() => {setShowAdd(false)}} 
-              label={"Magdagdag ng Posisyon"}
-              sector={true}
+              label={"Magdagdag ng User"}
               setData={setData}
               inputs={[
                 <Input 
@@ -287,17 +284,37 @@ export default function Users() {
                   setValue={setValues}
                   small={true}
                 />,
-                <Listbox items={listboxItems} />
+                <Input 
+                  label={"Office"}
+                  warning={data?.office}
+                  type={"number"}
+                  placeholder={"Office..."}
+                  name={"office"}
+                  value={values.office}
+                  setValue={setValues}
+                  small={true}
+                />,
+                <Input 
+                  label={"Password"}
+                  warning={data?.password}
+                  type={"password"}
+                  password={true}
+                  placeholder={"Password..."}
+                  name={"password"}
+                  value={values.password}
+                  setValue={setValues}
+                  small={true}
+                />,
               ]}
               addFunc={async () => {
                 const res = await handleLoading({
-                  api: genericBulkAPI, 
+                  api: genericAPI, 
                   body: values,
-                  route: "/api/position/create",
+                  route: "/api/user/create",
                   method: "POST",
                   authTokens: authTokens, 
-                  messageSuccess: "Posisyon Dagdag Matagumpay", 
-                  messageFail:"Posisyon Dagdag Pumalya",
+                  messageSuccess: "User Dagdag Matagumpay", 
+                  messageFail:"User Dagdag Pumalya",
                 }); 
 
                 if (!res.ok) {return res.json()}

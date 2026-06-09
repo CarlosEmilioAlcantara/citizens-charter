@@ -4,7 +4,7 @@ import Overlay from '../reusables/Overlay';
 export default function Loader({ show, message }) {
   return ReactDom.createPortal(
     <>
-      <Overlay show={show} zIndex={40} />
+      <Overlay show={show} zIndex={60} />
       <div className={`
         fixed 
         top-0
@@ -17,7 +17,7 @@ export default function Loader({ show, message }) {
         transition-opacity 
         duration-300 
         ${show ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-        z-50
+        z-70
       `}>
         <div className="
           relative

@@ -1,4 +1,4 @@
-export const genericAPI = async (route, method, authTokens) => {
+export const genericAPI = async (route, method, authTokens, body = null) => {
   try {
     const res = await fetch(route, {
       method: method,
@@ -8,6 +8,8 @@ export const genericAPI = async (route, method, authTokens) => {
             "Authorization": `Bearer ${authTokens.access}` 
           })
       },
+      body: (body && method === "POST") &&
+        JSON.stringify(body)
     });
     return res;
   } catch (err) {
