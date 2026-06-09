@@ -307,6 +307,13 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class UserListSerializer(serializers.ModelSerializer):
+    office_name = serializers.CharField(source='office.name', read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'name', 'office_name']
+
 # class UserBulkUpdateSerializer(serializers.ModelSerializer):
 #     pk = serializers.IntegerField()
 #     office = serializers.PrimaryKeyRelatedField(

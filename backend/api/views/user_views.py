@@ -4,10 +4,13 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 from ..models import User
-from ..serializers import UserSerializer
+from ..serializers import UserSerializer, UserListSerializer
 from ..permissions import IsSuperuser
 from ..mixins import BulkDeleteMixin
+from ..pagers import MyCustomPagination
+from ..filters import UserFilter
 from ..utils.view_utils import audit_save, audit_delete
 
 class UserView(APIView):
@@ -63,11 +66,17 @@ class DeleteUserView(BulkDeleteMixin, APIView):
 #         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserListView(ListAPIView):
-    queryset = User.objects.all().order_by('id')
+    queryset = User.objects.all().order_by('name')
     permission_classes = [IsAuthenticated, IsSuperuser]
-    serializer_class = UserSerializer
-    filter_backends = [filters.SearchFilter]
+    serializer_class = UserListSerializer
+    pagination_class = MyCustomPagination
+    filter_backends = [
+        filters.SearchFilter, 
+        filters.OrderingFilter, 
+        DjangoFilterBackend,
+    ]
     search_fields = ['name']
+    filterset_class = UserFilter
 
     def get_queryset(self):
         return self.queryset

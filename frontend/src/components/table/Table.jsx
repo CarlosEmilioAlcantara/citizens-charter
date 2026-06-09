@@ -177,12 +177,18 @@ export default function Table({
             key={key}
             className={`
               ${key === 'checkbox' ? 
-                'w-[24px] align-middle text-center' : 
-                'p-1 align-middle text-center wrap-break-word'
+                  'w-[24px] align-middle text-center' : 
+                key === 'actions' ?
+                  'p-1 align-middle' :
+                  'p-1 align-middle text-center wrap-break-word'
               }
             `}
           >
-            {value}
+            {key === 'actions' ? value : (
+              <div className="flex justify-end">
+                {value}
+              </div>
+            )}
           </td>
         )
       );
@@ -222,16 +228,16 @@ export default function Table({
           border-collapse
         ">
           <tbody>
-            {Object.entries(body).map(([key, data]) => (
+            {Object.entries(body).map(([rowKey, rowData]) => (
               <tr
-                key={key}
+                key={rowKey}
                 className="
                   border-b
                   border-b-unfocused
                   align-top
                 "
               >
-                {renderRow(data)}
+                {renderRow(rowData)}
               </tr>
             ))}
           </tbody>
