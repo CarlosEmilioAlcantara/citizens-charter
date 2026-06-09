@@ -171,24 +171,27 @@ export default function Table({
         );
       }
 
+      const isCheckboxColumn = key === "checkbox"
+      const isActionColumn = key === "actions"
+
       return (
         value !== null && (
           <td 
             key={key}
-            className={`
-              ${key === 'checkbox' ? 
-                  'w-[24px] align-middle text-center' : 
-                key === 'actions' ?
-                  'p-1 align-middle' :
-                  'p-1 align-middle text-center wrap-break-word'
+            className={`align-middle 
+              ${isCheckboxColumn ? 
+                  'w-[24px] text-center' : 
+                isActionColumn === 'actions' ?
+                  'p-1' :
+                  'p-1 text-center wrap-break-word'
               }
             `}
           >
-            {key === 'actions' ? value : (
-              <div className="flex justify-end">
+            {isActionColumn ? (
+              <div className="flex justify-center">
                 {value}
               </div>
-            )}
+            ) : value }
           </td>
         )
       );
