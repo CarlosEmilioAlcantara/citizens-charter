@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
 import { genericAPI } from "../apis/genericAPI";
+import { genericBulkAPI } from "../apis/genericBulkAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
@@ -32,15 +33,7 @@ import refreshList from "../utils/refreshList";
 // import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
 import { checkResponse } from "../utils/checkResponse";
-import { 
-  FaPen,
-  FaEye, 
-  FaFileDownload, 
-  FaPrint, 
-  FaTrashAlt, 
-  FaPlus,
-  FaSave,
-} from "react-icons/fa";
+import { FaPen, FaTrashAlt, FaPlus } from "react-icons/fa";
 
 export default function Users() {
   const { authTokens } = useContext(AuthContext);
@@ -50,7 +43,6 @@ export default function Users() {
     route,
     setRoute,
     items,
-    setItems,
     search,
     setSearch,
     pageSize,
@@ -81,11 +73,10 @@ export default function Users() {
   const {toast, setToast, loading, handleLoading} = useLoader();
   const [windowWidth] = useWindowWidth();
   const [preview, setPreview] = useState(null);
-  const [selectedRows, setSelectedRows] = useState({});
-  const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [confirmation, setConfirmation] = useState(null);
   const {values, setValues, data, setData} = useValues([ "name", "office" ])
+  const [user, setUser] = useState(null);
   const [listInfo] = useListInfo({
     route: "/api/offices-info", 
     accessToken: authTokens.access,
@@ -97,10 +88,6 @@ export default function Users() {
     setFiltersRoute("/api/filters/office");
     setAccessToken(authTokens.access);
   }, [setRoute, setAccessToken, setField, setFiltersRoute, authTokens.access])
-
-  useEffect(() => {
-    setItemIDs(Object.values(items).map(item => item.id));
-  }, [setItemIDs, items])
 
   const listboxItems = Object.entries(listInfo).map(([_, data]) => ({
     ...data,
@@ -117,18 +104,7 @@ export default function Users() {
       { ...Object.fromEntries(
           Object.entries(data).map(([field, value]) => [
             field,
-            (field === "office_name") ? (
-              value
-            ) : (
-              <TextArea 
-                rowkey={key} 
-                field={field} 
-                value={value}
-                selectedRows={selectedRows}
-                data={data}
-                setItems={setItems}
-              />
-            )
+            value
         ])),
         actions: (
           <ButtonGroup buttons={[
@@ -137,13 +113,20 @@ export default function Users() {
               icon={<FaPen />} 
               full={true} 
               onClick={() => {
+                setConfirmation({label: "Edit ng Kawani"});
+                setUser(data["id"]);
+                console.log(data["id"]);
               }}
             />,
             <Button 
               label={"Delete Kawani"} 
               icon={<FaTrashAlt />} 
               full={true} 
-              onClick={() => {}}
+              remove={true}
+              onClick={() => {
+                setConfirmation({label: "Delete ng Kawani", remove: true});
+                setUser(data["id"]);
+              }}
             />,
           ]} />
         )
@@ -151,7 +134,6 @@ export default function Users() {
     ])
   )
 
-  console.log(tableItems)
   return(
     <>
       <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
@@ -213,32 +195,6 @@ export default function Users() {
                   setPageSize={setPageSize} 
                   isOpen={pageSizeSelector}
                   toggle={togglePageSizeSelector}
-                />
-
-                <Button 
-                  disabled={
-                    !Object.keys(selectedRows).some(
-                      id => selectedRows[id] && itemIDs.includes(Number(id))
-                    )
-                  }
-                  label={"Save Inedit"} 
-                  icon={<FaSave />} 
-                  onClick={() => setConfirmation({label: "Edit ng Posisyon"})}
-                />
-
-                <Button 
-                  disabled={
-                    !Object.keys(selectedRows).some(
-                      id => selectedRows[id] && itemIDs.includes(Number(id))
-                    )
-                  }
-                  label={"Tanggalin"} 
-                  icon={<FaTrashAlt />} 
-                  remove={true}
-                  onClick={() => setConfirmation({
-                    label: "Magtanggal ng Posisyon",
-                    remove: true
-                  })}
                 />
               </div>
             </div>
@@ -310,7 +266,7 @@ export default function Users() {
               route={route}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              onClick={() => {closeControls(); setSelectedRows({});}}
+              onClick={() => closeControls()}
             />
           </div>
 
@@ -335,7 +291,7 @@ export default function Users() {
               ]}
               addFunc={async () => {
                 const res = await handleLoading({
-                  api: genericAPI, 
+                  api: genericBulkAPI, 
                   body: values,
                   route: "/api/position/create",
                   method: "POST",
@@ -378,12 +334,11 @@ export default function Users() {
 
                       const res = await handleLoading({
                         api: genericAPI, 
-                        body: selectedRows,
-                        route: "/api/position/delete",
+                        route: `/api/user/${user}`,
                         method: "DELETE",
                         authTokens: authTokens, 
-                        messageSuccess: "Posisyon Delete Matagumpay", 
-                        messageFail:"Posisyon Delete Pumalya",
+                        messageSuccess: "User Delete Matagumpay", 
+                        messageFail:"User Delete Pumalya",
                       }); 
 
                       checkResponse(res, setToast) && 
@@ -405,18 +360,13 @@ export default function Users() {
                   : async () => {
                       closeControls();
 
-                      const editedItems = Object.values(items).filter(
-                        item => selectedRows[item.id]
-                      );
-
                       const res = await handleLoading({
                         api: genericAPI,
-                        body: editedItems,
-                        route: "/api/position/update",
+                        route: `/api/user/${user}`,
                         method: "PUT",
                         authTokens: authTokens,
-                        messageSuccess: "Posisyon Update Matagumpay",
-                        messageFail: "Posisyon Update Pumalya",
+                        messageSuccess: "User Update Matagumpay",
+                        messageFail: "User Update Pumalya",
                       });
 
                       checkResponse(res, setToast) &&

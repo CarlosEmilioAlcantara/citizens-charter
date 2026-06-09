@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
-import { genericAPI } from "../apis/genericAPI";
+import { genericBulkAPI } from "../apis/genericBulkAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
@@ -273,7 +273,7 @@ export default function Offices() {
                   }
                   label={"Save Inedit"} 
                   icon={<FaSave />} 
-                  onClick={() => setConfirmation({label: "Edit ng Sector"})}
+                  onClick={() => setConfirmation({label: "Edit ng Opisina"})}
                 />
 
                 <Button 
@@ -386,7 +386,7 @@ export default function Offices() {
               ]}
               addFunc={async () => {
                 const res = await handleLoading({
-                  api: genericAPI, 
+                  api: genericBulkAPI, 
                   body: values,
                   route: "/api/office/create",
                   method: "POST",
@@ -428,7 +428,7 @@ export default function Offices() {
                       closeControls();
 
                       const res = await handleLoading({
-                        api: genericAPI, 
+                        api: genericBulkAPI, 
                         body: selectedRows,
                         route: "/api/office/delete",
                         method: "DELETE",
@@ -461,7 +461,7 @@ export default function Offices() {
                       );
 
                       const res = await handleLoading({
-                        api: genericAPI,
+                        api: genericBulkAPI,
                         body: editedItems,
                         route: "/api/office/update",
                         method: "PUT",

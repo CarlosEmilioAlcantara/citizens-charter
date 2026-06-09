@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
-import { genericAPI } from "../apis/genericAPI";
+import { genericBulkAPI } from "../apis/genericBulkAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
@@ -333,7 +333,7 @@ export default function Sectors() {
               ]}
               addFunc={async () => {
                 const res = await handleLoading({
-                  api: genericAPI, 
+                  api: genericBulkAPI, 
                   body: values,
                   route: "/api/sector/create",
                   method: "POST",
@@ -375,7 +375,7 @@ export default function Sectors() {
                       closeControls();
 
                       const res = await handleLoading({
-                        api: genericAPI, 
+                        api: genericBulkAPI, 
                         body: selectedRows,
                         route: "/api/sector/delete",
                         method: "DELETE",
@@ -408,7 +408,7 @@ export default function Sectors() {
                       );
 
                       const res = await handleLoading({
-                        api: genericAPI,
+                        api: genericBulkAPI,
                         body: editedItems,
                         route: "/api/sector/update",
                         method: "PUT",

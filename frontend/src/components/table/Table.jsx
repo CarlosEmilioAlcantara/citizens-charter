@@ -61,7 +61,7 @@ export default function Table({
             index === 0 ? (
               <th 
                 key={index} 
-                className="p-1 pl-[48px] text-center"
+                className="p-1 pl-[52px] text-center"
               >
                 {header}
               </th>
@@ -210,14 +210,6 @@ export default function Table({
         );
       }
 
-      if (userList && key === "office_name") {
-        return (
-          <td key={key} className="pl-[] align-middle text-center">
-            {value}
-          </td>
-        )
-      }
-
       const isCheckboxColumn = key === "checkbox"
       const isActionColumn = key === "actions"
       const isEmployeeNames = key === "employee_names"
@@ -230,7 +222,7 @@ export default function Table({
               ${isCheckboxColumn ? 
                   'w-[24px] text-center' : 
                 isActionColumn && userList ?
-                  'w-[164px]' :
+                  'w-[164px] p-1' :
                 isActionColumn ?
                   'p-1' :
                   'p-1 text-center wrap-break-word'
