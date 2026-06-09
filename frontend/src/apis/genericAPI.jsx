@@ -8,8 +8,10 @@ export const genericAPI = async (route, method, authTokens, body = null) => {
             "Authorization": `Bearer ${authTokens.access}` 
           })
       },
-      body: (body && method === "POST") &&
-        JSON.stringify(body)
+      body: 
+        (body && method === "POST" || method === "PUT") ?
+          JSON.stringify(body) :
+          undefined
     });
     return res;
   } catch (err) {

@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Listbox({ items }) {
+export default function Listbox({ items, prevSelected = null }) {
   const [selected, setSelected] = useState("");
+
+  useEffect(() => {
+    if (prevSelected) { setSelected(prevSelected) };
+  }, [prevSelected])
 
   return(
     <div className="

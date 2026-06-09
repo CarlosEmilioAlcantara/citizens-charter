@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
 import { genericAPI } from "../apis/genericAPI";
-import { genericBulkAPI } from "../apis/genericBulkAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
@@ -70,10 +69,19 @@ export default function Users() {
     togglePageSizeSelector,
     toggleFilterSelector,
   } = useTableControls();
-  const {toast, setToast, loading, handleLoading} = useLoader();
+  const {
+    toast, 
+    setToast, 
+    loading, 
+    handleLoading,
+    loadingMessage,
+    setLoadingMessage,
+  } = useLoader();
   const [windowWidth] = useWindowWidth();
   const [preview, setPreview] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [prevOffice, setPrevOffice] = useState(null);
   const [confirmation, setConfirmation] = useState(null);
   const {values, setValues, data, setData} = useValues([ 
     "name", "office", "password"
@@ -94,7 +102,7 @@ export default function Users() {
   const listboxItems = Object.entries(listInfo).map(([_, data]) => ({
     ...data,
     onClick: () =>
-      setValues(prev => ({
+      setValues((prev) => ({
         ...prev,
         office: data.id,
       })),
@@ -114,7 +122,17 @@ export default function Users() {
               label={"Edit Kawani"} 
               icon={<FaPen />} 
               full={true} 
-              onClick={() => setShowAdd(true)}
+              onClick={() => {
+                setUser(data["id"]);
+                setValues((prev) => ({
+                  ...prev,
+                  name: data["name"],
+                  office: data["office"],
+                }));
+                setPrevOffice(data["office_name"]);
+                setShowAdd(true); 
+                setEdit(true);
+              }}
             />,
             <Button 
               label={"Delete Kawani"} 
@@ -134,7 +152,7 @@ export default function Users() {
 
   return(
     <>
-      <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
+      <Loader show={loading} message={loadingMessage} />
       <Navigation />
       <div className="
         flex 
@@ -160,7 +178,9 @@ export default function Users() {
             <Button 
               label={"Magdagdag"} 
               icon={<FaPlus />} 
-              onClick={() => {closeControls(); setShowAdd(true);}}
+              onClick={() => {
+                closeControls(); setShowAdd(true); setEdit(false);
+              }}
             />
 
             <div className="flex flex-col gap-3 w-full sm:flex-row">
@@ -270,8 +290,8 @@ export default function Users() {
 
           {showAdd && (
             <AddItem 
-              onClose={() => {setShowAdd(false)}} 
-              label={"Magdagdag ng User"}
+              onClose={() => {setShowAdd(false); setEdit(false)}} 
+              label={`${edit ? 'Magupdate' : 'Magdagdag'} ng User`}
               setData={setData}
               inputs={[
                 <Input 
@@ -281,16 +301,6 @@ export default function Users() {
                   placeholder={"Name..."}
                   name={"name"}
                   value={values.name}
-                  setValue={setValues}
-                  small={true}
-                />,
-                <Input 
-                  label={"Office"}
-                  warning={data?.office}
-                  type={"number"}
-                  placeholder={"Office..."}
-                  name={"office"}
-                  value={values.office}
                   setValue={setValues}
                   small={true}
                 />,
@@ -305,16 +315,22 @@ export default function Users() {
                   setValue={setValues}
                   small={true}
                 />,
+                <Listbox items={listboxItems} prevSelected={prevOffice} />,
               ]}
               addFunc={async () => {
+                setLoadingMessage(
+                  `${edit ? 'Naguupdate' : 'Nagdadagdag'} ng User`
+                );
                 const res = await handleLoading({
                   api: genericAPI, 
                   body: values,
-                  route: "/api/user/create",
-                  method: "POST",
+                  route: `${edit ? `/api/user/${user}` : '/api/user/create'}`,
+                  method: `${edit ? 'PUT' : 'POST'}`,
                   authTokens: authTokens, 
-                  messageSuccess: "User Dagdag Matagumpay", 
-                  messageFail:"User Dagdag Pumalya",
+                  messageSuccess: 
+                    `User ${edit ? 'Update' : 'Dagdag'} Matagumpay`, 
+                  messageFail:
+                    `User ${edit ? 'Update' : 'Dagdag'} Pumalya`, 
                 }); 
 
                 if (!res.ok) {return res.json()}
@@ -338,6 +354,7 @@ export default function Users() {
                   return Object.fromEntries(reset);
                 });
                 setShowAdd(false);
+                setEdit(false);
               }}
             />
           )}
@@ -349,6 +366,7 @@ export default function Users() {
                   ? async () => {
                       closeControls();
 
+                      setLoadingMessage("Nagtatanggal ng User");
                       const res = await handleLoading({
                         api: genericAPI, 
                         route: `/api/user/${user}`,
@@ -377,6 +395,7 @@ export default function Users() {
                   : async () => {
                       closeControls();
 
+                      setLoadingMessage("Naguupdate ng User");
                       const res = await handleLoading({
                         api: genericAPI,
                         route: `/api/user/${user}`,
