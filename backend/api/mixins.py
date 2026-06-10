@@ -70,19 +70,21 @@ class BulkDeleteMixin:
                     changes[obj_id][field] = {'old': serialize_value(value)}
 
             model_name = queryset.model.__name__
-            content_type_id = get_content_type_id(model_name)
-            context = self.get_serializer_context()
 
-            LogEntry.objects.create(
-                action=LogEntry.Action.DELETE,
-                actor_id=context['request'].user.id,
-                content_type_id=content_type_id,
-                changes={
-                    'type': 'bulk_delete',
-                    'model': model_name,
-                    'changes': changes,
-                }
-            )
+            if model_name != 'LogEntry':
+                content_type_id = get_content_type_id(model_name)
+                context = self.get_serializer_context()
+
+                LogEntry.objects.create(
+                    action=LogEntry.Action.DELETE,
+                    actor_id=context['request'].user.id,
+                    content_type_id=content_type_id,
+                    changes={
+                        'type': 'bulk_delete',
+                        'model': model_name,
+                        'changes': changes,
+                    }
+                )
 
             with disable_auditlog():
                 queryset.filter(id__in=existing).delete()

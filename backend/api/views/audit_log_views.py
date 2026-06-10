@@ -1,9 +1,11 @@
 from auditlog.models import LogEntry
 from rest_framework import filters
+from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django_filters.rest_framework import DjangoFilterBackend
 from ..permissions import IsSuperuser
+from ..mixins import BulkDeleteMixin
 from ..serializers import AuditLogSerializer
 from ..pagers import MyCustomPagination
 from ..filters import CharterAuditFilter
@@ -41,3 +43,12 @@ class SuperadminAuditLogListView(ListAPIView):
 
     def get_queryset(self):
         return self.queryset
+
+class DeleteAuditLogView(BulkDeleteMixin, APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get_queryset(self):
+        return LogEntry.objects.all()
+
+    def get_serializer_context(self):
+        return {'request': self.request}

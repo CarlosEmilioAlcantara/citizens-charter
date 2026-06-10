@@ -85,7 +85,11 @@ from .views.filter_views import (
     PositionFiltersView,
     CharterAuditFiltersView,
 )
-from .views.audit_log_views import AuditLogListView, SuperadminAuditLogListView
+from .views.audit_log_views import (
+    AuditLogListView, 
+    SuperadminAuditLogListView,
+    DeleteAuditLogView,
+)
 
 urlpatterns = [
     # Auth Tokens
@@ -344,6 +348,11 @@ urlpatterns = [
 
     # Audit logs
     path('audit-logs', AuditLogListView.as_view(), name='fetch_audit_logs'),
+    path(
+        'audit-log/delete', 
+        DeleteAuditLogView.as_view(), 
+        name='delete_audit_log'
+    ),
     path(
         'admin-audit-logs', 
         SuperadminAuditLogListView.as_view(), 

@@ -18,20 +18,16 @@ import Loader from "../components/modals/Loader";
 import Alert from "../components/modals/Alert";
 import Checkbox from "../components/buttons/Checkbox";
 import TextArea from "../components/inputs/TextArea";
-import Preview from "../components/modals/Preview";
-import AddItem from "../components/modals/AddItem";
 import Confirmation from "../components/modals/Confirmation";
-import useValues from "../hooks/useValues";
 import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useWindowWidth from "../hooks/useWindowWidth";
-import useListInfo from "../hooks/useListInfo";
 import refreshList from "../utils/refreshList";
 // import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
 import { checkResponse } from "../utils/checkResponse";
-import { FaTrashAlt, FaPlus, FaSave } from "react-icons/fa";
+import { FaTrashAlt, FaSave } from "react-icons/fa";
 
 export default function CharterAudit() {
   const { authTokens } = useContext(AuthContext);
@@ -69,18 +65,18 @@ export default function CharterAudit() {
     togglePageSizeSelector,
     toggleFilterSelector,
   } = useTableControls();
-  const {toast, setToast, loading, handleLoading} = useLoader();
+  const {
+    toast, 
+    setToast, 
+    loading, 
+    handleLoading,
+    loadingMessage,
+    setLoadingMessage,
+  } = useLoader();
   const [windowWidth] = useWindowWidth();
-  const [preview, setPreview] = useState(null);
   const [selectedRows, setSelectedRows] = useState({});
   const [itemIDs, setItemIDs] = useState([]);
-  const [showAdd, setShowAdd] = useState(false);
   const [confirmation, setConfirmation] = useState(null);
-  const {values, setValues, data, setData} = useValues([ "name", "office" ])
-  const [listInfo] = useListInfo({
-    route: "/api/offices-info", 
-    accessToken: authTokens.access,
-  });
 
   useEffect(() => {
     setRoute("/api/audit-logs");
@@ -93,15 +89,6 @@ export default function CharterAudit() {
     setItemIDs(Object.values(items).map(item => item.id));
   }, [setItemIDs, items])
 
-  const listboxItems = Object.entries(listInfo).map(([_, data]) => ({
-    ...data,
-    onClick: () =>
-      setValues(prev => ({
-        ...prev,
-        office: data.id,
-      })),
-  }));
- 
   const tableItems = Object.fromEntries(
     Object.entries(items).map(([key, data]) => [
       key,
@@ -131,10 +118,9 @@ export default function CharterAudit() {
     )}])
   )
 
-  console.log(items);
   return(
     <>
-      <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
+      <Loader show={loading} message={loadingMessage} />
       <Navigation />
       <div className="
         flex 
@@ -200,7 +186,7 @@ export default function CharterAudit() {
                   icon={<FaTrashAlt />} 
                   remove={true}
                   onClick={() => setConfirmation({
-                    label: "Magtanggal ng Posisyon",
+                    label: "Magtanggal ng Charter Audit Log",
                     remove: true
                   })}
                 />
@@ -277,138 +263,43 @@ export default function CharterAudit() {
             />
           </div>
 
-          {showAdd && (
-            <AddItem 
-              onClose={() => {setShowAdd(false)}} 
-              label={"Magdagdag ng Posisyon"}
-              sector={true}
-              setData={setData}
-              inputs={[
-                <Input 
-                  label={"Name"}
-                  warning={data?.name}
-                  type={"text"}
-                  placeholder={"Name..."}
-                  name={"name"}
-                  value={values.name}
-                  setValue={setValues}
-                  small={true}
-                />,
-                <Listbox items={listboxItems} />
-              ]}
-              addFunc={async () => {
-                const res = await handleLoading({
-                  api: genericBulkAPI, 
-                  body: values,
-                  route: "/api/position/create",
-                  method: "POST",
-                  authTokens: authTokens, 
-                  messageSuccess: "Posisyon Dagdag Matagumpay", 
-                  messageFail:"Posisyon Dagdag Pumalya",
-                }); 
-
-                if (!res.ok) {return res.json()}
-
-                refreshList({
-                  handlePaging: handlePaging,
-                  acessToken: accessToken,
-                  route: route,
-                  currentPage: currentPage,
-                  setCurrentPage: setCurrentPage,
-                  search: search,
-                  pageSize: pageSize,
-                  ordering: ordering,
-                  field: field,
-                  filter: filter,
-                  timeout: 300,
-                });
-
-                setValues((prev) => {
-                  const reset = Object.keys(prev).map(key => [key, '']);
-                  return Object.fromEntries(reset);
-                });
-                setShowAdd(false);
-              }}
-            />
-          )}
           {confirmation && (
             <Confirmation 
               label={confirmation.label}
               func={
                 confirmation.remove
-                  ? async () => {
-                      closeControls();
+                  && (async () => {
+                    closeControls();
 
-                      const res = await handleLoading({
-                        api: genericBulkAPI, 
-                        body: selectedRows,
-                        route: "/api/position/delete",
-                        method: "DELETE",
-                        authTokens: authTokens, 
-                        messageSuccess: "Posisyon Delete Matagumpay", 
-                        messageFail:"Posisyon Delete Pumalya",
-                      }); 
+                    setLoadingMessage("Nagtatanggal ng Charter Audit Log");
+                    const res = await handleLoading({
+                      api: genericBulkAPI, 
+                      body: selectedRows,
+                      route: "/api/audit-log/delete",
+                      method: "DELETE",
+                      authTokens: authTokens, 
+                      messageSuccess: "Charter Audit Log Delete Matagumpay", 
+                      messageFail:"Charter Audit Log Delete Pumalya",
+                    }); 
 
-                      checkResponse(res, setToast) && 
-                        refreshList({
-                          handlePaging: handlePaging,
-                          acessToken: accessToken,
-                          route: route,
-                          currentPage: currentPage,
-                          setCurrentPage: setCurrentPage,
-                          search: search,
-                          pageSize: pageSize,
-                          ordering: ordering,
-                          field: field,
-                          filter: filter,
-                          timeout: 300,
-                        });
-
-                    }
-                  : async () => {
-                      closeControls();
-
-                      const editedItems = Object.values(items).filter(
-                        item => selectedRows[item.id]
-                      );
-
-                      const res = await handleLoading({
-                        api: genericBulkAPI,
-                        body: editedItems,
-                        route: "/api/position/update",
-                        method: "PUT",
-                        authTokens: authTokens,
-                        messageSuccess: "Posisyon Update Matagumpay",
-                        messageFail: "Posisyon Update Pumalya",
+                    checkResponse(res, setToast) && 
+                      refreshList({
+                        handlePaging: handlePaging,
+                        acessToken: accessToken,
+                        route: route,
+                        currentPage: currentPage,
+                        setCurrentPage: setCurrentPage,
+                        search: search,
+                        pageSize: pageSize,
+                        ordering: ordering,
+                        field: field,
+                        filter: filter,
+                        timeout: 300,
                       });
-
-                      checkResponse(res, setToast) &&
-                        refreshList({
-                          handlePaging: handlePaging,
-                          acessToken: accessToken,
-                          route: route,
-                          currentPage: currentPage,
-                          setCurrentPage: setCurrentPage,
-                          search: search,
-                          pageSize: pageSize,
-                          ordering: ordering,
-                          field: field,
-                          filter: filter,
-                          timeout: 300,
-                        });
-                    }
+                  })
               }
               remove={confirmation.remove}
               onClose={() => setConfirmation(null)}
-            />
-          )}
-
-          {preview && (
-            <Preview 
-              label={preview.label} 
-              tableLabel={preview.tableLabel}
-              items={preview.items}
-              onClose={() => setPreview(null)}
             />
           )}
 
