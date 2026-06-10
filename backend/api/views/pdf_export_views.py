@@ -204,10 +204,12 @@ class CreateCitizensCharterPdfsView(APIView):
                 ]
             )
 
-            charter, created = CitizensCharter.objects.get_or_create(
+            charter, created = CitizensCharter.objects.update_or_create(
                 office=office,
-                sector=office.sector,
-                defaults={"name": f"{office.name}.pdf"}
+                defaults={
+                    "sector": office.sector,
+                    "name": f"{office.name}.pdf",
+                }
             )
 
             with set_actor(request.user):
@@ -243,9 +245,11 @@ class CreateCitizensCharterSinglePdfView(APIView):
             ]
         )
 
+        office = Office.objects.get(id=pk)
         charter = CitizensCharter.objects.get(office_id=pk)
 
         with set_actor(request.user):
+            charter.sector = office.sector
             charter.pdf.save(
                 name=f"{charter.office.name}.pdf",
                 content=File(io.BytesIO(pdf)),
