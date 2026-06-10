@@ -8,6 +8,7 @@ export default function Table({
   sectorList = false,
   officeList = false,
   userList = false,
+  charterAudit = false,
 }) {
   const renderHeaders = () => {
     if (charterList) {
@@ -137,6 +138,29 @@ export default function Table({
       );
     }
 
+    if (charterAudit) {
+      return (
+        <tr>
+          {headers.map((header, index) => (
+            <th 
+              key={index} 
+              className={`
+                ${index === 0 && 'w-[168px] pl-[24px]'}
+                ${index === 1 && 'pr-[188px]'}
+                ${index === 2 && 'pr-[152px]'}
+                ${index === 3 && 'pl-[98px]'}
+                ${index === 4 && 'pl-[32px]'}
+                p-1 
+                ${(index !== 0 && index !== 1) && 'text-center'}
+              `}
+            >
+              {header}
+            </th>
+          ))}
+        </tr>
+      )
+    }
+
     return (
       <tr>
         {headers.map((header, index) => (
@@ -199,6 +223,43 @@ export default function Table({
           </td>
         </>
       );
+    }
+
+    if (charterAudit) {
+      return Object.entries(data).map(([key, value]) => {
+        if (key === "id") {
+          return (
+            <td key={key} className="hidden">
+              {value}
+            </td>
+          );
+        }
+
+        const isCheckboxColumn = key === "checkbox"
+        const isContentTypeModel = key === "content_type_model"
+        const isActionName = key === "action_name"
+        const isChanges = key === "changes"
+
+        return (
+          value !== null && (
+            <td 
+              key={key}
+              className={`p-1 align-middle 
+                ${isCheckboxColumn ? 
+                    'w-[24px] text-center' :
+                  isContentTypeModel || isActionName ?
+                    'w-[124px] text-center' :
+                  isChanges ?
+                    'w-[500px]' :
+                    'text-center wrap-break-word'
+                }
+              `}
+            >
+              {value}
+            </td>
+          )
+        );
+      });
     }
 
     return Object.entries(data).map(([key, value]) => {

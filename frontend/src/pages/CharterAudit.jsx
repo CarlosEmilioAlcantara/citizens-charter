@@ -131,6 +131,7 @@ export default function CharterAudit() {
     )}])
   )
 
+  console.log(items);
   return(
     <>
       <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
@@ -225,7 +226,7 @@ export default function CharterAudit() {
                 </div>,
               ]}
               body={tableItems}
-              hideID={true}
+              charterAudit={true}
             />
           ) : (
             // <ListMobile 
