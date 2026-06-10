@@ -6,7 +6,6 @@ import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
 import Search from "../components/inputs/Search";
 import Input from "../components/inputs/Input";
-import Listbox from "../components/inputs/Listbox";
 import FilterSelector from "../components/table_controls/FilterSelector";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import TableHeader from "../components/table/TableHeader";

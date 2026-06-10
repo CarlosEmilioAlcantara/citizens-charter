@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
+import { genericAPI } from "../apis/genericAPI";
 import { genericBulkAPI } from "../apis/genericBulkAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
@@ -12,8 +13,6 @@ import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import TableHeader from "../components/table/TableHeader";
 import Table from "../components/table/Table";
 import ListMobile from "../components/list/ListMobile";
-import Dropdown from "../components/dropdowns/Dropdown";
-import DropdownItem from "../components/dropdowns/DropdownItem";
 import SectorSelector from "../components/dropdowns/SectorSelector";
 import EntriesCounter from "../components/table_controls/EntriesCounter";
 import Pager from "../components/table_controls/Pager";
@@ -83,7 +82,14 @@ export default function Offices() {
     toggleFilterSelector,
     toggleDropdown,
   } = useTableControls();
-  const {toast, setToast, loading, handleLoading} = useLoader();
+  const {
+    toast, 
+    setToast, 
+    loading, 
+    handleLoading,
+    loadingMessage,
+    setLoadingMessage,
+  } = useLoader();
   const [windowWidth] = useWindowWidth();
   const [preview, setPreview] = useState(null);
   const [selectedRows, setSelectedRows] = useState({});
@@ -204,7 +210,7 @@ export default function Offices() {
 
   return(
     <>
-      <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
+      <Loader show={loading} message={loadingMessage} />
       <Navigation />
       <div className="
         flex 
@@ -385,8 +391,10 @@ export default function Offices() {
                 <Listbox items={listboxItems} />
               ]}
               addFunc={async () => {
+                setLoadingMessage("Nagdadagdag ng Opisina");
+
                 const res = await handleLoading({
-                  api: genericBulkAPI, 
+                  api: genericAPI, 
                   body: values,
                   route: "/api/office/create",
                   method: "POST",
@@ -427,6 +435,7 @@ export default function Offices() {
                   ? async () => {
                       closeControls();
 
+                      setLoadingMessage("Nagtatanggal ng Opisina");
                       const res = await handleLoading({
                         api: genericBulkAPI, 
                         body: selectedRows,
@@ -460,6 +469,7 @@ export default function Offices() {
                         item => selectedRows[item.id]
                       );
 
+                      setLoadingMessage("Naguupdate ng Opisina");
                       const res = await handleLoading({
                         api: genericBulkAPI,
                         body: editedItems,

@@ -5,3 +5,4 @@
 2. __Close other dropdowns__ - close other dropdowns when another is clicked - DONE
 3. __To useCallback or not__
 4. __Filter table control__ - DONE
+5. __If sector has changed allow printing__

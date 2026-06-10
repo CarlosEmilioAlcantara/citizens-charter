@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
+import { genericAPI } from "../apis/genericAPI";
 import { genericBulkAPI } from "../apis/genericBulkAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
@@ -11,8 +12,6 @@ import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import TableHeader from "../components/table/TableHeader";
 import Table from "../components/table/Table";
 import ListMobile from "../components/list/ListMobile";
-import Dropdown from "../components/dropdowns/Dropdown";
-import DropdownItem from "../components/dropdowns/DropdownItem";
 import EntriesCounter from "../components/table_controls/EntriesCounter";
 import Pager from "../components/table_controls/Pager";
 import Loader from "../components/modals/Loader";
@@ -20,7 +19,6 @@ import Alert from "../components/modals/Alert";
 import Checkbox from "../components/buttons/Checkbox";
 import TextArea from "../components/inputs/TextArea";
 import Preview from "../components/modals/Preview";
-import ButtonGroup from "../components/buttons/ButtonGroup";
 import AddItem from "../components/modals/AddItem";
 import Confirmation from "../components/modals/Confirmation";
 import useValues from "../hooks/useValues";
@@ -77,7 +75,14 @@ export default function Sectors() {
     togglePageSizeSelector,
     toggleFilterSelector,
   } = useTableControls();
-  const {toast, setToast, loading, handleLoading} = useLoader();
+  const {
+    toast, 
+    setToast, 
+    loading, 
+    handleLoading,
+    loadingMessage,
+    setLoadingMessage,
+  } = useLoader();
   const [windowWidth] = useWindowWidth();
   const [preview, setPreview] = useState(null);
   const [selectedRows, setSelectedRows] = useState({});
@@ -142,7 +147,7 @@ export default function Sectors() {
 
   return(
     <>
-      <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
+      <Loader show={loading} message={loadingMessage} />
       <Navigation />
       <div className="
         flex 
@@ -332,8 +337,9 @@ export default function Sectors() {
                 />,
               ]}
               addFunc={async () => {
+                setLoadingMessage("Nagdadagdag ng Sector");
                 const res = await handleLoading({
-                  api: genericBulkAPI, 
+                  api: genericAPI, 
                   body: values,
                   route: "/api/sector/create",
                   method: "POST",
@@ -374,6 +380,7 @@ export default function Sectors() {
                   ? async () => {
                       closeControls();
 
+                      setLoadingMessage("Nagtatanggal ng Sector");
                       const res = await handleLoading({
                         api: genericBulkAPI, 
                         body: selectedRows,
@@ -407,6 +414,7 @@ export default function Sectors() {
                         item => selectedRows[item.id]
                       );
 
+                      setLoadingMessage("Naguupdate ng Sector");
                       const res = await handleLoading({
                         api: genericBulkAPI,
                         body: editedItems,

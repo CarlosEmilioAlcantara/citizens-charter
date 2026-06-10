@@ -68,7 +68,14 @@ export default function CharterPDFs() {
     toggleFilterSelector,
     toggleDropdown,
   } = useTableControls();
-  const {toast, setToast, loading, handleLoading} = useLoader();
+  const {
+    toast, 
+    setToast, 
+    loading, 
+    handleLoading,
+    loadingMessage,
+    setLoadingMessage,
+  } = useLoader();
   const [windowWidth] = useWindowWidth();
   const [url, setUrl] = useState("");
 
@@ -106,6 +113,7 @@ export default function CharterPDFs() {
               label={"Regenerate PDF"}
             />, 
             "function": async () => { 
+              setLoadingMessage("Nagreregenerate ng PDF");
               await handleLoading({
                 api: regenerateCharterPDF,
                 id: data["office"],
@@ -134,6 +142,7 @@ export default function CharterPDFs() {
               remove={true}
             />, 
             "function": async () => { 
+              setLoadingMessage("Nagtatanggal ng PDF");
               await handleLoading({
                 api: deleteCharterPDF,
                 id: data["id"],
@@ -177,6 +186,7 @@ export default function CharterPDFs() {
           icon={<TbReload />} 
           full={true} 
           onClick={async () => { 
+            setLoadingMessage("Nagreregenerate ng PDF");
             await handleLoading({
               api: regenerateCharterPDF,
               id: data["office"],
@@ -204,6 +214,7 @@ export default function CharterPDFs() {
           full={true} 
           remove={true} 
           onClick={async () => { 
+            setLoadingMessage("Nagtatanggal ng PDF");
             await handleLoading({
               api: deleteCharterPDF,
               id: data["id"],
@@ -231,7 +242,7 @@ export default function CharterPDFs() {
 
   return(
     <>
-      <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
+      <Loader show={loading} message={loadingMessage} />
       <Navigation />
       <div className="
         flex 
@@ -258,6 +269,7 @@ export default function CharterPDFs() {
               onClick={async () => {
                 closeControls();
 
+                setLoadingMessage("Naglilikha ng mga PDF");
                 await handleLoading({
                   api: generateCharterPDFs, 
                   authTokens: authTokens, 

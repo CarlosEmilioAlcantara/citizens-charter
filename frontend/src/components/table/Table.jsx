@@ -179,15 +179,15 @@ export default function Table({
     if (charterList) {
       return (
         <>
-          <td className="p-1 pl-[24px]">
+          <td className="p-1 pl-[24px] align-middle">
             {Object.values(data)[1]}
           </td>
 
-          <td className="p-1">
+          <td className="p-1 align-middle">
             {Object.values(data)[4]}
           </td>
 
-          <td className="p-1">
+          <td className="p-1 align-middle">
             <div className="flex justify-end">
               {Object.values(data)[5]}
             </div>

@@ -16,9 +16,6 @@ import EntriesCounter from "../components/table_controls/EntriesCounter";
 import Pager from "../components/table_controls/Pager";
 import Loader from "../components/modals/Loader";
 import Alert from "../components/modals/Alert";
-import Checkbox from "../components/buttons/Checkbox";
-import TextArea from "../components/inputs/TextArea";
-import Preview from "../components/modals/Preview";
 import ButtonGroup from "../components/buttons/ButtonGroup";
 import AddItem from "../components/modals/AddItem";
 import Confirmation from "../components/modals/Confirmation";
@@ -78,7 +75,6 @@ export default function Users() {
     setLoadingMessage,
   } = useLoader();
   const [windowWidth] = useWindowWidth();
-  const [preview, setPreview] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [edit, setEdit] = useState(false);
   const [prevOffice, setPrevOffice] = useState(null);
@@ -423,15 +419,6 @@ export default function Users() {
               }
               remove={confirmation.remove}
               onClose={() => setConfirmation(null)}
-            />
-          )}
-
-          {preview && (
-            <Preview 
-              label={preview.label} 
-              tableLabel={preview.tableLabel}
-              items={preview.items}
-              onClose={() => setPreview(null)}
             />
           )}
 

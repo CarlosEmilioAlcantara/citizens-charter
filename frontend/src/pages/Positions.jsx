@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
+import { genericAPI } from "../apis/genericAPI";
 import { genericBulkAPI } from "../apis/genericBulkAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
@@ -18,7 +19,6 @@ import Loader from "../components/modals/Loader";
 import Alert from "../components/modals/Alert";
 import Checkbox from "../components/buttons/Checkbox";
 import TextArea from "../components/inputs/TextArea";
-import Preview from "../components/modals/Preview";
 import AddItem from "../components/modals/AddItem";
 import Confirmation from "../components/modals/Confirmation";
 import useValues from "../hooks/useValues";
@@ -69,9 +69,15 @@ export default function Positions() {
     togglePageSizeSelector,
     toggleFilterSelector,
   } = useTableControls();
-  const {toast, setToast, loading, handleLoading} = useLoader();
+  const {
+    toast, 
+    setToast, 
+    loading, 
+    handleLoading,
+    loadingMessage,
+    setLoadingMessage,
+  } = useLoader();
   const [windowWidth] = useWindowWidth();
-  const [preview, setPreview] = useState(null);
   const [selectedRows, setSelectedRows] = useState({});
   const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
@@ -134,7 +140,7 @@ export default function Positions() {
 
   return(
     <>
-      <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
+      <Loader show={loading} message={loadingMessage} />
       <Navigation />
       <div className="
         flex 
@@ -312,8 +318,9 @@ export default function Positions() {
                 <Listbox items={listboxItems} />
               ]}
               addFunc={async () => {
+                setLoadingMessage("Nagdadagdag ng Posisyon");
                 const res = await handleLoading({
-                  api: genericBulkAPI, 
+                  api: genericAPI, 
                   body: values,
                   route: "/api/position/create",
                   method: "POST",
@@ -354,6 +361,7 @@ export default function Positions() {
                   ? async () => {
                       closeControls();
 
+                      setLoadingMessage("Nagtatanggal ng Posisyon");
                       const res = await handleLoading({
                         api: genericBulkAPI, 
                         body: selectedRows,
@@ -387,6 +395,7 @@ export default function Positions() {
                         item => selectedRows[item.id]
                       );
 
+                      setLoadingMessage("Naguupdate ng Posisyon");
                       const res = await handleLoading({
                         api: genericBulkAPI,
                         body: editedItems,
@@ -415,15 +424,6 @@ export default function Positions() {
               }
               remove={confirmation.remove}
               onClose={() => setConfirmation(null)}
-            />
-          )}
-
-          {preview && (
-            <Preview 
-              label={preview.label} 
-              tableLabel={preview.tableLabel}
-              items={preview.items}
-              onClose={() => setPreview(null)}
             />
           )}
 
