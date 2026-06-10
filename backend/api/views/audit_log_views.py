@@ -4,8 +4,9 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django_filters.rest_framework import DjangoFilterBackend
 from ..permissions import IsSuperuser
-from ..pagers import MyCustomPagination
 from ..serializers import AuditLogSerializer
+from ..pagers import MyCustomPagination
+from ..filters import CharterAuditFilter
 
 content_types = [6, 7, 12, 16, 17]
 
@@ -16,8 +17,14 @@ class AuditLogListView(ListAPIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
     serializer_class = AuditLogSerializer
     pagination_class = MyCustomPagination
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['content_type_model']
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+        DjangoFilterBackend,
+    ]
+    search_fields = ['actor__name']
+    ordering_fields = ['actor__name']
+    filterset_class = CharterAuditFilter
 
     def get_queryset(self):
         return self.queryset
@@ -30,7 +37,7 @@ class SuperadminAuditLogListView(ListAPIView):
     serializer_class = AuditLogSerializer
     filter_backends = [filters.SearchFilter]
     pagination_class = MyCustomPagination
-    search_fields = ['content_type_model']
+    search_fields = ['actor__name']
 
     def get_queryset(self):
         return self.queryset

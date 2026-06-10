@@ -22,7 +22,7 @@ export default function FilterSelector({
       items={[
         {"label": "None", "function": () => setFilter("")},
         ...filters.map((filter) => ({
-          "label": filter,
+          "label": filter?.replace(/^./, str => str.toUpperCase()),
           "function": () => setFilter(filter)
         }))
       ]}

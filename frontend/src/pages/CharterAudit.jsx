@@ -84,8 +84,8 @@ export default function CharterAudit() {
 
   useEffect(() => {
     setRoute("/api/audit-logs");
-    setField("office__name");
-    setFiltersRoute("/api/filters/office");
+    setField("content_type__model");
+    setFiltersRoute("/api/filters/charter-audit");
     setAccessToken(authTokens.access);
   }, [setRoute, setAccessToken, setField, setFiltersRoute, authTokens.access])
 
@@ -105,7 +105,15 @@ export default function CharterAudit() {
   const tableItems = Object.fromEntries(
     Object.entries(items).map(([key, data]) => [
       key,
-      {...Object.fromEntries(
+      { checkbox: (
+        <Checkbox 
+          selectedRows={selectedRows} 
+          setSelectedRows={setSelectedRows}
+          data={data}
+          itemIDs={itemIDs}
+        />
+      ),
+      ...Object.fromEntries(
         Object.entries(data).map(([field, value]) => [
           field,
           (field === "content_type_model") ? (
@@ -123,7 +131,6 @@ export default function CharterAudit() {
     )}])
   )
 
-  console.log(tableItems);
   return(
     <>
       <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
@@ -149,11 +156,6 @@ export default function CharterAudit() {
             >
               Audit Log ng Karta ng Mamamayan
             </h2>
-            <Button 
-              label={"Magdagdag"} 
-              icon={<FaPlus />} 
-              onClick={() => {closeControls(); setShowAdd(true);}}
-            />
 
             <div className="flex flex-col gap-3 w-full sm:flex-row">
               <Search 
@@ -193,17 +195,6 @@ export default function CharterAudit() {
                       id => selectedRows[id] && itemIDs.includes(Number(id))
                     )
                   }
-                  label={"Save Inedit"} 
-                  icon={<FaSave />} 
-                  onClick={() => setConfirmation({label: "Edit ng Posisyon"})}
-                />
-
-                <Button 
-                  disabled={
-                    !Object.keys(selectedRows).some(
-                      id => selectedRows[id] && itemIDs.includes(Number(id))
-                    )
-                  }
                   label={"Tanggalin"} 
                   icon={<FaTrashAlt />} 
                   remove={true}
@@ -219,15 +210,15 @@ export default function CharterAudit() {
           {isTablet(windowWidth) ? (
             <Table 
               headers={[
+                "Bahagi ng Karta",
+                "Aksyon",
+                "Data",
                 <TableHeader 
-                  label={"Bahagi ng Karta"} 
-                  order={"name"}
+                  label={"User"} 
+                  order={"actor__name"}
                   setOrdering={setOrdering} 
                   onClick={closeControls}
                 />, 
-                "Aksyon",
-                "Data",
-                "User",
                 <div className="flex flex-col">
                   <span>Timestamp</span>
                   <span>(mm-dd-yyyy hh:mm:ss)</span>

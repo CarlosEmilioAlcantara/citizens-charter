@@ -1,5 +1,6 @@
 import django_filters
 from django.db.models import Count
+from auditlog.models import LogEntry
 from .models import Sector, CitizensCharter, Office, Position, User
 
 class SectorFilter(django_filters.FilterSet):
@@ -61,3 +62,13 @@ class UserFilter(OfficeNameFilterSet):
     class Meta:
         model = User
         fields = ['office__name']
+
+class CharterAuditFilter(django_filters.FilterSet):
+    model_name = django_filters.CharFilter(
+        field_name='content_type__model',
+        lookup_expr='icontains'
+    )
+
+    class Meta:
+        model = LogEntry
+        fields = ['content_type__model']

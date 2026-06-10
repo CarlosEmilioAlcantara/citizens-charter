@@ -651,6 +651,9 @@ class AuditLogSerializer(serializers.ModelSerializer):
     actor_name = serializers.SerializerMethodField()
     formatted_timestamp = serializers.SerializerMethodField()
 
+    def get_content_type_model(self, obj):
+        return str(obj.content_type.model)
+
     def get_action_name(self, obj):
         if obj.action == 0:
             return "CREATE"
@@ -684,10 +687,6 @@ class AuditLogSerializer(serializers.ModelSerializer):
             'actor_name',
             'formatted_timestamp',
         ]
-
-    def get_content_type_model(self, obj):
-        content_type_model = str(obj.content_type.model)
-        return content_type_model
 
 class CitizensCharterSerializer(serializers.ModelSerializer):
     sector_name = serializers.CharField(source='sector.name', read_only=True)
