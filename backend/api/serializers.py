@@ -1,4 +1,5 @@
 from decimal import Decimal
+from datetime import datetime, timezone, timedelta
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -664,6 +665,15 @@ class AuditLogSerializer(serializers.ModelSerializer):
         user = User.objects.filter(id=obj.actor_id).first()
         return user.name if user else None
 
+    def get_formatted_timestamp(self, obj):
+        dt_format = "%Y-%m-%d %H:%M:%S.%f%z"
+        dt_object = datetime.strptime(str(obj.timestamp), dt_format)
+        utc_dt = dt_object.replace(tzinfo=timezone.utc)
+        utc_8_timezone = timezone(timedelta(hours=8))
+        dt_utc_8 = utc_dt.astimezone(utc_8_timezone)
+        utc_8_format = "%m-%d-%Y %I:%M:%S %p"
+        return dt_utc_8.strftime(utc_8_format)
+
     class Meta:
         model = LogEntry
         fields = [
@@ -672,7 +682,7 @@ class AuditLogSerializer(serializers.ModelSerializer):
             'action_name',
             'changes',
             'actor_name',
-            'timestamp',
+            'formatted_timestamp',
         ]
 
     def get_content_type_model(self, obj):

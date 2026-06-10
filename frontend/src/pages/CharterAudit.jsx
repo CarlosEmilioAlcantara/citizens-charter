@@ -108,9 +108,17 @@ export default function CharterAudit() {
       {...Object.fromEntries(
         Object.entries(data).map(([field, value]) => [
           field,
-          (typeof(value) === "object" && value !== null) ? 
-            JSON.stringify(value) :
+          (field === "content_type_model") ? (
+            value?.replace(/^./, str => str.toUpperCase())
+          ) : (typeof(value) === "object" && value !== null) ? (
+            <TextArea 
+              rowkey={key} 
+              field={field} 
+              value={JSON.stringify(value)}
+            /> 
+          ) : (
             value
+          )
       ])
     )}])
   )
@@ -150,7 +158,7 @@ export default function CharterAudit() {
             <div className="flex flex-col gap-3 w-full sm:flex-row">
               <Search 
                 className="flex-1"
-                placeholder={"Ngalan ng posisyon"} 
+                placeholder={"Ngalan ng user"} 
                 value={search} 
                 setValue={setSearch}
                 onClick={closeControls}
@@ -212,14 +220,18 @@ export default function CharterAudit() {
             <Table 
               headers={[
                 <TableHeader 
-                  label={"Model"} 
+                  label={"Bahagi ng Karta"} 
                   order={"name"}
                   setOrdering={setOrdering} 
                   onClick={closeControls}
                 />, 
                 "Aksyon",
                 "Data",
-                "Timestamp",
+                "User",
+                <div className="flex flex-col">
+                  <span>Timestamp</span>
+                  <span>(mm-dd-yyyy hh:mm:ss)</span>
+                </div>,
               ]}
               body={tableItems}
               hideID={true}

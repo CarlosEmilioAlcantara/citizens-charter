@@ -4,13 +4,13 @@ export default function TextArea({
   rowkey, 
   field, 
   value, 
-  selectedRows, 
-  data,
-  setItems,
+  selectedRows = null, 
+  data = null,
+  setItems = null,
 }) {
   return(
     <textarea
-      disabled={!selectedRows[data.id]}
+      disabled={selectedRows && !selectedRows[data.id]}
       key={`${rowkey}-${field}`}
       value={value}
       onChange={(e) => changeValue(e, setItems, rowkey, field )}
@@ -22,7 +22,10 @@ export default function TextArea({
         rounded-sm
         transition-all
         duration-300
-        ${selectedRows[data.id] ? 'bg-background' : 'bg-popup-header'}
+        ${selectedRows && selectedRows[data.id] ? 
+            'bg-background' : 
+            'bg-popup-header'
+        }
       `}
     />
   );
