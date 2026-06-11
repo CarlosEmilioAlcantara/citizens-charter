@@ -390,6 +390,7 @@ export default function Sectors() {
                         messageSuccess: "Sectors Delete Matagumpay", 
                         messageFail:"Sectors Delete Pumalya",
                       }); 
+                      setSelectedRows({});
 
                       checkResponse(res, setToast) && 
                         refreshList({
@@ -424,6 +425,7 @@ export default function Sectors() {
                         messageSuccess: "Sectors Update Matagumpay",
                         messageFail: "Sectors Update Pumalya",
                       });
+                      setSelectedRows({});
 
                       checkResponse(res, setToast) &&
                         refreshList({

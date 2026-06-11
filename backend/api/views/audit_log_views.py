@@ -47,6 +47,13 @@ class AuditLogListView(ListAPIView):
 class SuperadminAuditLogListView(ListAPIView):
     queryset = LogEntry.objects.filter(
         content_type_id__in=content_types
+    ).annotate(
+        action_name=Case(
+            When(action=LogEntry.Action.CREATE, then=Value("CREATE")),
+            When(action=LogEntry.Action.UPDATE, then=Value("UPDATE")),
+            When(action=LogEntry.Action.DELETE, then=Value("DELETE")),
+            output_field=CharField(),
+        )
     ).order_by('-timestamp')
     permission_classes = [IsAuthenticated, IsSuperuser]
     serializer_class = AuditLogSerializer
@@ -57,7 +64,12 @@ class SuperadminAuditLogListView(ListAPIView):
         DjangoFilterBackend,
     ]
     search_fields = ['actor__name']
-    ordering_fields = ['actor__name', 'content_type__model', 'timestamp']
+    ordering_fields = [
+        'actor__name', 
+        'content_type__model', 
+        'timestamp',
+        'action_name',
+    ]
 
     def get_queryset(self):
         return self.queryset

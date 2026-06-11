@@ -294,6 +294,7 @@ export default function CharterAudit() {
                       messageSuccess: "Charter Audit Log Delete Matagumpay", 
                       messageFail:"Charter Audit Log Delete Pumalya",
                     }); 
+                    setSelectedRows({});
 
                     checkResponse(res, setToast) && 
                       refreshList({

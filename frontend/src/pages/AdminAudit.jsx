@@ -195,8 +195,18 @@ export default function AdminAudit() {
           {isTablet(windowWidth) ? (
             <Table 
               headers={[
-                "Model",
-                "Aksyon",
+                <TableHeader 
+                  label={"Model"} 
+                  order={"content_type__model"}
+                  setOrdering={setOrdering} 
+                  onClick={closeControls}
+                />, 
+                <TableHeader 
+                  label={"Aksyon"} 
+                  order={"action_name"}
+                  setOrdering={setOrdering} 
+                  onClick={closeControls}
+                />, 
                 "Data",
                 <TableHeader 
                   label={"User"} 
@@ -204,8 +214,13 @@ export default function AdminAudit() {
                   setOrdering={setOrdering} 
                   onClick={closeControls}
                 />, 
-                <div className="flex flex-col">
-                  <span>Timestamp</span>
+                <div className="flex flex-col items-center">
+                  <TableHeader 
+                    label={"Timestamp"} 
+                    order={"timestamp"}
+                    setOrdering={setOrdering} 
+                    onClick={closeControls}
+                  />
                   <span>(mm-dd-yyyy hh:mm:ss)</span>
                 </div>,
               ]}
@@ -279,6 +294,7 @@ export default function AdminAudit() {
                       messageSuccess: "Charter Audit Log Delete Matagumpay", 
                       messageFail:"Charter Audit Log Delete Pumalya",
                     }); 
+                    setSelectedRows({});
 
                     checkResponse(res, setToast) && 
                       refreshList({

@@ -445,6 +445,7 @@ export default function Offices() {
                         messageSuccess: "Opisina Delete Matagumpay", 
                         messageFail:"Opisina Delete Pumalya",
                       }); 
+                      setSelectedRows({});
 
                       checkResponse(res, setToast) && 
                         refreshList({
@@ -479,6 +480,7 @@ export default function Offices() {
                         messageSuccess: "Opisina Update Matagumpay",
                         messageFail: "Opisina Update Pumalya",
                       });
+                      setSelectedRows({});
 
                       checkResponse(res, setToast) &&
                         refreshList({

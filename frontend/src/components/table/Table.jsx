@@ -334,9 +334,9 @@ export default function Table({
           border-collapse
         ">
           <tbody>
-            {Object.entries(body).map(([rowKey, rowData]) => (
+            {Object.values(body).map((rowData) => (
               <tr
-                key={rowKey}
+                key={rowData.id}
                 className="
                   border-b
                   border-b-unfocused

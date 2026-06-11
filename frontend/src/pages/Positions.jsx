@@ -371,6 +371,7 @@ export default function Positions() {
                         messageSuccess: "Posisyon Delete Matagumpay", 
                         messageFail:"Posisyon Delete Pumalya",
                       }); 
+                      setSelectedRows({});
 
                       checkResponse(res, setToast) && 
                         refreshList({
@@ -405,6 +406,7 @@ export default function Positions() {
                         messageSuccess: "Posisyon Update Matagumpay",
                         messageFail: "Posisyon Update Pumalya",
                       });
+                      setSelectedRows({});
 
                       checkResponse(res, setToast) &&
                         refreshList({
