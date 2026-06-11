@@ -373,7 +373,14 @@ export default function Offices() {
 
           {showAdd && (
             <AddItem 
-              onClose={() => {setShowAdd(false)}} 
+              onClose={() => {
+                setValues((prev) => {
+                  const reset = Object.keys(prev).map(key => [key, '']);
+                  return Object.fromEntries(reset);
+                });
+                setShowAdd(false);
+                setData({});
+              }} 
               label={"Magdagdag ng Opisina"}
               sector={true}
               setData={setData}

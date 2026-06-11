@@ -300,7 +300,14 @@ export default function Positions() {
 
           {showAdd && (
             <AddItem 
-              onClose={() => {setShowAdd(false)}} 
+              onClose={() => {
+                setValues((prev) => {
+                  const reset = Object.keys(prev).map(key => [key, '']);
+                  return Object.fromEntries(reset);
+                });
+                setShowAdd(false);
+                setData({});
+              }} 
               label={"Magdagdag ng Posisyon"}
               sector={true}
               setData={setData}
@@ -350,6 +357,7 @@ export default function Positions() {
                   return Object.fromEntries(reset);
                 });
                 setShowAdd(false);
+                setData({});
               }}
             />
           )}

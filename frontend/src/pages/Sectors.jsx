@@ -311,7 +311,14 @@ export default function Sectors() {
 
           {showAdd && (
             <AddItem 
-              onClose={() => {setShowAdd(false)}} 
+              onClose={() => {
+                setValues((prev) => {
+                  const reset = Object.keys(prev).map(key => [key, '']);
+                  return Object.fromEntries(reset);
+                });
+                setShowAdd(false);
+                setData({});
+              }} 
               label={"Magdagdag ng Sector"}
               setData={setData}
               inputs={[
@@ -369,6 +376,7 @@ export default function Sectors() {
                   return Object.fromEntries(reset);
                 });
                 setShowAdd(false);
+                setData({});
               }}
             />
           )}
