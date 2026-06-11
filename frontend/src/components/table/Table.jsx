@@ -146,10 +146,10 @@ export default function Table({
               key={index} 
               className={`
                 ${index === 0 && 'w-[168px] pl-[24px]'}
-                ${index === 1 && 'pr-[178px]'}
-                ${index === 2 && 'pr-[152px]'}
-                ${index === 3 && 'pl-[98px]'}
-                ${index === 4 && 'pl-[32px]'}
+                ${index === 1 && 'pr-[178px] xl:w-[128px] xl:pr-[32px]'}
+                ${index === 2 && 'pr-[152px] xl:pr-0 '}
+                ${index === 3 && 'pl-[98px] xl:pl-[184px]'}
+                ${index === 4 && 'pl-[32px] xl:pl-[54px]'}
                 p-1 
                 ${(index !== 0 && index !== 1) && 'text-center'}
               `}
