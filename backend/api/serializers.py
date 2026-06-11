@@ -285,7 +285,7 @@ class UserSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             'password': {'write_only': True},
-            'office': {'read_only': True},
+            # 'office': {'read_only': True},
         }
 
     def create(self, validated_data):
@@ -313,7 +313,15 @@ class UserListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'office_name']
+        fields = [
+            'id', 
+            'name', 
+            'office_name', 
+            'office',
+            'is_staff', 
+            'is_superuser', 
+            'is_active',
+        ]
 
 # class UserBulkUpdateSerializer(serializers.ModelSerializer):
 #     pk = serializers.IntegerField()

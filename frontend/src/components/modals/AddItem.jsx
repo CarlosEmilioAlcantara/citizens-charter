@@ -14,6 +14,7 @@ export default function AddItem({
   addFunc,
   sector = false,
   addUser = false,
+  edit = false,
 }) {
   const [show, handleClose] = useShow({initialValue: false, onClose: onClose});
   const entries = Object.entries(inputs);
@@ -135,7 +136,7 @@ export default function AddItem({
             /> 
 
             <Button 
-              label={"Idagdag"}
+              label={edit ? 'Iedit' : 'Idagdag'}
               onClick={async () => {
                 const data = await addFunc();
                 setData(data);

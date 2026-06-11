@@ -7,6 +7,7 @@ import Button from "../components/buttons/Button";
 import Search from "../components/inputs/Search";
 import Input from "../components/inputs/Input";
 import RoleSelector from "../components/dropdowns/RoleSelector";
+import ActiveSelector from "../components/dropdowns/ActiveSelector";
 import Listbox from "../components/inputs/Listbox";
 import FilterSelector from "../components/table_controls/FilterSelector";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
@@ -106,7 +107,12 @@ export default function Users() {
     setField("office__name");
     setFiltersRoute("/api/filters/office");
     setAccessToken(authTokens.access);
-    setValues((prev) => ({...prev, is_active: true}))
+    setValues((prev) => ({
+      ...prev, 
+      is_staff: false,
+      is_superuser: false,
+      is_active: true,
+    }))
   }, [
     setRoute, 
     setAccessToken, 
@@ -131,7 +137,13 @@ export default function Users() {
       { ...Object.fromEntries(
           Object.entries(data).map(([field, value]) => [
             field,
-            value
+            (field === 'office' ||
+              field === 'is_staff' ||
+              field === 'is_superuser' ||
+              field === 'is_active'
+            ) ? null : (
+              value
+            )
         ])),
         actions: (
           <ButtonGroup buttons={[
@@ -145,6 +157,9 @@ export default function Users() {
                   ...prev,
                   name: data["name"],
                   office: data["office"],
+                  is_staff: data["is_staff"],
+                  is_superuser: data["is_superuser"],
+                  is_active: data["is_active"],
                 }));
                 setPrevOffice(data["office_name"]);
                 setShowAdd(true); 
@@ -307,9 +322,18 @@ export default function Users() {
 
           {showAdd && (
             <AddItem 
-              onClose={() => {setShowAdd(false); setEdit(false)}} 
+              onClose={() => {
+                setValues((prev) => {
+                  const reset = Object.keys(prev).map(key => [key, '']);
+                  return Object.fromEntries(reset);
+                });
+                setShowAdd(false); 
+                setEdit(false);
+                setData({});
+              }} 
               label={`${edit ? 'Magupdate' : 'Magdagdag'} ng User`}
               setData={setData}
+              edit={edit}
               inputs={[
                 <Input 
                   label={"Name"}
@@ -344,8 +368,11 @@ export default function Users() {
                   toggle={toggleRoleSelector}
                   setValues={setValues}
                 />,
-                <RoleSelector 
-                  label={values.is_staff ? 'Admin' : 'User'}
+                <ActiveSelector 
+                  label={values.is_active ? 'Active' : 'Inactive'}
+                  isOpen={activeSelector}
+                  toggle={toggleActiveSelector}
+                  setValues={setValues}
                 />,
                 <Listbox items={listboxItems} prevSelected={prevOffice} />,
               ]}
@@ -387,6 +414,7 @@ export default function Users() {
                 });
                 setShowAdd(false);
                 setEdit(false);
+                setData({});
               }}
             />
           )}
