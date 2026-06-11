@@ -147,7 +147,7 @@ export default function Table({
               className={`
                 ${index === 0 && 'w-[168px] pl-[24px]'}
                 ${index === 1 && 'pr-[178px] xl:w-[128px] xl:pr-[32px]'}
-                ${index === 2 && 'pr-[152px] xl:pr-0 '}
+                ${index === 2 && 'pr-[152px] lg:w-[358px] lg:pl-[94px] xl:pr-0 '}
                 ${index === 3 && 'pl-[98px] xl:pl-[184px]'}
                 ${index === 4 && 'pl-[32px] xl:pl-[54px]'}
                 p-1 
