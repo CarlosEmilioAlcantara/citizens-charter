@@ -146,7 +146,7 @@ export default function Table({
               key={index} 
               className={`
                 ${index === 0 && 'w-[168px] pl-[24px]'}
-                ${index === 1 && 'pr-[188px]'}
+                ${index === 1 && 'pr-[178px]'}
                 ${index === 2 && 'pr-[152px]'}
                 ${index === 3 && 'pl-[98px]'}
                 ${index === 4 && 'pl-[32px]'}

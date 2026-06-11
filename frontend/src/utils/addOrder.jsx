@@ -4,6 +4,13 @@ export const addOrder = (ordering, order, nextState) => {
     label => label !== order && label !== `-${order}`
   );
 
-  filtered.push(nextState ? order : `-${order}`);
+  let newOrder;
+  if (order === "timestamp" || order === "-timestamp") {
+    newOrder = nextState ? "-timestamp" : "timestamp";
+  } else {
+    newOrder = nextState ? order : `-${order}`;
+  }
+
+  filtered.push(newOrder);
   return filtered.join(",");
 }

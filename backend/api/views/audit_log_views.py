@@ -1,3 +1,4 @@
+from django.db.models import Case, When, Value, CharField
 from auditlog.models import LogEntry
 from rest_framework import filters
 from rest_framework.views import APIView
@@ -15,6 +16,13 @@ content_types = [6, 7, 12, 16, 17]
 class AuditLogListView(ListAPIView):
     queryset = LogEntry.objects.exclude(
         content_type_id__in=content_types
+    ).annotate(
+        action_name=Case(
+            When(action=LogEntry.Action.CREATE, then=Value("CREATE")),
+            When(action=LogEntry.Action.UPDATE, then=Value("UPDATE")),
+            When(action=LogEntry.Action.DELETE, then=Value("DELETE")),
+            output_field=CharField(),
+        )
     ).order_by('-timestamp')
     permission_classes = [IsAuthenticated, IsAdminUser]
     serializer_class = AuditLogSerializer
@@ -25,7 +33,12 @@ class AuditLogListView(ListAPIView):
         DjangoFilterBackend,
     ]
     search_fields = ['actor__name']
-    ordering_fields = ['actor__name']
+    ordering_fields = [
+        'actor__name', 
+        'content_type__model', 
+        'timestamp',
+        'action_name',
+    ]
     filterset_class = CharterAuditFilter
 
     def get_queryset(self):
@@ -37,9 +50,14 @@ class SuperadminAuditLogListView(ListAPIView):
     ).order_by('-timestamp')
     permission_classes = [IsAuthenticated, IsSuperuser]
     serializer_class = AuditLogSerializer
-    filter_backends = [filters.SearchFilter]
     pagination_class = MyCustomPagination
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+        DjangoFilterBackend,
+    ]
     search_fields = ['actor__name']
+    ordering_fields = ['actor__name', 'content_type__model', 'timestamp']
 
     def get_queryset(self):
         return self.queryset

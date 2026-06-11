@@ -28,7 +28,7 @@ import { isTablet } from "../utils/isTablet";
 import { checkResponse } from "../utils/checkResponse";
 import { FaTrashAlt, FaSave } from "react-icons/fa";
 
-export default function CharterAudit() {
+export default function AdminAudit() {
   const { authTokens } = useContext(AuthContext);
   const {
     accessToken,
@@ -77,7 +77,7 @@ export default function CharterAudit() {
   const [confirmation, setConfirmation] = useState(null);
 
   useEffect(() => {
-    setRoute("/api/audit-logs");
+    setRoute("/api/admin-audit-logs");
     setField("content_type__model");
     setFiltersRoute("/api/filters/charter-audit");
     setAccessToken(authTokens.access);
@@ -139,7 +139,7 @@ export default function CharterAudit() {
             <h2 
               className="text-sm font-bold md:text-xl"
             >
-              Audit Log ng Karta ng Mamamayan
+              Audit Log ng mga Admin
             </h2>
 
             <div className="flex flex-col gap-3 w-full sm:flex-row">
@@ -195,18 +195,8 @@ export default function CharterAudit() {
           {isTablet(windowWidth) ? (
             <Table 
               headers={[
-                <TableHeader 
-                  label={"Bahagi ng Karta"} 
-                  order={"content_type__model"}
-                  setOrdering={setOrdering} 
-                  onClick={closeControls}
-                />, 
-                <TableHeader 
-                  label={"Aksyon"} 
-                  order={"action_name"}
-                  setOrdering={setOrdering} 
-                  onClick={closeControls}
-                />, 
+                "Model",
+                "Aksyon",
                 "Data",
                 <TableHeader 
                   label={"User"} 
@@ -214,13 +204,8 @@ export default function CharterAudit() {
                   setOrdering={setOrdering} 
                   onClick={closeControls}
                 />, 
-                <div className="flex flex-col items-center">
-                  <TableHeader 
-                    label={"Timestamp"} 
-                    order={"timestamp"}
-                    setOrdering={setOrdering} 
-                    onClick={closeControls}
-                  />
+                <div className="flex flex-col">
+                  <span>Timestamp</span>
                   <span>(mm-dd-yyyy hh:mm:ss)</span>
                 </div>,
               ]}

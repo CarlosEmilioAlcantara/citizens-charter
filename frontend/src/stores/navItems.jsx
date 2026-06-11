@@ -10,7 +10,6 @@ import { IoDocumentTextSharp } from "react-icons/io5";
 import { HiBuildingOffice, HiBuildingOffice2 } from "react-icons/hi2";
 import { ImBooks } from "react-icons/im";
 import { TbWritingFilled } from "react-icons/tb";
-import {  } from "react-icons/fa";
 
 export const navItems = {
   "Dashboard": {
@@ -62,7 +61,7 @@ export const navItems = {
     "superuser": true,
   },
   "Admin Audit": {
-    "link": "/staff-audit",
+    "link": "/admin-audit",
     "icon": <FaClipboardUser />,
     "staff": true,
     "superuser": true,

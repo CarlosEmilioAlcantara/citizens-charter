@@ -9,6 +9,7 @@ import Offices from "./pages/Offices";
 import Positions from "./pages/Positions";
 import Users from "./pages/Users";
 import CharterAudit from "./pages/CharterAudit";
+import AdminAudit from "./pages/AdminAudit";
 import CharterPDFs from "./pages/CharterPDFs";
 import Home from "./pages/Home";
 
@@ -73,6 +74,14 @@ export default function App() {
                 </ProtectedRoute>
               }
               path="/charter-audit"
+            />
+            <Route
+              element={
+                <ProtectedRoute>
+                  <AdminAudit />
+                </ProtectedRoute>
+              }
+              path="/admin-audit"
             />
             <Route
               element={

@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from auditlog.models import LogEntry
 from ..models import Sector, Office, CitizensCharter, Position
 
-
 class AmountFiltersView(APIView):
     def get(self, request):
         return Response(data=[
