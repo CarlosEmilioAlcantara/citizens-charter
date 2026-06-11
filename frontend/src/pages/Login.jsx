@@ -73,7 +73,7 @@ export default function Login() {
 
           <Input 
             label={"Password"}
-            warning={data?.password}
+            warning={data?.password || [data?.detail]}
             type={"password"} 
             placeholder={"Password..."}
             name={"password"}

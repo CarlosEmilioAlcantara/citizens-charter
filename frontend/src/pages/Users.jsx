@@ -6,6 +6,7 @@ import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
 import Search from "../components/inputs/Search";
 import Input from "../components/inputs/Input";
+import RoleSelector from "../components/dropdowns/RoleSelector";
 import Listbox from "../components/inputs/Listbox";
 import FilterSelector from "../components/table_controls/FilterSelector";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
@@ -23,6 +24,7 @@ import useValues from "../hooks/useValues";
 import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
+import useUsersDropdowns from "../hooks/useUsersDropdowns";
 import useWindowWidth from "../hooks/useWindowWidth";
 import useListInfo from "../hooks/useListInfo";
 import refreshList from "../utils/refreshList";
@@ -67,6 +69,12 @@ export default function Users() {
     toggleFilterSelector,
   } = useTableControls();
   const {
+    roleSelector, 
+    toggleRoleSelector, 
+    activeSelector, 
+    toggleActiveSelector,
+  } = useUsersDropdowns();
+  const {
     toast, 
     setToast, 
     loading, 
@@ -80,7 +88,12 @@ export default function Users() {
   const [prevOffice, setPrevOffice] = useState(null);
   const [confirmation, setConfirmation] = useState(null);
   const {values, setValues, data, setData} = useValues([ 
-    "name", "office", "password"
+    "name", 
+    "office", 
+    "password", 
+    "is_staff", 
+    "is_superuser", 
+    "is_active",
   ])
   const [user, setUser] = useState(null);
   const [listInfo] = useListInfo({
@@ -93,7 +106,15 @@ export default function Users() {
     setField("office__name");
     setFiltersRoute("/api/filters/office");
     setAccessToken(authTokens.access);
-  }, [setRoute, setAccessToken, setField, setFiltersRoute, authTokens.access])
+    setValues((prev) => ({...prev, is_active: true}))
+  }, [
+    setRoute, 
+    setAccessToken, 
+    setField, 
+    setFiltersRoute, 
+    setValues,
+    authTokens.access,
+  ])
 
   const listboxItems = Object.entries(listInfo).map(([_, data]) => ({
     ...data,
@@ -310,6 +331,21 @@ export default function Users() {
                   value={values.password}
                   setValue={setValues}
                   small={true}
+                />,
+                <RoleSelector 
+                  label={
+                    (values.is_staff && values.is_superuser) ?
+                      'Superadmin' :
+                    (values.is_staff) ? 
+                      'Admin' : 
+                      'User'
+                  }
+                  isOpen={roleSelector}
+                  toggle={toggleRoleSelector}
+                  setValues={setValues}
+                />,
+                <RoleSelector 
+                  label={values.is_staff ? 'Admin' : 'User'}
                 />,
                 <Listbox items={listboxItems} prevSelected={prevOffice} />,
               ]}

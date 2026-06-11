@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import ReactDom from 'react-dom';
 import { FaXmark } from 'react-icons/fa6';
 import { FaPlus } from 'react-icons/fa';
@@ -14,11 +13,17 @@ export default function AddItem({
   setData,
   addFunc,
   sector = false,
+  addUser = false,
 }) {
   const [show, handleClose] = useShow({initialValue: false, onClose: onClose});
+  const entries = Object.entries(inputs);
+
+  const firstInput = addUser ? entries[0] : null;
+  const remainingInputs = addUser ? entries.slice(1) : entries;
   const rows = []
-  for (let i = 0; i < Object.entries(inputs).length; i += 2) {
-    rows.push(Object.entries(inputs).slice(i, i + 2));
+
+  for (let i = 0; i < remainingInputs.length; i += 2) {
+    rows.push(remainingInputs.slice(i, i + 2));
   }
 
   return ReactDom.createPortal(
@@ -91,6 +96,11 @@ export default function AddItem({
             ${sector ? 'w-[300px] pb-4' : 'w-[600px]'} 
             mt-3
           `}>
+            {addUser && firstInput && (
+              <div className="mb-2">
+                {firstInput[1]}
+              </div>
+            )}
             {rows.map((row, index) => (
               <div 
                 key={index} 

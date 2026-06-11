@@ -34,19 +34,19 @@ export const navItems = {
     "link": "/sectors",
     "icon": <HiBuildingOffice2 />,
     "staff": true,
-    "superuser": true,
+    "superuser": false,
   },
   "Offices": {
     "link": "/offices",
     "icon": <HiBuildingOffice />,
     "staff": true,
-    "superuser": true,
+    "superuser": false,
   },
   "Positions": {
     "link": "/positions",
     "icon": <FaAddressBook />,
     "staff": true,
-    "superuser": true,
+    "superuser": false,
   },
   "Users": {
     "link": "/users",
@@ -58,7 +58,7 @@ export const navItems = {
     "link": "/charter-audit",
     "icon": <TbWritingFilled />,
     "staff": true,
-    "superuser": true,
+    "superuser": false,
   },
   "Admin Audit": {
     "link": "/admin-audit",

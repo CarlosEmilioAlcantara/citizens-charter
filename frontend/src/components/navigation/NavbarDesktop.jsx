@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
+import { FaChevronRight, FaChevronLeft, FaRegUserCircle } from "react-icons/fa";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 
 export default function NavbarDesktop({ 
@@ -7,7 +7,7 @@ export default function NavbarDesktop({
   toggle, 
   links, 
   user, 
-  logoutUser 
+  logoutUser, 
 }) {
   return(
     <div 
@@ -74,7 +74,7 @@ export default function NavbarDesktop({
             text-nowrap
           `}>
             {Object.entries(links).map(([key, value]) => (
-              !value.staff && !value.superuser && (
+              (!value.staff && !value.superuser) && (
                 <li key={key}>
                   <Link 
                     to={value.link}
@@ -112,8 +112,8 @@ export default function NavbarDesktop({
             )))}
 
             {Object.entries(links).map(([key, value]) => (
-              (user.is_staff && user.is_superuser) && 
-              (!user.is_superuser && !value.superuser) && (
+              (value.staff && !value.superuser) &&
+              (user.is_staff || user.is_superuser) && (
                 <li key={key}>
                   <Link 
                     to={value.link}
@@ -151,8 +151,8 @@ export default function NavbarDesktop({
             )))}
 
             {Object.entries(links).map(([key, value]) => (
-              (user.is_staff && user.is_superuser) && 
-              (user.is_superuser && value.superuser) && (
+              (value.staff && value.superuser) &&
+              (user.is_staff && user.is_superuser) && (
                 <li key={key}>
                   <Link 
                     to={value.link}
@@ -219,7 +219,23 @@ export default function NavbarDesktop({
           </ul>
         </div>
 
-        <div className="flex flex-col bg-accent text-background">
+        <div className="flex flex-col pt-2 bg-accent text-background">
+          <div 
+            className={`
+              flex 
+              items-center 
+              justify-center 
+              gap-1 
+              p-1 
+              text-xs
+              transition-all
+              duration-300
+              ${state ? 'opacity-100' : 'opacity-0'}
+            `}
+          >
+            <span><FaRegUserCircle /></span>
+            <span>{user.name}</span>
+          </div>
           <Link to="/logout"
             onClick={logoutUser} 
             className="
