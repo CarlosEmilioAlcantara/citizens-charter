@@ -70,6 +70,7 @@ export default function DataBackup() {
               setSelected={setSelected}
             />
             <Button 
+              disabled={selected.length < 1}
               icon={<FaDownload />} 
               label={"I-download"} 
               onClick={() => {
