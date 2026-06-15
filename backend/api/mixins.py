@@ -1,3 +1,7 @@
+import io
+import csv
+import zipfile
+from django.apps import apps
 from django.db import transaction
 from django.http import StreamingHttpResponse
 from rest_framework import status
@@ -6,6 +10,26 @@ from auditlog.models import LogEntry
 from auditlog.context import disable_auditlog
 from .utils.log_utils import serialize_value
 from .utils.content_type_utils import get_content_type_id
+from .models import (
+    Sector,
+    Office,
+    StepPosition,
+    User,
+    Position,
+    Service,
+    Requirement,
+    Step,
+)
+from .admin import (
+    SectorResource,
+    OfficeResource,
+    StepPositionResource, 
+    UserResource,
+    PositionResource,
+    ServiceResource,
+    RequirementResource,
+    StepResource,
+)
 
 class BulkDeleteMixin:
     service_child = False
@@ -165,5 +189,132 @@ class ExportCsvMixin:
             content_type='text/csv',
             headers={
                 'Content-Disposition': f"attachment; filename={self.model}.csv"
+            }
+        )
+
+class ExportMultipleCsvMixin:
+    def export_csvs(self, models, csvs):
+        for model in models:
+            try:
+                model_class = apps.get_model('api', model)
+
+                match model:
+                    case 'Sector':
+                        queryset = Sector.objects.all()
+                        resource = SectorResource()
+                        dataset = resource.export(queryset)
+                        csvs[model] = dataset
+                    case 'Office':
+                        queryset = Office.objects.all()
+                        resource = OfficeResource()
+                        dataset = resource.export(queryset)
+                        csvs[model] = dataset
+                    case 'User':
+                        queryset = User.objects.all()
+                        resource = UserResource()
+                        dataset = resource.export(queryset)
+                        csvs[model] = dataset
+                    case 'Position':
+                        queryset = Position.objects.all()
+                        resource = PositionResource()
+                        dataset = resource.export(queryset)
+                        csvs[model] = dataset
+                    case 'Service':
+                        queryset = Service.objects.all()
+                        resource = ServiceResource()
+                        dataset = resource.export(queryset)
+                        csvs[model] = dataset
+                    case 'Requirement':
+                        queryset = Requirement.objects.all()
+                        resource = RequirementResource()
+                        dataset = resource.export(queryset)
+                        csvs[model] = dataset
+                    case 'Step':
+                        queryset = Step.objects.all()
+                        resource = StepResource()
+                        dataset = resource.export(queryset)
+                        csvs[model] = dataset
+                    case 'StepPosition':
+                        queryset = StepPosition.objects.all()
+                        resource = StepPositionResource()
+                        dataset = resource.export(queryset)
+                        csvs[model] = dataset
+            except LookupError:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for model in models:
+                csv_buffer = io.StringIO()
+                writer = csv.writer(csv_buffer)
+
+                match model:
+                    case 'Sector':
+                        field_names = [
+                            field.column
+                            for field in Sector._meta.get_fields()
+                            if hasattr(field, 'column')
+                        ]
+                        writer.writerow(field_names)
+                    case 'Office':
+                        field_names = [
+                            field.column
+                            for field in Office._meta.get_fields()
+                            if hasattr(field, 'column')
+                        ]
+                        writer.writerow(field_names)
+                    case 'User':
+                        field_names = [
+                            field.column
+                            for field in User._meta.get_fields()
+                            if hasattr(field, 'column')
+                        ]
+                        writer.writerow(field_names)
+                    case 'Position':
+                        field_names = [
+                            field.column
+                            for field in Position._meta.get_fields()
+                            if hasattr(field, 'column')
+                        ]
+                        writer.writerow(field_names)
+                    case 'Service':
+                        field_names = [
+                            field.column
+                            for field in Service._meta.get_fields()
+                            if hasattr(field, 'column')
+                        ]
+                        writer.writerow(field_names)
+                    case 'Requirement':
+                        field_names = [
+                            field.column
+                            for field in Requirement._meta.get_fields()
+                            if hasattr(field, 'column')
+                        ]
+                        writer.writerow(field_names)
+                    case 'Step':
+                        field_names = [
+                            field.column
+                            for field in Step._meta.get_fields()
+                            if hasattr(field, 'column')
+                        ]
+                        writer.writerow(field_names)
+                    case 'StepPosition':
+                        field_names = [
+                            field.column
+                            for field in StepPosition._meta.get_fields()
+                            if hasattr(field, 'column')
+                        ]
+                        writer.writerow(field_names)
+
+                writer.writerows(csvs[model])
+                zip_file.writestr(f"{model}.csv", csv_buffer.getvalue())
+        zip_buffer.seek(0)
+
+        return StreamingHttpResponse(
+            zip_buffer,
+            content_type='application/zip',
+            headers={
+                'Content-Disposition': 
+                    f"attachment; filename=citizens-charter-data-backup.zip"
             }
         )

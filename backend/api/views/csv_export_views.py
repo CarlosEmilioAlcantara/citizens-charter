@@ -21,7 +21,7 @@ from ..admin import (
     StepResource,
 )
 from ..permissions import IsSuperuser
-from ..mixins import ExportCsvMixin
+from ..mixins import ExportCsvMixin, ExportMultipleCsvMixin
 
 class ExportSectorCsvView(ExportCsvMixin, APIView):
     model = 'sector'
@@ -102,3 +102,11 @@ class ExportStepPositionCsvView(ExportCsvMixin, APIView):
 
     def get_resource(self):
         return StepPositionResource()
+
+class ExportMultipleCsvView(ExportMultipleCsvMixin, APIView):
+    permission_classes = [IsAuthenticated, IsSuperuser]
+
+    def post(self, request):
+        csvs = {}
+        models = request.data.get('models')
+        return self.export_csvs(models, csvs)
