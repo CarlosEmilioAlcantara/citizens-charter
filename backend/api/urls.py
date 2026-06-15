@@ -65,6 +65,7 @@ from .views.csv_export_views import (
     ExportStepCsvView,
     ExportStepPositionCsvView,
     ExportMultipleCsvView,
+    GetModelsView,
 )
 from .views.pdf_export_views import (
     CreateCitizensCharterSinglePdfView,
@@ -271,6 +272,11 @@ urlpatterns = [
         'csv/multiple', 
         ExportMultipleCsvView.as_view(), 
         name='export_multiple_csv'
+    ),
+    path(
+        'model-list', 
+        GetModelsView.as_view(), 
+        name='fetch_model_list'
     ),
 
     # Pdf urls

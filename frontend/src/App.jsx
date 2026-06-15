@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Charter from "./pages/Charter";
@@ -11,7 +12,7 @@ import Users from "./pages/Users";
 import CharterAudit from "./pages/CharterAudit";
 import AdminAudit from "./pages/AdminAudit";
 import CharterPDFs from "./pages/CharterPDFs";
-import Home from "./pages/Home";
+import DataBackup from "./pages/DataBackup";
 
 export default function App() {
   return (
@@ -90,6 +91,14 @@ export default function App() {
                 </ProtectedRoute>
               }
               path="/charter-pdfs"
+            />
+            <Route
+              element={
+                <ProtectedRoute>
+                  <DataBackup />
+                </ProtectedRoute>
+              }
+              path="/data-backup"
             />
 
             <Route element={<Login />} path="/login" />

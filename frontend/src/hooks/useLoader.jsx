@@ -14,12 +14,15 @@ export default function useLoader() {
     authTokens, 
     messageSuccess, 
     messageFail,
+    download = "",
   }) => { 
     setLoading(true);
     try {
       const res = await (
         id ? 
           api(authTokens, id) : 
+        download ? 
+          api(route, method, authTokens, body, download) :
         method ?
           api(route, method, authTokens, body) :
         api(authTokens)

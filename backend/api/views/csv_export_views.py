@@ -1,3 +1,6 @@
+from django.apps import apps
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from ..models import (
@@ -108,5 +111,17 @@ class ExportMultipleCsvView(ExportMultipleCsvMixin, APIView):
 
     def post(self, request):
         csvs = {}
-        models = request.data.get('models')
+        models = request.data
         return self.export_csvs(models, csvs)
+
+class GetModelsView(APIView):
+    permission_classes = [IsAuthenticated, IsSuperuser]
+
+    def get(self, request):
+        app_config = apps.get_app_config('api')
+        models = [
+            model.__name__
+            for model in app_config.get_models()
+            if model.__name__ != 'CitizensCharter'
+        ]
+        return Response(data=models, status=status.HTTP_200_OK)

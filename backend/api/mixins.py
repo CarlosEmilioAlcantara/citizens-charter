@@ -3,7 +3,7 @@ import csv
 import zipfile
 from django.apps import apps
 from django.db import transaction
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, HttpResponse
 from rest_framework import status
 from rest_framework.response import Response
 from auditlog.models import LogEntry
@@ -310,8 +310,9 @@ class ExportMultipleCsvMixin:
                 zip_file.writestr(f"{model}.csv", csv_buffer.getvalue())
         zip_buffer.seek(0)
 
-        return StreamingHttpResponse(
-            zip_buffer,
+        print(zip_buffer.getbuffer().nbytes)
+        return HttpResponse(
+            zip_buffer.getvalue(),
             content_type='application/zip',
             headers={
                 'Content-Disposition': 
