@@ -396,7 +396,7 @@ export default function Users() {
 
                 refreshList({
                   handlePaging: handlePaging,
-                  acessToken: accessToken,
+                  accessToken: accessToken,
                   route: route,
                   currentPage: currentPage,
                   setCurrentPage: setCurrentPage,
@@ -439,7 +439,7 @@ export default function Users() {
                       checkResponse(res, setToast) && 
                         refreshList({
                           handlePaging: handlePaging,
-                          acessToken: accessToken,
+                          accessToken: accessToken,
                           route: route,
                           currentPage: currentPage,
                           setCurrentPage: setCurrentPage,
@@ -468,7 +468,7 @@ export default function Users() {
                       checkResponse(res, setToast) &&
                         refreshList({
                           handlePaging: handlePaging,
-                          acessToken: accessToken,
+                          accessToken: accessToken,
                           route: route,
                           currentPage: currentPage,
                           setCurrentPage: setCurrentPage,

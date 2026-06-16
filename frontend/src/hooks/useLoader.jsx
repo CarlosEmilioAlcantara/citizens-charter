@@ -15,9 +15,20 @@ export default function useLoader() {
     messageSuccess, 
     messageFail,
     download = "",
+    generateCharter = false,
   }) => { 
     setLoading(true);
     try {
+      if (generateCharter) {
+        const result = await api(authTokens, route, method)
+        const { res, url } = result;
+
+        setToast({ 
+          success: res.ok, 
+          message: `${res.ok && messageSuccess || messageFail}` 
+        });
+        return { res, url }
+      }
       const res = await (
         id ? 
           api(authTokens, id) : 

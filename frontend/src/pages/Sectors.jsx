@@ -359,7 +359,7 @@ export default function Sectors() {
 
                 refreshList({
                   handlePaging: handlePaging,
-                  acessToken: accessToken,
+                  accessToken: accessToken,
                   route: route,
                   currentPage: currentPage,
                   setCurrentPage: setCurrentPage,
@@ -403,7 +403,7 @@ export default function Sectors() {
                       checkResponse(res, setToast) && 
                         refreshList({
                           handlePaging: handlePaging,
-                          acessToken: accessToken,
+                          accessToken: accessToken,
                           route: route,
                           currentPage: currentPage,
                           setCurrentPage: setCurrentPage,
@@ -438,7 +438,7 @@ export default function Sectors() {
                       checkResponse(res, setToast) &&
                         refreshList({
                           handlePaging: handlePaging,
-                          acessToken: accessToken,
+                          accessToken: accessToken,
                           route: route,
                           currentPage: currentPage,
                           setCurrentPage: setCurrentPage,

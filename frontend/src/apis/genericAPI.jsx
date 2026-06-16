@@ -26,9 +26,9 @@ export const genericAPI = async (
       link.download = download;
       link.click();
       URL.revokeObjectURL(link.href);
-    } 
-    return res;
-    } catch (err) {
+    }
+    return res; 
+  } catch (err) {
     console.error(err);
   }
 }

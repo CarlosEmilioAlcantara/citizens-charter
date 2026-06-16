@@ -299,7 +299,7 @@ export default function CharterAudit() {
                     checkResponse(res, setToast) && 
                       refreshList({
                         handlePaging: handlePaging,
-                        acessToken: accessToken,
+                        accessToken: accessToken,
                         route: route,
                         currentPage: currentPage,
                         setCurrentPage: setCurrentPage,

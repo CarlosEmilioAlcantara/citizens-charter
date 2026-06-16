@@ -414,7 +414,7 @@ export default function Offices() {
 
                 refreshList({
                   handlePaging: handlePaging,
-                  acessToken: accessToken,
+                  accessToken: accessToken,
                   route: route,
                   currentPage: currentPage,
                   setCurrentPage: setCurrentPage,
@@ -457,7 +457,7 @@ export default function Offices() {
                       checkResponse(res, setToast) && 
                         refreshList({
                           handlePaging: handlePaging,
-                          acessToken: accessToken,
+                          accessToken: accessToken,
                           route: route,
                           currentPage: currentPage,
                           setCurrentPage: setCurrentPage,
@@ -492,7 +492,7 @@ export default function Offices() {
                       checkResponse(res, setToast) &&
                         refreshList({
                           handlePaging: handlePaging,
-                          acessToken: accessToken,
+                          accessToken: accessToken,
                           route: route,
                           currentPage: currentPage,
                           setCurrentPage: setCurrentPage,

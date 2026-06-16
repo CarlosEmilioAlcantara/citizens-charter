@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
+import { genericAPI } from "../apis/genericAPI";
+import { generateCharterAPI } from "../apis/generateCharterAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
@@ -23,7 +25,6 @@ import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useWindowWidth from "../hooks/useWindowWidth";
 import refreshList from "../utils/refreshList";
-import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
 import { FaEye, FaFileDownload, FaPrint, FaTrashAlt, FaPlus } from "react-icons/fa";
 import { TbReload } from "react-icons/tb";
@@ -65,7 +66,14 @@ export default function Charter() {
     toggleFilterSelector,
     toggleDropdown,
   } = useTableControls();
-  const {toast, setToast, loading, handleLoading} = useLoader();
+  const {
+    toast, 
+    setToast, 
+    loading, 
+    handleLoading,
+    loadingMessage,
+    setLoadingMessage,
+  } = useLoader();
   const [windowWidth] = useWindowWidth();
   const [url, setUrl] = useState("");
 
@@ -250,7 +258,7 @@ export default function Charter() {
 
   return(
     <>
-      <Loader show={loading} message={"Naglilikha ng mga PDFs"} />
+      <Loader show={loading} message={loadingMessage} />
       <Navigation />
       <div className="
         flex 
@@ -303,27 +311,32 @@ export default function Charter() {
                 label={"Lumikha ng Karta"} 
                 icon={<FaPrint />} 
                 onClick={async () => {
-                  // closeControls();
+                  closeControls();
 
-                  // await handleLoading({
-                  //   api: generateCharterPDFs, 
-                  //   authTokens: authTokens, 
-                  //   messageSuccess: "PDFs Nalikha", 
-                  //   messageFail:"PDFs Paglikha Fail",
-                  // }); 
+                  setLoadingMessage("Naglilikha ng Karta");
+                  setUrl(await handleLoading({
+                    api: generateCharterAPI, 
+                    route: "/api/pdf/citizens-charter",
+                    authTokens: authTokens, 
+                    method: "GET",
+                    messageSuccess: "Karta Nalikha", 
+                    messageFail:"Karta Paglikha Fail",
+                    generateCharter: true,
+                  }))
 
-                  // refreshList({
-                  //   handlePaging: handlePaging,
-                  //   route: route,
-                  //   currentPage: currentPage,
-                  //   setCurrentPage: setCurrentPage,
-                  //   search: search,
-                  //   pageSize: pageSize,
-                  //   ordering: ordering,
-                  //   field: field,
-                  //   filter: filter,
-                  //   timeout: 300,
-                  // });
+                  refreshList({
+                    handlePaging: handlePaging,
+                    accessToken: accessToken,
+                    route: route,
+                    currentPage: currentPage,
+                    setCurrentPage: setCurrentPage,
+                    search: search,
+                    pageSize: pageSize,
+                    ordering: ordering,
+                    field: field,
+                    filter: filter,
+                    timeout: 300,
+                  });
                 }}
               />
               <Button 
@@ -480,7 +493,7 @@ export default function Charter() {
           </div>
 
           {url && (
-            <PDFViewer url={url} onClose={() => {setUrl(null)}}/>
+            <PDFViewer url={url.url} onClose={() => {setUrl(null)}}/>
           )}
           {toast && (
             <Alert 

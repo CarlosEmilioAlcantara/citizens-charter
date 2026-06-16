@@ -1,6 +1,6 @@
 export default function refreshList({
   handlePaging, 
-  acessToken,
+  accessToken,
   route, 
   currentPage,
   setCurrentPage,
@@ -15,23 +15,23 @@ export default function refreshList({
     let status;
     status = await handlePaging(
       `${route}?page=${currentPage}&search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`,
-      acessToken
+      accessToken
     );
     if (!status) {
       status = await handlePaging(
         `${route}?page=${currentPage - 1}&search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`,
-        acessToken
+        accessToken
       );
 
       if (!status) {
         handlePaging(
           `${route}?search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`,
-          acessToken
+          accessToken
         );
       } else {
         handlePaging(
           `${route}?page=${currentPage - 1}&search=${search}&page_size=${pageSize}&ordering=${ordering}&${field}=${filter}`,
-          acessToken
+          accessToken
         );
         setCurrentPage(currentPage - 1);
       }

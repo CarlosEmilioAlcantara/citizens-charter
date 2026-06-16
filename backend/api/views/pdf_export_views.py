@@ -137,7 +137,7 @@ class ExportCitizensCharterWholeView(APIView):
             content_type='application/pdf',
             headers={
                 'Content-Disposition': 
-                    f"attachment; filename={office_name}-report.pdf"
+                    f"inline; filename={office_name}-report.pdf"
             }
         )
 
