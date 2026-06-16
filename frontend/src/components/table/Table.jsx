@@ -297,7 +297,7 @@ export default function Table({
         }
 
         const isNumberColumn = key === "number"
-        const isTransactionColumn = key === "transaction"
+        const isTransactionColumn = key === "formatted_transaction"
         const isClassificationColumn = key === "formatted_classification_types"
         const isActionColumn = key === "actions"
 
@@ -309,7 +309,7 @@ export default function Table({
                   ${isNumberColumn ?
                       'w-[76px] text-center' :
                     isTransactionColumn ?
-                      'pr-[24px] text-center' :
+                      'text-center' :
                     isClassificationColumn ?
                       'pr-[52px] text-center' :
                     isActionColumn ?

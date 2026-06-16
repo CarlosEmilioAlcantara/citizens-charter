@@ -428,7 +428,16 @@ class ServiceSerializer(serializers.ModelSerializer):
         return data
 
 class ServiceListSerializer(serializers.ModelSerializer):
+    formatted_transaction = serializers.SerializerMethodField()
     formatted_classification_types = serializers.SerializerMethodField()
+
+    def get_formatted_transaction(self, obj):
+        if obj.transaction == "simple":
+            return "Simple"
+        elif obj.transaction == "complicated":
+            return "Komplikado"
+        elif obj.transaction == "technical":
+            return "Malubhang Teknikal"
 
     def get_formatted_classification_types(self, obj):
         return ",".join(item.upper() for item in obj.classification_types)
@@ -439,7 +448,7 @@ class ServiceListSerializer(serializers.ModelSerializer):
             'number',
             'name', 
             'description', 
-            'transaction', 
+            'formatted_transaction', 
             'formatted_classification_types',
             'availers',
         ]
