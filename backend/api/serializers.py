@@ -428,6 +428,11 @@ class ServiceSerializer(serializers.ModelSerializer):
         return data
 
 class ServiceListSerializer(serializers.ModelSerializer):
+    formatted_classification_types = serializers.SerializerMethodField()
+
+    def get_formatted_classification_types(self, obj):
+        return ",".join(item.upper() for item in obj.classification_types)
+
     class Meta:
         model = Service
         fields = [
@@ -435,7 +440,7 @@ class ServiceListSerializer(serializers.ModelSerializer):
             'name', 
             'description', 
             'transaction', 
-            'classification_types',
+            'formatted_classification_types',
             'availers',
         ]
 

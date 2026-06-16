@@ -9,6 +9,7 @@ export default function Table({
   officeList = false,
   userList = false,
   charterAudit = false,
+  serviceList = false,
 }) {
   const renderHeaders = () => {
     if (charterList) {
@@ -161,6 +162,29 @@ export default function Table({
       )
     }
 
+    if (serviceList) {
+      return (
+        <tr>
+          {headers.map((header, index) => (
+            <th 
+              key={index} 
+              className={`p-1
+                ${index === 0 && 'w-[24px] pl-[24px]'}
+                ${(index === 1 || index === 2) && 
+                    'pl-[86px]'
+                }
+                ${index === 3 && 'pr-[15px] text-end'}
+                ${index === 5 && 'pr-[32px] text-end'}
+                ${index === 6 && 'w-[124px] pr-[30px] text-end'}
+              `}
+            >
+              {header}
+            </th>
+          ))}
+        </tr>
+      )
+    }
+
     return (
       <tr>
         {headers.map((header, index) => (
@@ -252,6 +276,46 @@ export default function Table({
                   isChanges ?
                     'w-[500px]' :
                     'text-center wrap-break-word'
+                }
+              `}
+            >
+              {value}
+            </td>
+          )
+        );
+      });
+    }
+
+    if (serviceList) {
+      return Object.entries(data).map(([key, value]) => {
+        if (key === "id") {
+          return (
+            <td key={key} className="hidden">
+              {value}
+            </td>
+          );
+        }
+
+        const isNumberColumn = key === "number"
+        const isTransactionColumn = key === "transaction"
+        const isClassificationColumn = key === "formatted_classification_types"
+        const isActionColumn = key === "actions"
+
+        return (
+          value !== null && (
+            <td 
+              key={key}
+              className={`p-1 align-middle 
+                  ${isNumberColumn ?
+                      'w-[76px] text-center' :
+                    isTransactionColumn ?
+                      'pr-[24px] text-center' :
+                    isClassificationColumn ?
+                      'pr-[52px] text-center' :
+                    isActionColumn ?
+                      'w-[108px] text-end' :
+                      ''
+                  }
                 }
               `}
             >

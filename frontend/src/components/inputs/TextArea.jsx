@@ -13,7 +13,7 @@ export default function TextArea({
       disabled={selectedRows && !selectedRows[data.id]}
       key={`${rowkey}-${field}`}
       value={value}
-      onChange={(e) => changeValue(e, setItems, rowkey, field )}
+      onChange={(e) => changeValue(e, setItems, rowkey, field)}
       className={`
         w-[98%] 
         p-2 
@@ -22,6 +22,11 @@ export default function TextArea({
         rounded-sm
         transition-all
         duration-300
+        [&::-webkit-scrollbar]:w-1
+        [&::-webkit-scrollbar-track]:bg-transparent
+        [&::-webkit-scrollbar-track]:rounded-full
+        [&::-webkit-scrollbar-thumb]:rounded-full
+        hover:[&::-webkit-scrollbar-thumb]:bg-unfocused
         ${selectedRows && selectedRows[data.id] ? 
             'bg-background' : 
             'bg-popup-header'

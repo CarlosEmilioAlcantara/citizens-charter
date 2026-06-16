@@ -4,6 +4,7 @@ import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
 import Search from "../components/inputs/Search";
+import TextArea from "../components/inputs/TextArea";
 import FilterSelector from "../components/table_controls/FilterSelector";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import TableHeader from "../components/table/TableHeader";
@@ -73,156 +74,179 @@ export default function Charter() {
     setAccessToken(authTokens.access);
   }, [setRoute, setAccessToken, authTokens.access]);
 
-  isTablet(windowWidth) && Object.entries(items).map(([key, data]) => {
-    data["actions"] = (
-      <Dropdown 
-        key={key} 
-        label={"Aksyon"} 
-        isOpen={dropdown === key}
-        toggle={() => toggleDropdown(key)}
-        items={[
-          {
-            "label": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
-            // "function": () => {
-            //   isDesktop(windowWidth) ? 
-            //   setUrl(data["pdf"]) : window.open(data["pdf"], "_blank");
-            // },
-          },
-          {
-            "label": <DropdownItem 
-              icon={<FaFileDownload />} 
-              label={"Download PDF"}
-            />, 
-            // "function": () => downloadCharterPDF(data["id"]),
-          },
-          {
-            "label": <DropdownItem 
-              icon={<TbReload />} 
-              label={"Regenerate PDF"}
-            />, 
-            // "function": async () => { 
-            //   await handleLoading({
-            //     api: regenerateCharterPDF,
-            //     id: data["office"],
-            //     authTokens: authTokens,
-            //     messageSuccess: "PDF Regenerated",
-            //     messageFail: "PDF Regeneration Failed",
-            //   }); 
-            //   refreshList({
-            //     handlePaging: handlePaging,
-            //     route: route,
-            //     currentPage: currentPage,
-            //     setCurrentPage: setCurrentPage,
-            //     search: search,
-            //     pageSize: pageSize,
-            //     ordering: ordering,
-            //     field: field,
-            //     filter: filter,
-            //     timeout: 300,
-            //   });
-            // },
-          },
-          {
-            "label": <DropdownItem 
-              icon={<FaTrashAlt />} 
-              label={"Delete PDF"}
-              remove={true}
-            />, 
-            // "function": async () => { 
-            //   await handleLoading({
-            //     api: deleteCharterPDF,
-            //     id: data["id"],
-            //     authTokens: authTokens,
-            //     messageSuccess: "PDF Deleted",
-            //     messageFail: "PDF Deletion Failed",
-            //   }) 
-            //   refreshList({
-            //     handlePaging: handlePaging,
-            //     route: route,
-            //     currentPage: currentPage,
-            //     setCurrentPage: setCurrentPage,
-            //     search: search,
-            //     pageSize: pageSize,
-            //     ordering: ordering,
-            //     field: field,
-            //     filter: filter,
-            //     timeout: 300,
-            //   });
-            // },
-          },
-        ]}
-    />);
-  }) || Object.entries(items).map(([key, data]) => {
-    data["actions"] = (
-      <ButtonGroup key={key} buttons={[
-        <Button 
-          label={"Tingnan PDF"} 
-          icon={<FaEye />} 
-          full={true} 
-          // onClick={() => window.open(data["pdf"], "_blank")}
-        />,
-        <Button 
-          label={"Download PDF"} 
-          icon={<FaFileDownload />} 
-          full={true} 
-          // onClick={() => downloadCharterPDF(data["id"])}
-        />,
-        <Button 
-          label={"Regenerate PDF"} 
-          icon={<TbReload />} 
-          full={true} 
-          // onClick={async () => { 
-          //   await handleLoading({
-          //     api: regenerateCharterPDF,
-          //     id: data["office"],
-          //     authTokens: authTokens,
-          //     messageSuccess: "PDF Regenerated",
-          //     messageFail: "PDF Regeneration Failed",
-          //   }); 
-          //   refreshList({
-          //     handlePaging: handlePaging,
-          //     route: route,
-          //     currentPage: currentPage,
-          //     setCurrentPage: setCurrentPage,
-          //     search: search,
-          //     pageSize: pageSize,
-          //     ordering: ordering,
-          //     field: field,
-          //     filter: filter,
-          //     timeout: 300,
-          //   });
-          // }}
-        />,
-        <Button 
-          label={"Delete PDF"} 
-          icon={<FaTrashAlt />} 
-          full={true} 
-          remove={true} 
-          // onClick={async () => { 
-          //   await handleLoading({
-          //     api: deleteCharterPDF,
-          //     id: data["id"],
-          //     authTokens: authTokens,
-          //     messageSuccess: "PDF Deleted",
-          //     messageFail: "PDF Deletion Failed",
-          //   }) 
-          //   refreshList({
-          //     handlePaging: handlePaging,
-          //     route: route,
-          //     currentPage: currentPage,
-          //     setCurrentPage: setCurrentPage,
-          //     search: search,
-          //     pageSize: pageSize,
-          //     ordering: ordering,
-          //     field: field,
-          //     filter: filter,
-          //     timeout: 300,
-          //   });
-          // }}
-        />,
-      ]} />
-    )
-  })
+  const tableItems = Object.fromEntries(
+    Object.entries(items).map(([key, data]) => [
+      key,
+      { ...Object.fromEntries(
+        Object.entries(data).map(([field, value]) => [
+          field,
+          (
+            field === "name" || 
+            field === "description" ||
+            field === "availers"
+          ) ? (
+            <TextArea 
+              rowkey={key} 
+              field={field} 
+              value={value}
+            />
+          ) : (
+            value
+          )
+        ])
+      ),
+      actions: (
+        <Dropdown 
+          key={key} 
+          label={"Aksyon"} 
+          isOpen={dropdown === key}
+          toggle={() => toggleDropdown(key)}
+          items={[
+            {
+              "label": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
+              // "function": () => {
+              //   isDesktop(windowWidth) ? 
+              //   setUrl(data["pdf"]) : window.open(data["pdf"], "_blank");
+              // },
+            },
+            {
+              "label": <DropdownItem 
+                icon={<FaFileDownload />} 
+                label={"Download PDF"}
+              />, 
+              // "function": () => downloadCharterPDF(data["id"]),
+            },
+            {
+              "label": <DropdownItem 
+                icon={<TbReload />} 
+                label={"Regenerate PDF"}
+              />, 
+              // "function": async () => { 
+              //   await handleLoading({
+              //     api: regenerateCharterPDF,
+              //     id: data["office"],
+              //     authTokens: authTokens,
+              //     messageSuccess: "PDF Regenerated",
+              //     messageFail: "PDF Regeneration Failed",
+              //   }); 
+              //   refreshList({
+              //     handlePaging: handlePaging,
+              //     route: route,
+              //     currentPage: currentPage,
+              //     setCurrentPage: setCurrentPage,
+              //     search: search,
+              //     pageSize: pageSize,
+              //     ordering: ordering,
+              //     field: field,
+              //     filter: filter,
+              //     timeout: 300,
+              //   });
+              // },
+            },
+            {
+              "label": <DropdownItem 
+                icon={<FaTrashAlt />} 
+                label={"Delete PDF"}
+                remove={true}
+              />, 
+              // "function": async () => { 
+              //   await handleLoading({
+              //     api: deleteCharterPDF,
+              //     id: data["id"],
+              //     authTokens: authTokens,
+              //     messageSuccess: "PDF Deleted",
+              //     messageFail: "PDF Deletion Failed",
+              //   }) 
+              //   refreshList({
+              //     handlePaging: handlePaging,
+              //     route: route,
+              //     currentPage: currentPage,
+              //     setCurrentPage: setCurrentPage,
+              //     search: search,
+              //     pageSize: pageSize,
+              //     ordering: ordering,
+              //     field: field,
+              //     filter: filter,
+              //     timeout: 300,
+              //   });
+              // },
+            },
+          ]}
+      />)
+      }
+    ]) 
+  )
+  // Object.entries(items).map(([key, data]) => {
+  //   data["actions"] = (
+  //     <ButtonGroup key={key} buttons={[
+  //       <Button 
+  //         label={"Tingnan PDF"} 
+  //         icon={<FaEye />} 
+  //         full={true} 
+  //         // onClick={() => window.open(data["pdf"], "_blank")}
+  //       />,
+  //       <Button 
+  //         label={"Download PDF"} 
+  //         icon={<FaFileDownload />} 
+  //         full={true} 
+  //         // onClick={() => downloadCharterPDF(data["id"])}
+  //       />,
+  //       <Button 
+  //         label={"Regenerate PDF"} 
+  //         icon={<TbReload />} 
+  //         full={true} 
+  //         // onClick={async () => { 
+  //         //   await handleLoading({
+  //         //     api: regenerateCharterPDF,
+  //         //     id: data["office"],
+  //         //     authTokens: authTokens,
+  //         //     messageSuccess: "PDF Regenerated",
+  //         //     messageFail: "PDF Regeneration Failed",
+  //         //   }); 
+  //         //   refreshList({
+  //         //     handlePaging: handlePaging,
+  //         //     route: route,
+  //         //     currentPage: currentPage,
+  //         //     setCurrentPage: setCurrentPage,
+  //         //     search: search,
+  //         //     pageSize: pageSize,
+  //         //     ordering: ordering,
+  //         //     field: field,
+  //         //     filter: filter,
+  //         //     timeout: 300,
+  //         //   });
+  //         // }}
+  //       />,
+  //       <Button 
+  //         label={"Delete PDF"} 
+  //         icon={<FaTrashAlt />} 
+  //         full={true} 
+  //         remove={true} 
+  //         // onClick={async () => { 
+  //         //   await handleLoading({
+  //         //     api: deleteCharterPDF,
+  //         //     id: data["id"],
+  //         //     authTokens: authTokens,
+  //         //     messageSuccess: "PDF Deleted",
+  //         //     messageFail: "PDF Deletion Failed",
+  //         //   }) 
+  //         //   refreshList({
+  //         //     handlePaging: handlePaging,
+  //         //     route: route,
+  //         //     currentPage: currentPage,
+  //         //     setCurrentPage: setCurrentPage,
+  //         //     search: search,
+  //         //     pageSize: pageSize,
+  //         //     ordering: ordering,
+  //         //     field: field,
+  //         //     filter: filter,
+  //         //     timeout: 300,
+  //         //   });
+  //         // }}
+  //       />,
+  //     ]} />
+  //   )
+  // })
 
   return(
     <>
@@ -405,8 +429,8 @@ export default function Charter() {
                 />, 
                 "Actions",
               ]}
-              body={items}
-              hideID={true}
+              body={tableItems}
+              serviceList={true}
             />
           ) : (
             <ListMobile 

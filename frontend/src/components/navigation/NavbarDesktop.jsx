@@ -66,7 +66,7 @@ export default function NavbarDesktop({
             </div>
           </div>
 
-          <hr className="w-full h-0.5 my-4 rounded-[0.1px] bg-background"/>
+          <hr className="w-full h-0.5 mt-4 rounded-[0.1px] bg-background"/>
 
           <ul className={`
             flex
