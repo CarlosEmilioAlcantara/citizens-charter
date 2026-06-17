@@ -437,7 +437,7 @@ class ServiceListSerializer(serializers.ModelSerializer):
         elif obj.transaction == "complicated":
             return "Komplikado"
         elif obj.transaction == "technical":
-            return "Malubhang Teknikal"
+            return "Lubhang Teknikal"
 
     def get_formatted_classification_types(self, obj):
         return ",".join(item.upper() for item in obj.classification_types)

@@ -22,7 +22,7 @@ import Checkbox from "../components/buttons/Checkbox";
 import TextArea from "../components/inputs/TextArea";
 import Preview from "../components/modals/Preview";
 import ButtonGroup from "../components/buttons/ButtonGroup";
-import AddItem from "../components/modals/AddItem";
+import AddEditItem from "../components/modals/AddEditItem";
 import Confirmation from "../components/modals/Confirmation";
 import useValues from "../hooks/useValues";
 import useLoader from "../hooks/useLoader";
@@ -372,7 +372,7 @@ export default function Offices() {
           </div>
 
           {showAdd && (
-            <AddItem 
+            <AddEditItem 
               onClose={() => {
                 setValues((prev) => {
                   const reset = Object.keys(prev).map(key => [key, '']);

@@ -19,7 +19,7 @@ import Pager from "../components/table_controls/Pager";
 import Loader from "../components/modals/Loader";
 import Alert from "../components/modals/Alert";
 import ButtonGroup from "../components/buttons/ButtonGroup";
-import AddItem from "../components/modals/AddItem";
+import AddEditItem from "../components/modals/AddEditItem";
 import Confirmation from "../components/modals/Confirmation";
 import useValues from "../hooks/useValues";
 import useLoader from "../hooks/useLoader";
@@ -112,7 +112,7 @@ export default function Users() {
       is_staff: false,
       is_superuser: false,
       is_active: true,
-    }))
+    }));
   }, [
     setRoute, 
     setAccessToken, 
@@ -321,7 +321,7 @@ export default function Users() {
           </div>
 
           {showAdd && (
-            <AddItem 
+            <AddEditItem 
               onClose={() => {
                 setValues((prev) => {
                   const reset = Object.keys(prev).map(key => [key, '']);

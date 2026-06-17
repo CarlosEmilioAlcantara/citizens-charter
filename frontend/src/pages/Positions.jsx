@@ -19,7 +19,7 @@ import Loader from "../components/modals/Loader";
 import Alert from "../components/modals/Alert";
 import Checkbox from "../components/buttons/Checkbox";
 import TextArea from "../components/inputs/TextArea";
-import AddItem from "../components/modals/AddItem";
+import AddEditItem from "../components/modals/AddEditItem";
 import Confirmation from "../components/modals/Confirmation";
 import useValues from "../hooks/useValues";
 import useLoader from "../hooks/useLoader";
@@ -299,7 +299,7 @@ export default function Positions() {
           </div>
 
           {showAdd && (
-            <AddItem 
+            <AddEditItem 
               onClose={() => {
                 setValues((prev) => {
                   const reset = Object.keys(prev).map(key => [key, '']);

@@ -20,10 +20,12 @@ import PDFViewer from "../components/modals/PDFViewer";
 import Loader from "../components/modals/Loader";
 import Alert from "../components/modals/Alert";
 import ButtonGroup from "../components/buttons/ButtonGroup";
+import AddEditService from "../components/modals/AddEditService";
 import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useWindowWidth from "../hooks/useWindowWidth";
+import useValues from "../hooks/useValues";
 import refreshList from "../utils/refreshList";
 import { isTablet } from "../utils/isTablet";
 import { FaEye, FaFileDownload, FaPrint, FaTrashAlt, FaPlus } from "react-icons/fa";
@@ -75,12 +77,29 @@ export default function Charter() {
     setLoadingMessage,
   } = useLoader();
   const [windowWidth] = useWindowWidth();
+  const [showAdd, setShowAdd] = useState(false);
+  const [edit, setEdit] = useState(false);
   const [url, setUrl] = useState("");
+  const {values, setValues, data, setData} = useValues([
+    "number", 
+    "name", 
+    "description", 
+    "transaction",
+    "classification_types",
+    "availers",
+    "is_subservice",
+    "office",
+  ])
 
   useEffect(() => {
     setRoute("/api/services");
     setAccessToken(authTokens.access);
-  }, [setRoute, setAccessToken, authTokens.access]);
+    setValues((prev) => ({
+      ...prev,
+      office: user.office_id,
+      transaction: "simple"
+    }));
+  }, [setRoute, setAccessToken, authTokens.access, setValues, user.office_id]);
 
   const tableItems = Object.fromEntries(
     Object.entries(items).map(([key, data]) => [
@@ -283,28 +302,8 @@ export default function Charter() {
               <Button 
                 label={"Magdagdag"} 
                 icon={<FaPlus />} 
-                onClick={async () => {
-                  // closeControls();
-
-                  // await handleLoading({
-                  //   api: generateCharterPDFs, 
-                  //   authTokens: authTokens, 
-                  //   messageSuccess: "PDFs Nalikha", 
-                  //   messageFail:"PDFs Paglikha Fail",
-                  // }); 
-
-                  // refreshList({
-                  //   handlePaging: handlePaging,
-                  //   route: route,
-                  //   currentPage: currentPage,
-                  //   setCurrentPage: setCurrentPage,
-                  //   search: search,
-                  //   pageSize: pageSize,
-                  //   ordering: ordering,
-                  //   field: field,
-                  //   filter: filter,
-                  //   timeout: 300,
-                  // });
+                onClick={() => {
+                  closeControls(); setShowAdd(true); setEdit(false);
                 }}
               />
               <Button 
@@ -491,6 +490,26 @@ export default function Charter() {
               onClick={closeControls}
             />
           </div>
+
+          {showAdd && (
+            <AddEditService 
+              onClose={() => {
+                setValues((prev) => {
+                  const reset = Object.keys(prev).map(key => [key, '']);
+                  return Object.fromEntries(reset);
+                });
+                setShowAdd(false); 
+                setEdit(false);
+                setData({});
+              }} 
+              label={`${edit ? 'Magupdate' : 'Magdagdag'} ng Serbisyo`}
+              values={values}
+              setValues={setValues}
+              data={data}
+              setData={setData}
+              edit={edit}
+            />
+          )}
 
           {url && (
             <PDFViewer url={url.url} onClose={() => {setUrl(null)}}/>

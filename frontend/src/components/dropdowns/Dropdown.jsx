@@ -9,6 +9,7 @@ export default function Dropdown({
   disabled = false,
   sizeSelector = false, 
   sectorSelector = false,
+  transactionSelector = false,
   centerItems = false,
   full = false,
   items,
@@ -36,11 +37,15 @@ export default function Dropdown({
         <div 
           className={`
             ${sizeSelector && 'w-30'}
+            ${transactionSelector && 'w-48'}
             ${sectorSelector && 'w-70'}
             ${full && 'w-full'}
             relative
             flex
-            ${sectorSelector ? 'justify-start' : 'justify-center'}
+            ${(sectorSelector || transactionSelector) ? 
+              'justify-start' : 
+              'justify-center'
+            }
             items-center
             gap-2
             px-2
@@ -73,7 +78,7 @@ export default function Dropdown({
             )}
           </span>
           <span className={`
-            ${(sizeSelector && !full) && 'w-md'}
+            ${((sizeSelector || transactionSelector) && !full) && 'w-md'}
             text-nowrap
           `}>
             {label}
@@ -84,8 +89,12 @@ export default function Dropdown({
           absolute
           top-8
           ${sectorSelector ? 'right-[9px]' : 'right-0'}
-          ${(sizeSelector || full || centerItems) && 'w-full'}
-          ${sectorSelector && 'w-70 h-[200px] overflow-auto'}
+          ${(sizeSelector || full || centerItems || transactionSelector) &&
+             'w-full'
+          }
+          ${(sectorSelector || transactionSelector) && 
+            'w-70 h-[200px] overflow-auto'
+          }
           max-h-[400px]
           bg-background 
           border 
@@ -115,7 +124,7 @@ export default function Dropdown({
                   ${(sizeSelector || full || centerItems) ? 
                     'justify-center' : 'justify-end'
                   }
-                  ${sectorSelector && 'justify-start'}
+                  ${(sectorSelector || transactionSelector) && 'justify-start'}
                   ${selected === item.label && 'bg-active'}
                   ${isOpen && 'cursor-pointer'}
                   ${isOpen ? 'z-10' : '-z-10'}

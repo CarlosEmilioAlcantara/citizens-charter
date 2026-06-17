@@ -43,7 +43,7 @@ export default function Input({
           placeholder={placeholder}
           name={name}
           value={value}
-          onChange={(e) => setValue(value=>({...value,[name]:e.target.value}))}
+          onChange={(e) => setValue(value=>({...value, [name]:e.target.value}))}
           className={`
             w-full
           text-foreground 
