@@ -5,9 +5,12 @@ import Overlay from '../reusables/Overlay';
 import Input from '../inputs/Input';
 import InputArea from '../inputs/InputArea';
 import TransactionSelector from '../dropdowns/TransactionSelector';
+import Selectbox from '../inputs/Selectbox';
 import Button from '../buttons/Button';
 import useShow from '../../hooks/useShow';
 import useTransactionSelector from '../../hooks/useTransactionSelector';
+import useSelectItems from '../../hooks/useSelectItems';
+import { useEffect } from 'react';
 
 export default function AddEditService({ 
   onClose, 
@@ -23,6 +26,10 @@ export default function AddEditService({
   const {
     transactionSelector, toggleTransactionSelector
   } = useTransactionSelector();
+  const {
+    selected, 
+    setSelected,
+  } = useSelectItems();
 
   return ReactDom.createPortal(
     <div className={`
@@ -125,6 +132,18 @@ export default function AddEditService({
                 isOpen={transactionSelector}
                 toggle={toggleTransactionSelector}
                 setValues={setValues}
+              />
+            </div>
+
+            <div className="flex flex-col items-start gap-1">
+              <span className="text-xs">Klasipikasyon</span>
+              <Selectbox 
+                items={[
+                  "g2b", "g2c", "g2e", "g2g"
+                ]}
+                selected={selected}
+                setSelected={setSelected}
+                classification={true}
               />
             </div>
           </div>

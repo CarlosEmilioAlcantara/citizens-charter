@@ -92,7 +92,7 @@ export default function Dropdown({
           ${(sizeSelector || full || centerItems || transactionSelector) &&
              'w-full'
           }
-          ${(sectorSelector || transactionSelector) && 
+          ${sectorSelector && 
             'w-70 h-[200px] overflow-auto'
           }
           max-h-[400px]
