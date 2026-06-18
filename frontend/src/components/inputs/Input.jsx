@@ -11,6 +11,7 @@ export default function Input({
   setValue,
   small = false,
   password = false,
+  inputMode = "",
 }) {
   const [state, toggle] = useToggle(false);
 
@@ -40,6 +41,7 @@ export default function Input({
       <div className="flex items-center">
         <input
           type={state ? 'text' : type}
+          inputMode={inputMode}
           placeholder={placeholder}
           name={name}
           value={value}

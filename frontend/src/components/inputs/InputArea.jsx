@@ -5,6 +5,7 @@ export default function InputArea({
   name,
   value,
   setValue,
+  small = false,
 }) {
   return(
     <div 
@@ -46,7 +47,7 @@ export default function InputArea({
           [&::-webkit-scrollbar-thumb]:rounded-full
           hover:[&::-webkit-scrollbar-thumb]:bg-unfocused
         "
-        rows={5}
+        rows={small ? 2 : 5}
       />
     </div>
   );

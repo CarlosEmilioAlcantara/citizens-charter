@@ -10,7 +10,6 @@ import Button from '../buttons/Button';
 import useShow from '../../hooks/useShow';
 import useTransactionSelector from '../../hooks/useTransactionSelector';
 import useSelectItems from '../../hooks/useSelectItems';
-import { useEffect } from 'react';
 
 export default function AddEditService({ 
   onClose, 
@@ -30,6 +29,7 @@ export default function AddEditService({
     selected, 
     setSelected,
   } = useSelectItems();
+  const regex = /^\d{1,7}\.?\d{0,2}$/;
 
   return ReactDom.createPortal(
     <div className={`
@@ -98,6 +98,21 @@ export default function AddEditService({
 
         <div className="flex flex-col gap-2 w-[800px] mt-3 pb-4">
           <Input 
+            label={"Number"}
+            warning={data?.number}
+            type={"text"}
+            inputMode={"decimal"}
+            placeholder={"1.0"}
+            name={"number"}
+            value={
+              regex.test(String(values.number)) ? 
+                values.number : 
+                values.number.slice(0, -1)
+            }
+            setValue={setValues}
+            small={true}
+          />
+          <InputArea 
             label={"Name"}
             warning={data?.name}
             type={"text"}
@@ -147,6 +162,17 @@ export default function AddEditService({
               />
             </div>
           </div>
+
+          <InputArea 
+            label={"Maaring kumuha"}
+            warning={data?.availers}
+            type={"text"}
+            placeholder={"Maaring kumuha..."}
+            name={"availers"}
+            value={values.availers}
+            setValue={setValues}
+            small={true}
+          />
         </div>
 
         <div className="flex gap-3 justify-end items-center">
