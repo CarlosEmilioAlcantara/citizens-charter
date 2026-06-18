@@ -30,7 +30,7 @@ class UserManager(BaseUserManager):
         return self._create_user(name, password, office, **extra_fields)
 
 class Sector(models.Model):
-    number = models.DecimalField(max_digits=9, decimal_places=1)
+    number = models.DecimalField(max_digits=9, decimal_places=2)
     name = models.CharField(max_length=180, unique=True)
     is_subsector = models.BooleanField(default=False)
 
@@ -108,7 +108,7 @@ class Position(models.Model):
         return self.name
 
 class Service(models.Model):
-    number = models.DecimalField(max_digits=9, decimal_places=1)
+    number = models.DecimalField(max_digits=9, decimal_places=2)
     name = models.CharField(max_length=180)
     description = models.CharField(max_length=255) 
 
