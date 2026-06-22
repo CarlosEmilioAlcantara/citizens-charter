@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import useToggle from "../../hooks/useToggle";
 
 export default function Selectbox({
   items,
   selected,
   setSelected,
+  setValues = null,
   classification = false,
 }) {
   const [state, toggle] = useToggle(false);
@@ -15,6 +17,15 @@ export default function Selectbox({
       rows.push(entries.slice(i, i + 2));
     }
   }
+
+  if (setValues) {
+    useEffect(() => {
+      setValues((prev) => ({
+        ...prev,
+        classification_types: selected
+      }))
+    }, [selected])
+  };
 
   return(
     <div className={`flex flex-col ${classification ? 'gap' : 'gap-2'}`}>

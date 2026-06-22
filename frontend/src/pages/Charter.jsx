@@ -7,6 +7,7 @@ import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
 import Search from "../components/inputs/Search";
 import TextArea from "../components/inputs/TextArea";
+import OptionTicker from "../components/buttons/OptionTicker";
 import FilterSelector from "../components/table_controls/FilterSelector";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import TableHeader from "../components/table/TableHeader";
@@ -28,6 +29,7 @@ import useWindowWidth from "../hooks/useWindowWidth";
 import useValues from "../hooks/useValues";
 import refreshList from "../utils/refreshList";
 import { isTablet } from "../utils/isTablet";
+import { checkResponse } from "../utils/checkResponse";
 import { FaEye, FaFileDownload, FaPrint, FaTrashAlt, FaPlus } from "react-icons/fa";
 import { TbReload } from "react-icons/tb";
 
@@ -275,6 +277,10 @@ export default function Charter() {
   //   )
   // })
 
+  useEffect(() => {
+    console.log(values)
+  }, [values])
+
   return(
     <>
       <Loader show={loading} message={loadingMessage} />
@@ -508,6 +514,46 @@ export default function Charter() {
               data={data}
               setData={setData}
               edit={edit}
+              addFunc={async () => {
+                closeControls();
+
+                setLoadingMessage("Naglilikha ng Serbisyo");
+                const res = await handleLoading({
+                  api: genericAPI, 
+                  route: "/api/service/create",
+                  authTokens: authTokens, 
+                  method: "POST",
+                  body: values,
+                  messageSuccess: "Serbisyo Nalikha", 
+                  messageFail:"Serbisyo Paglikha Fail",
+                });
+
+                const data = await res.json();
+                setData(data);
+
+                const status = await checkResponse(res, setToast, data);
+                if (status) {
+                  refreshList({
+                    handlePaging: handlePaging,
+                    accessToken: authTokens.access,
+                    route: route,
+                    currentPage: currentPage,
+                    setCurrentPage: setCurrentPage,
+                    search: search,
+                    pageSize: pageSize,
+                    ordering: ordering,
+                    field: field,
+                    filter: filter,
+                    timeout: 300,
+                  });
+                  setValues((prev) => {
+                    const reset = Object.keys(prev).map(key => [key, '']);
+                    return Object.fromEntries(reset);
+                  });
+                  setShowAdd(false);
+                  setData({});
+                }
+              }}
             />
           )}
 

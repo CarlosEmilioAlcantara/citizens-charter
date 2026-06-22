@@ -336,28 +336,31 @@ export default function Positions() {
                   messageFail:"Posisyon Dagdag Pumalya",
                 }); 
 
-                if (!res.ok) {return res.json()}
+                const data = await res.json();
+                setData(data);
 
-                refreshList({
-                  handlePaging: handlePaging,
-                  accessToken: accessToken,
-                  route: route,
-                  currentPage: currentPage,
-                  setCurrentPage: setCurrentPage,
-                  search: search,
-                  pageSize: pageSize,
-                  ordering: ordering,
-                  field: field,
-                  filter: filter,
-                  timeout: 300,
-                });
-
-                setValues((prev) => {
-                  const reset = Object.keys(prev).map(key => [key, '']);
-                  return Object.fromEntries(reset);
-                });
-                setShowAdd(false);
-                setData({});
+                const status = await checkResponse(res, setToast, data);
+                if (status) {
+                  refreshList({
+                    handlePaging: handlePaging,
+                    accessToken: accessToken,
+                    route: route,
+                    currentPage: currentPage,
+                    setCurrentPage: setCurrentPage,
+                    search: search,
+                    pageSize: pageSize,
+                    ordering: ordering,
+                    field: field,
+                    filter: filter,
+                    timeout: 300,
+                  });
+                  setValues((prev) => {
+                    const reset = Object.keys(prev).map(key => [key, '']);
+                    return Object.fromEntries(reset);
+                  });
+                  setShowAdd(false);
+                  setData({});
+                }
               }}
             />
           )}

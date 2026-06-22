@@ -10,6 +10,7 @@ import Button from '../buttons/Button';
 import useShow from '../../hooks/useShow';
 import useTransactionSelector from '../../hooks/useTransactionSelector';
 import useSelectItems from '../../hooks/useSelectItems';
+import OptionTicker from '../buttons/OptionTicker';
 
 export default function AddEditService({ 
   onClose, 
@@ -97,21 +98,30 @@ export default function AddEditService({
         </div>
 
         <div className="flex flex-col gap-2 w-[800px] mt-3 pb-4">
-          <Input 
-            label={"Number"}
-            warning={data?.number}
-            type={"text"}
-            inputMode={"decimal"}
-            placeholder={"1.0"}
-            name={"number"}
-            value={
-              regex.test(String(values.number)) ? 
-                values.number : 
-                values.number.slice(0, -1)
-            }
-            setValue={setValues}
-            small={true}
-          />
+          <div className="flex">
+            <Input 
+              label={"Number"}
+              warning={data?.number}
+              type={"text"}
+              inputMode={"decimal"}
+              placeholder={"1.0"}
+              name={"number"}
+              value={
+                regex.test(String(values.number)) ? 
+                  values.number : 
+                  values.number.slice(0, -1)
+              }
+              setValue={setValues}
+              small={true}
+            />
+
+            <OptionTicker 
+              label={"Subservice"} 
+              value={"is_subservice"}
+              setValue={setValues}
+            />
+          </div>
+
           <InputArea 
             label={"Name"}
             warning={data?.name}
@@ -158,6 +168,7 @@ export default function AddEditService({
                 ]}
                 selected={selected}
                 setSelected={setSelected}
+                setValues={setValues}
                 classification={true}
               />
             </div>
@@ -186,6 +197,9 @@ export default function AddEditService({
             label={edit ? 'Iedit' : 'Idagdag'}
             onClick={async () => {
               const data = await addFunc();
+              if (data) {
+
+              }
               setData(data);
             }}
           /> 
