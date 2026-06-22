@@ -425,6 +425,11 @@ class ServiceSerializer(serializers.ModelSerializer):
                 'Services must not be a decimal.'
             )
 
+        if len(data.get('classification_types')) < 1:
+            raise serializers.ValidationError(
+                'Must have atleast a single claffication.'
+            )
+
         return data
 
 class ServiceListSerializer(serializers.ModelSerializer):
