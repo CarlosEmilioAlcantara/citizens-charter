@@ -10,7 +10,6 @@ export default function AddEditItem({
   onClose, 
   label, 
   inputs,
-  setData,
   addFunc,
   sector = false,
   addUser = false,
@@ -137,8 +136,7 @@ export default function AddEditItem({
           <Button 
             label={edit ? 'Iedit' : 'Idagdag'}
             onClick={async () => {
-              const data = await addFunc();
-              setData(data);
+              await addFunc();
             }}
           /> 
         </div>

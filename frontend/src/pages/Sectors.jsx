@@ -29,7 +29,6 @@ import useWindowWidth from "../hooks/useWindowWidth";
 import refreshList from "../utils/refreshList";
 // import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
-import { checkResponse } from "../utils/checkResponse";
 import { 
   FaEye, 
   FaFileDownload, 
@@ -320,7 +319,6 @@ export default function Sectors() {
                 setData({});
               }} 
               label={"Magdagdag ng Sector"}
-              setData={setData}
               inputs={[
                 <Input 
                   label={"Number"}
@@ -355,28 +353,31 @@ export default function Sectors() {
                   messageFail:"Sectors Dagdag Pumalya",
                 }); 
 
-                if (!res.ok) {return res.json()}
+                if (res.ok) {
+                  refreshList({
+                    handlePaging: handlePaging,
+                    accessToken: accessToken,
+                    route: route,
+                    currentPage: currentPage,
+                    setCurrentPage: setCurrentPage,
+                    search: search,
+                    pageSize: pageSize,
+                    ordering: ordering,
+                    field: field,
+                    filter: filter,
+                    timeout: 300,
+                  });
 
-                refreshList({
-                  handlePaging: handlePaging,
-                  accessToken: accessToken,
-                  route: route,
-                  currentPage: currentPage,
-                  setCurrentPage: setCurrentPage,
-                  search: search,
-                  pageSize: pageSize,
-                  ordering: ordering,
-                  field: field,
-                  filter: filter,
-                  timeout: 300,
-                });
-
-                setValues((prev) => {
-                  const reset = Object.keys(prev).map(key => [key, '']);
-                  return Object.fromEntries(reset);
-                });
-                setShowAdd(false);
-                setData({});
+                  setValues((prev) => {
+                    const reset = Object.keys(prev).map(key => [key, '']);
+                    return Object.fromEntries(reset);
+                  });
+                  setShowAdd(false);
+                  setData({});
+                } else {
+                  const data = await res.json();
+                  setData(data);
+                }
               }}
             />
           )}
@@ -389,7 +390,7 @@ export default function Sectors() {
                       closeControls();
 
                       setLoadingMessage("Nagtatanggal ng Sector");
-                      const res = await handleLoading({
+                      await handleLoading({
                         api: genericBulkAPI, 
                         body: selectedRows,
                         route: "/api/sector/delete",
@@ -400,21 +401,19 @@ export default function Sectors() {
                       }); 
                       setSelectedRows({});
 
-                      checkResponse(res, setToast) && 
-                        refreshList({
-                          handlePaging: handlePaging,
-                          accessToken: accessToken,
-                          route: route,
-                          currentPage: currentPage,
-                          setCurrentPage: setCurrentPage,
-                          search: search,
-                          pageSize: pageSize,
-                          ordering: ordering,
-                          field: field,
-                          filter: filter,
-                          timeout: 300,
-                        });
-
+                      refreshList({
+                        handlePaging: handlePaging,
+                        accessToken: accessToken,
+                        route: route,
+                        currentPage: currentPage,
+                        setCurrentPage: setCurrentPage,
+                        search: search,
+                        pageSize: pageSize,
+                        ordering: ordering,
+                        field: field,
+                        filter: filter,
+                        timeout: 300,
+                      });
                     }
                   : async () => {
                       closeControls();
@@ -433,9 +432,9 @@ export default function Sectors() {
                         messageSuccess: "Sectors Update Matagumpay",
                         messageFail: "Sectors Update Pumalya",
                       });
-                      setSelectedRows({});
 
-                      checkResponse(res, setToast) &&
+                      if (res.ok) {
+                        setSelectedRows({});
                         refreshList({
                           handlePaging: handlePaging,
                           accessToken: accessToken,
@@ -449,6 +448,13 @@ export default function Sectors() {
                           filter: filter,
                           timeout: 300,
                         });
+                      } else {
+                        const data = await res.json();
+                        setToast({
+                          success: false, 
+                          message: Object.values(data[0])[0]?.[0]?.charAt(0).toUpperCase() + Object.values(data[0])[0]?.[0]?.slice(1)
+                        });
+                      }
                     }
               }
               remove={confirmation.remove}

@@ -29,7 +29,6 @@ import useWindowWidth from "../hooks/useWindowWidth";
 import useValues from "../hooks/useValues";
 import refreshList from "../utils/refreshList";
 import { isTablet } from "../utils/isTablet";
-import { checkResponse } from "../utils/checkResponse";
 import { FaEye, FaFileDownload, FaPrint, FaTrashAlt, FaPlus } from "react-icons/fa";
 import { TbReload } from "react-icons/tb";
 
@@ -99,7 +98,8 @@ export default function Charter() {
     setValues((prev) => ({
       ...prev,
       office: user.office_id,
-      transaction: "simple"
+      transaction: "simple",
+      is_subservice: false,
     }));
   }, [setRoute, setAccessToken, authTokens.access, setValues, user.office_id]);
 
@@ -276,10 +276,6 @@ export default function Charter() {
   //     ]} />
   //   )
   // })
-
-  useEffect(() => {
-    console.log(values)
-  }, [values])
 
   return(
     <>
@@ -528,11 +524,7 @@ export default function Charter() {
                   messageFail:"Serbisyo Paglikha Fail",
                 });
 
-                const data = await res.json();
-                setData(data);
-
-                const status = await checkResponse(res, setToast, data);
-                if (status) {
+                if (res.ok) {
                   refreshList({
                     handlePaging: handlePaging,
                     accessToken: authTokens.access,
@@ -552,6 +544,15 @@ export default function Charter() {
                   });
                   setShowAdd(false);
                   setData({});
+                } else {
+                  const data = await res.json()
+                  if (data.non_field_errors) {
+                    setToast({
+                      success: false,
+                      message: data.non_field_errors,
+                    });
+                  }
+                  setData(data);
                 }
               }}
             />

@@ -25,7 +25,6 @@ import useWindowWidth from "../hooks/useWindowWidth";
 import refreshList from "../utils/refreshList";
 // import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
-import { checkResponse } from "../utils/checkResponse";
 import { FaTrashAlt, FaSave } from "react-icons/fa";
 
 export default function AdminAudit() {
@@ -279,39 +278,35 @@ export default function AdminAudit() {
           {confirmation && (
             <Confirmation 
               label={confirmation.label}
-              func={
-                confirmation.remove
-                  && (async () => {
-                    closeControls();
+              func={async () => {
+                closeControls();
 
-                    setLoadingMessage("Nagtatanggal ng Charter Audit Log");
-                    const res = await handleLoading({
-                      api: genericBulkAPI, 
-                      body: selectedRows,
-                      route: "/api/audit-log/delete",
-                      method: "DELETE",
-                      authTokens: authTokens, 
-                      messageSuccess: "Charter Audit Log Delete Matagumpay", 
-                      messageFail:"Charter Audit Log Delete Pumalya",
-                    }); 
-                    setSelectedRows({});
+                setLoadingMessage("Nagtatanggal ng Charter Audit Log");
+                await handleLoading({
+                  api: genericBulkAPI, 
+                  body: selectedRows,
+                  route: "/api/audit-log/delete",
+                  method: "DELETE",
+                  authTokens: authTokens, 
+                  messageSuccess: "Charter Audit Log Delete Matagumpay", 
+                  messageFail:"Charter Audit Log Delete Pumalya",
+                }); 
 
-                    checkResponse(res, setToast) && 
-                      refreshList({
-                        handlePaging: handlePaging,
-                        accessToken: accessToken,
-                        route: route,
-                        currentPage: currentPage,
-                        setCurrentPage: setCurrentPage,
-                        search: search,
-                        pageSize: pageSize,
-                        ordering: ordering,
-                        field: field,
-                        filter: filter,
-                        timeout: 300,
-                      });
-                  })
-              }
+                setSelectedRows({});
+                refreshList({
+                  handlePaging: handlePaging,
+                  accessToken: accessToken,
+                  route: route,
+                  currentPage: currentPage,
+                  setCurrentPage: setCurrentPage,
+                  search: search,
+                  pageSize: pageSize,
+                  ordering: ordering,
+                  field: field,
+                  filter: filter,
+                  timeout: 300,
+                });
+              }}
               remove={confirmation.remove}
               onClose={() => setConfirmation(null)}
             />

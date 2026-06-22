@@ -30,7 +30,6 @@ import useListInfo from "../hooks/useListInfo";
 import refreshList from "../utils/refreshList";
 // import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
-import { checkResponse } from "../utils/checkResponse";
 import { FaTrashAlt, FaPlus, FaSave } from "react-icons/fa";
 
 export default function Positions() {
@@ -336,11 +335,7 @@ export default function Positions() {
                   messageFail:"Posisyon Dagdag Pumalya",
                 }); 
 
-                const data = await res.json();
-                setData(data);
-
-                const status = await checkResponse(res, setToast, data);
-                if (status) {
+                if (res.ok) {
                   refreshList({
                     handlePaging: handlePaging,
                     accessToken: accessToken,
@@ -360,6 +355,9 @@ export default function Positions() {
                   });
                   setShowAdd(false);
                   setData({});
+                } else {
+                  const data = await res.json();
+                  setData(data);
                 }
               }}
             />
@@ -373,7 +371,7 @@ export default function Positions() {
                       closeControls();
 
                       setLoadingMessage("Nagtatanggal ng Posisyon");
-                      const res = await handleLoading({
+                      await handleLoading({
                         api: genericBulkAPI, 
                         body: selectedRows,
                         route: "/api/position/delete",
@@ -383,22 +381,19 @@ export default function Positions() {
                         messageFail:"Posisyon Delete Pumalya",
                       }); 
                       setSelectedRows({});
-
-                      checkResponse(res, setToast) && 
-                        refreshList({
-                          handlePaging: handlePaging,
-                          accessToken: accessToken,
-                          route: route,
-                          currentPage: currentPage,
-                          setCurrentPage: setCurrentPage,
-                          search: search,
-                          pageSize: pageSize,
-                          ordering: ordering,
-                          field: field,
-                          filter: filter,
-                          timeout: 300,
-                        });
-
+                      refreshList({
+                        handlePaging: handlePaging,
+                        accessToken: accessToken,
+                        route: route,
+                        currentPage: currentPage,
+                        setCurrentPage: setCurrentPage,
+                        search: search,
+                        pageSize: pageSize,
+                        ordering: ordering,
+                        field: field,
+                        filter: filter,
+                        timeout: 300,
+                      });
                     }
                   : async () => {
                       closeControls();
@@ -417,9 +412,9 @@ export default function Positions() {
                         messageSuccess: "Posisyon Update Matagumpay",
                         messageFail: "Posisyon Update Pumalya",
                       });
-                      setSelectedRows({});
 
-                      checkResponse(res, setToast) &&
+                      if (res.ok) {
+                        setSelectedRows({});
                         refreshList({
                           handlePaging: handlePaging,
                           accessToken: accessToken,
@@ -433,6 +428,12 @@ export default function Positions() {
                           filter: filter,
                           timeout: 300,
                         });
+                      } else {
+                        setToast({
+                          success: false, 
+                          message: "Position with this name already exists."
+                        });
+                      }
                     }
               }
               remove={confirmation.remove}

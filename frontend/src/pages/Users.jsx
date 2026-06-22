@@ -31,7 +31,6 @@ import useListInfo from "../hooks/useListInfo";
 import refreshList from "../utils/refreshList";
 // import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
-import { checkResponse } from "../utils/checkResponse";
 import { FaPen, FaTrashAlt, FaPlus } from "react-icons/fa";
 
 export default function Users() {
@@ -332,7 +331,6 @@ export default function Users() {
                 setData({});
               }} 
               label={`${edit ? 'Magupdate' : 'Magdagdag'} ng User`}
-              setData={setData}
               edit={edit}
               inputs={[
                 <Input 
@@ -392,8 +390,50 @@ export default function Users() {
                     `User ${edit ? 'Update' : 'Dagdag'} Pumalya`, 
                 }); 
 
-                if (!res.ok) {return res.json()}
+                if (res.ok) {
+                  refreshList({
+                    handlePaging: handlePaging,
+                    accessToken: accessToken,
+                    route: route,
+                    currentPage: currentPage,
+                    setCurrentPage: setCurrentPage,
+                    search: search,
+                    pageSize: pageSize,
+                    ordering: ordering,
+                    field: field,
+                    filter: filter,
+                    timeout: 300,
+                  });
 
+                  setValues((prev) => {
+                    const reset = Object.keys(prev).map(key => [key, '']);
+                    return Object.fromEntries(reset);
+                  });
+                  setShowAdd(false);
+                  setEdit(false);
+                  setData({});
+                } else {
+                  const data = await res.json();
+                  setData(data);
+                }
+              }}
+            />
+          )}
+          {confirmation && (
+            <Confirmation 
+              label={confirmation.label}
+              func={async () => {
+                closeControls();
+
+                setLoadingMessage("Nagtatanggal ng User");
+                await handleLoading({
+                  api: genericAPI, 
+                  route: `/api/user/${user}`,
+                  method: "DELETE",
+                  authTokens: authTokens, 
+                  messageSuccess: "User Delete Matagumpay", 
+                  messageFail:"User Delete Pumalya",
+                }); 
                 refreshList({
                   handlePaging: handlePaging,
                   accessToken: accessToken,
@@ -407,79 +447,7 @@ export default function Users() {
                   filter: filter,
                   timeout: 300,
                 });
-
-                setValues((prev) => {
-                  const reset = Object.keys(prev).map(key => [key, '']);
-                  return Object.fromEntries(reset);
-                });
-                setShowAdd(false);
-                setEdit(false);
-                setData({});
-              }}
-            />
-          )}
-          {confirmation && (
-            <Confirmation 
-              label={confirmation.label}
-              func={
-                confirmation.remove
-                  ? async () => {
-                      closeControls();
-
-                      setLoadingMessage("Nagtatanggal ng User");
-                      const res = await handleLoading({
-                        api: genericAPI, 
-                        route: `/api/user/${user}`,
-                        method: "DELETE",
-                        authTokens: authTokens, 
-                        messageSuccess: "User Delete Matagumpay", 
-                        messageFail:"User Delete Pumalya",
-                      }); 
-
-                      checkResponse(res, setToast) && 
-                        refreshList({
-                          handlePaging: handlePaging,
-                          accessToken: accessToken,
-                          route: route,
-                          currentPage: currentPage,
-                          setCurrentPage: setCurrentPage,
-                          search: search,
-                          pageSize: pageSize,
-                          ordering: ordering,
-                          field: field,
-                          filter: filter,
-                          timeout: 300,
-                        });
-
-                    }
-                  : async () => {
-                      closeControls();
-
-                      setLoadingMessage("Naguupdate ng User");
-                      const res = await handleLoading({
-                        api: genericAPI,
-                        route: `/api/user/${user}`,
-                        method: "PUT",
-                        authTokens: authTokens,
-                        messageSuccess: "User Update Matagumpay",
-                        messageFail: "User Update Pumalya",
-                      });
-
-                      checkResponse(res, setToast) &&
-                        refreshList({
-                          handlePaging: handlePaging,
-                          accessToken: accessToken,
-                          route: route,
-                          currentPage: currentPage,
-                          setCurrentPage: setCurrentPage,
-                          search: search,
-                          pageSize: pageSize,
-                          ordering: ordering,
-                          field: field,
-                          filter: filter,
-                          timeout: 300,
-                        });
-                    }
+                }
               }
               remove={confirmation.remove}
               onClose={() => setConfirmation(null)}

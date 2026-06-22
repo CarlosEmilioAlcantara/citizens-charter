@@ -33,7 +33,6 @@ import useListInfo from "../hooks/useListInfo";
 import refreshList from "../utils/refreshList";
 // import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
-import { checkResponse } from "../utils/checkResponse";
 import { changeSector } from "../utils/changeSector";
 import { 
   FaEye, 
@@ -410,27 +409,31 @@ export default function Offices() {
                   messageFail:"Opisina Dagdag Pumalya",
                 }); 
 
-                if (!res.ok) {return res.json()}
+                if (res.ok) {
+                  refreshList({
+                    handlePaging: handlePaging,
+                    accessToken: accessToken,
+                    route: route,
+                    currentPage: currentPage,
+                    setCurrentPage: setCurrentPage,
+                    search: search,
+                    pageSize: pageSize,
+                    ordering: ordering,
+                    field: field,
+                    filter: filter,
+                    timeout: 300,
+                  });
+                  setValues((prev) => {
+                    const reset = Object.keys(prev).map(key => [key, '']);
+                    return Object.fromEntries(reset);
+                  });
+                  setShowAdd(false);
+                  setData({});
+                } else {
+                  const data = await res.json();
+                  setData(data);
+                }
 
-                refreshList({
-                  handlePaging: handlePaging,
-                  accessToken: accessToken,
-                  route: route,
-                  currentPage: currentPage,
-                  setCurrentPage: setCurrentPage,
-                  search: search,
-                  pageSize: pageSize,
-                  ordering: ordering,
-                  field: field,
-                  filter: filter,
-                  timeout: 300,
-                });
-
-                setValues((prev) => {
-                  const reset = Object.keys(prev).map(key => [key, '']);
-                  return Object.fromEntries(reset);
-                });
-                setShowAdd(false);
               }}
             />
           )}
@@ -443,7 +446,7 @@ export default function Offices() {
                       closeControls();
 
                       setLoadingMessage("Nagtatanggal ng Opisina");
-                      const res = await handleLoading({
+                      await handleLoading({
                         api: genericBulkAPI, 
                         body: selectedRows,
                         route: "/api/office/delete",
@@ -452,23 +455,21 @@ export default function Offices() {
                         messageSuccess: "Opisina Delete Matagumpay", 
                         messageFail:"Opisina Delete Pumalya",
                       }); 
+
                       setSelectedRows({});
-
-                      checkResponse(res, setToast) && 
-                        refreshList({
-                          handlePaging: handlePaging,
-                          accessToken: accessToken,
-                          route: route,
-                          currentPage: currentPage,
-                          setCurrentPage: setCurrentPage,
-                          search: search,
-                          pageSize: pageSize,
-                          ordering: ordering,
-                          field: field,
-                          filter: filter,
-                          timeout: 300,
-                        });
-
+                      refreshList({
+                        handlePaging: handlePaging,
+                        accessToken: accessToken,
+                        route: route,
+                        currentPage: currentPage,
+                        setCurrentPage: setCurrentPage,
+                        search: search,
+                        pageSize: pageSize,
+                        ordering: ordering,
+                        field: field,
+                        filter: filter,
+                        timeout: 300,
+                      });
                     }
                   : async () => {
                       closeControls();
@@ -487,9 +488,9 @@ export default function Offices() {
                         messageSuccess: "Opisina Update Matagumpay",
                         messageFail: "Opisina Update Pumalya",
                       });
-                      setSelectedRows({});
 
-                      checkResponse(res, setToast) &&
+                      if (res.ok) {
+                        setSelectedRows({});
                         refreshList({
                           handlePaging: handlePaging,
                           accessToken: accessToken,
@@ -503,6 +504,15 @@ export default function Offices() {
                           filter: filter,
                           timeout: 300,
                         });
+                        setValues((prev) => {
+                          const reset = Object.keys(prev).map(key => [key, '']);
+                          return Object.fromEntries(reset);
+                        });
+                        setShowAdd(false);
+                      } else {
+                        const data = await res.json();
+                        setData(data);
+                      }
                     }
               }
               remove={confirmation.remove}

@@ -131,7 +131,7 @@ class Service(models.Model):
     classification_types = MultiSelectField(
         max_length=32, 
         choices=CLASSIFICATION_CHOICES, 
-        max_choices=4
+        max_choices=4,
     )
 
     availers = models.CharField(max_length=180)

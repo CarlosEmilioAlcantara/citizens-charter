@@ -196,11 +196,7 @@ export default function AddEditService({
           <Button 
             label={edit ? 'Iedit' : 'Idagdag'}
             onClick={async () => {
-              const data = await addFunc();
-              if (data) {
-
-              }
-              setData(data);
+              await addFunc();
             }}
           /> 
         </div>
