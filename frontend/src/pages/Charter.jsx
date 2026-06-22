@@ -29,7 +29,10 @@ import useWindowWidth from "../hooks/useWindowWidth";
 import useValues from "../hooks/useValues";
 import refreshList from "../utils/refreshList";
 import { isTablet } from "../utils/isTablet";
-import { FaEye, FaFileDownload, FaPrint, FaTrashAlt, FaPlus } from "react-icons/fa";
+import { isDesktop } from "../utils/isDesktop";
+import { FaEye, FaPrint, FaTrashAlt, FaPlus } from "react-icons/fa";
+import { MdHomeRepairService, MdChecklistRtl } from "react-icons/md";
+import { BsBarChartSteps } from "react-icons/bs";
 import { TbReload } from "react-icons/tb";
 
 export default function Charter() {
@@ -132,23 +135,75 @@ export default function Charter() {
           toggle={() => toggleDropdown(key)}
           items={[
             {
-              "label": <DropdownItem icon={<FaEye />} label={"Tingnan PDF"}/>, 
-              // "function": () => {
-              //   isDesktop(windowWidth) ? 
-              //   setUrl(data["pdf"]) : window.open(data["pdf"], "_blank");
-              // },
+              "label": <DropdownItem 
+                icon={<FaEye />} 
+                label={"Tingnan Karta"}
+              />, 
+              "function": async () => {
+                setLoadingMessage("Naglilikha ng karta");
+                isDesktop(windowWidth) ? 
+                  setUrl(await handleLoading({
+                    api: generateCharterAPI, 
+                    route: `/api/pdf/citizens-charter/${data["id"]}`,
+                    authTokens: authTokens, 
+                    method: "GET",
+                    messageSuccess: "Karta Nalikha", 
+                    messageFail:"Karta Paglikha Fail",
+                    generateCharter: true,
+                  }))
+                : 
+                  window.open(
+                    setUrl(await handleLoading({
+                      api: generateCharterAPI, 
+                      route: `/api/pdf/citizens-charter/${data["id"]}`,
+                      authTokens: authTokens, 
+                      method: "GET",
+                      messageSuccess: "Karta Nalikha", 
+                      messageFail:"Karta Paglikha Fail",
+                      generateCharter: true,
+                    })),
+                    "_blank"
+                  )
+              },
             },
             {
               "label": <DropdownItem 
-                icon={<FaFileDownload />} 
-                label={"Download PDF"}
+                icon={<MdHomeRepairService />} 
+                label={"Update Serbisyo"}
               />, 
               // "function": () => downloadCharterPDF(data["id"]),
             },
             {
               "label": <DropdownItem 
-                icon={<TbReload />} 
-                label={"Regenerate PDF"}
+                icon={<MdChecklistRtl />} 
+                label={"Update Kinakailangan"}
+              />, 
+              // "function": async () => { 
+              //   await handleLoading({
+              //     api: regenerateCharterPDF,
+              //     id: data["office"],
+              //     authTokens: authTokens,
+              //     messageSuccess: "PDF Regenerated",
+              //     messageFail: "PDF Regeneration Failed",
+              //   }); 
+              //   refreshList({
+              //     handlePaging: handlePaging,
+              //     route: route,
+              //     currentPage: currentPage,
+              //     setCurrentPage: setCurrentPage,
+              //     search: search,
+              //     pageSize: pageSize,
+              //     ordering: ordering,
+              //     field: field,
+              //     filter: filter,
+              //     timeout: 300,
+              //   });
+              // },
+            },
+            {
+              "label": <DropdownItem 
+                icon={<BsBarChartSteps />} 
+                label={"Update Hakbang"}
               />, 
               // "function": async () => { 
               //   await handleLoading({
@@ -175,7 +230,7 @@ export default function Charter() {
             {
               "label": <DropdownItem 
                 icon={<FaTrashAlt />} 
-                label={"Delete PDF"}
+                label={"Delete Serbisyo"}
                 remove={true}
               />, 
               // "function": async () => { 
