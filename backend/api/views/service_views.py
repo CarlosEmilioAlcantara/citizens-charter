@@ -73,7 +73,7 @@ class ServiceListView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ServiceListSerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['name']
+    search_fields = ['number', 'name']
     ordering_fields = [
         'number',
         'name', 

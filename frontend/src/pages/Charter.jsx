@@ -120,7 +120,13 @@ export default function Charter() {
       { ...Object.fromEntries(
         Object.entries(data).map(([field, value]) => [
           field,
-          (
+          (field === "number") ? (
+            /\.00$/.test(value) ? 
+              value.replace(/\.00$/, "") : 
+              /\.([1-9])0$/.test(value) ? 
+                value.replace(/\.([1-9])0$/, ".$1") : 
+                value
+          ) : (
             field === "name" || 
             field === "description" ||
             field === "availers"
@@ -278,77 +284,6 @@ export default function Charter() {
       }
     ]) 
   )
-  // Object.entries(items).map(([key, data]) => {
-  //   data["actions"] = (
-  //     <ButtonGroup key={key} buttons={[
-  //       <Button 
-  //         label={"Tingnan PDF"} 
-  //         icon={<FaEye />} 
-  //         full={true} 
-  //         // onClick={() => window.open(data["pdf"], "_blank")}
-  //       />,
-  //       <Button 
-  //         label={"Download PDF"} 
-  //         icon={<FaFileDownload />} 
-  //         full={true} 
-  //         // onClick={() => downloadCharterPDF(data["id"])}
-  //       />,
-  //       <Button 
-  //         label={"Regenerate PDF"} 
-  //         icon={<TbReload />} 
-  //         full={true} 
-  //         // onClick={async () => { 
-  //         //   await handleLoading({
-  //         //     api: regenerateCharterPDF,
-  //         //     id: data["office"],
-  //         //     authTokens: authTokens,
-  //         //     messageSuccess: "PDF Regenerated",
-  //         //     messageFail: "PDF Regeneration Failed",
-  //         //   }); 
-  //         //   refreshList({
-  //         //     handlePaging: handlePaging,
-  //         //     route: route,
-  //         //     currentPage: currentPage,
-  //         //     setCurrentPage: setCurrentPage,
-  //         //     search: search,
-  //         //     pageSize: pageSize,
-  //         //     ordering: ordering,
-  //         //     field: field,
-  //         //     filter: filter,
-  //         //     timeout: 300,
-  //         //   });
-  //         // }}
-  //       />,
-  //       <Button 
-  //         label={"Delete PDF"} 
-  //         icon={<FaTrashAlt />} 
-  //         full={true} 
-  //         remove={true} 
-  //         // onClick={async () => { 
-  //         //   await handleLoading({
-  //         //     api: deleteCharterPDF,
-  //         //     id: data["id"],
-  //         //     authTokens: authTokens,
-  //         //     messageSuccess: "PDF Deleted",
-  //         //     messageFail: "PDF Deletion Failed",
-  //         //   }) 
-  //         //   refreshList({
-  //         //     handlePaging: handlePaging,
-  //         //     route: route,
-  //         //     currentPage: currentPage,
-  //         //     setCurrentPage: setCurrentPage,
-  //         //     search: search,
-  //         //     pageSize: pageSize,
-  //         //     ordering: ordering,
-  //         //     field: field,
-  //         //     filter: filter,
-  //         //     timeout: 300,
-  //         //   });
-  //         // }}
-  //       />,
-  //     ]} />
-  //   )
-  // })
 
   return(
     <>
@@ -444,7 +379,7 @@ export default function Charter() {
 
             <div className="flex flex-col gap-3 w-full sm:flex-row">
               <Search 
-                placeholder={"Ngalan ng serbisyo"} 
+                placeholder={"Numero/Ngalan ng serbisyo"} 
                 value={search} 
                 setValue={setSearch}
                 onClick={closeControls}

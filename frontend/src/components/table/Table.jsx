@@ -228,7 +228,7 @@ export default function Table({
             {Object.values(data)[0]}
           </td>
 
-          <td className="w-[64px] p-1">
+          <td className="w-[64px] p-1 pl-4 align-middle text-left">
             {Object.values(data)[2]}
           </td>
 

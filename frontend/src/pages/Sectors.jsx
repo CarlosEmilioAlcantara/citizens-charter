@@ -117,7 +117,13 @@ export default function Sectors() {
       ...Object.fromEntries(
         Object.entries(data).map(([field, value]) => [
         field,
-        field === "office_names" ? (
+        (field === "number") ? (
+          /\.00$/.test(value) ? 
+            value.replace(/\.00$/, "") : 
+            /\.([1-9])0$/.test(value) ? 
+              value.replace(/\.([1-9])0$/, ".$1") : 
+              value
+        ) : (field === "office_names") ? (
           <Button 
             disabled={data["office_names"].length < 1}
             label={"Tingnan mga Opisina"} 
@@ -134,7 +140,7 @@ export default function Sectors() {
           <TextArea 
             rowkey={key} 
             field={field} 
-            value={/\.0$/.test(value) ? value.replace(/\.0$/, "") : value}
+            value={value}
             selectedRows={selectedRows}
             data={data}
             setItems={setItems}
