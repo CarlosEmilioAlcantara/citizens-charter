@@ -332,7 +332,7 @@ export default function Positions() {
                   method: "POST",
                   authTokens: authTokens, 
                   messageSuccess: "Posisyon Dagdag Matagumpay", 
-                  messageFail:"Posisyon Dagdag Pumalya",
+                  messageFail:"Posisyon Dagdag Fail",
                 }); 
 
                 if (res.ok) {
@@ -378,7 +378,7 @@ export default function Positions() {
                         method: "DELETE",
                         authTokens: authTokens, 
                         messageSuccess: "Posisyon Delete Matagumpay", 
-                        messageFail:"Posisyon Delete Pumalya",
+                        messageFail:"Posisyon Delete Fail",
                       }); 
                       setSelectedRows({});
                       refreshList({
@@ -410,7 +410,7 @@ export default function Positions() {
                         method: "PUT",
                         authTokens: authTokens,
                         messageSuccess: "Posisyon Update Matagumpay",
-                        messageFail: "Posisyon Update Pumalya",
+                        messageFail: "Posisyon Update Fail",
                       });
 
                       if (res.ok) {

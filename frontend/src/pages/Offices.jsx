@@ -406,7 +406,7 @@ export default function Offices() {
                   method: "POST",
                   authTokens: authTokens, 
                   messageSuccess: "Opisina Dagdag Matagumpay", 
-                  messageFail:"Opisina Dagdag Pumalya",
+                  messageFail:"Opisina Dagdag Fail",
                 }); 
 
                 if (res.ok) {
@@ -453,7 +453,7 @@ export default function Offices() {
                         method: "DELETE",
                         authTokens: authTokens, 
                         messageSuccess: "Opisina Delete Matagumpay", 
-                        messageFail:"Opisina Delete Pumalya",
+                        messageFail:"Opisina Delete Fail",
                       }); 
 
                       setSelectedRows({});
@@ -486,7 +486,7 @@ export default function Offices() {
                         method: "PUT",
                         authTokens: authTokens,
                         messageSuccess: "Opisina Update Matagumpay",
-                        messageFail: "Opisina Update Pumalya",
+                        messageFail: "Opisina Update Fail",
                       });
 
                       if (res.ok) {

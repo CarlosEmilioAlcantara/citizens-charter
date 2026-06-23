@@ -22,6 +22,7 @@ import Loader from "../components/modals/Loader";
 import Alert from "../components/modals/Alert";
 import ButtonGroup from "../components/buttons/ButtonGroup";
 import AddEditService from "../components/modals/AddEditService";
+import Confirmation from "../components/modals/Confirmation";
 import useLoader from "../hooks/useLoader";
 import useSelectItems from "../hooks/useSelectItems";
 import usePaging from "../hooks/usePaging";
@@ -90,6 +91,7 @@ export default function Charter() {
   const [edit, setEdit] = useState(false);
   const [url, setUrl] = useState("");
   const [id, setId] = useState(null);
+  const [confirmation, setConfirmation] = useState(null);
   const {values, setValues, data, setData} = useValues([
     "number", 
     "name", 
@@ -266,27 +268,10 @@ export default function Charter() {
                 label={"Delete Serbisyo"}
                 remove={true}
               />, 
-              // "function": async () => { 
-              //   await handleLoading({
-              //     api: deleteCharterPDF,
-              //     id: data["id"],
-              //     authTokens: authTokens,
-              //     messageSuccess: "PDF Deleted",
-              //     messageFail: "PDF Deletion Failed",
-              //   }) 
-              //   refreshList({
-              //     handlePaging: handlePaging,
-              //     route: route,
-              //     currentPage: currentPage,
-              //     setCurrentPage: setCurrentPage,
-              //     search: search,
-              //     pageSize: pageSize,
-              //     ordering: ordering,
-              //     field: field,
-              //     filter: filter,
-              //     timeout: 300,
-              //   });
-              // },
+              "function": () => { 
+                setId(data["id"]);
+                setConfirmation({label: "Delete ng Serbisyo", remove: true});
+              },
             },
           ]}
       />)
@@ -654,6 +639,40 @@ export default function Charter() {
                   setData(data);
                 }
               }}
+            />
+          )}
+          {confirmation && (
+            <Confirmation 
+              label={confirmation.label}
+              func={async () => {
+                closeControls();
+
+                setLoadingMessage("Nagtatanggal ng Serbisyo");
+                await handleLoading({
+                  api: genericAPI, 
+                  route: `/api/service/${id}`,
+                  method: "DELETE",
+                  authTokens: authTokens, 
+                  messageSuccess: "Serbisyo Delete Matagumpay", 
+                  messageFail:"Serbisyo Delete Fail",
+                }); 
+                refreshList({
+                  handlePaging: handlePaging,
+                  accessToken: accessToken,
+                  route: route,
+                  currentPage: currentPage,
+                  setCurrentPage: setCurrentPage,
+                  search: search,
+                  pageSize: pageSize,
+                  ordering: ordering,
+                  field: field,
+                  filter: filter,
+                  timeout: 300,
+                });
+                }
+              }
+              remove={confirmation.remove}
+              onClose={() => setConfirmation(null)}
             />
           )}
 

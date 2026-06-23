@@ -289,7 +289,7 @@ export default function CharterAudit() {
                   method: "DELETE",
                   authTokens: authTokens, 
                   messageSuccess: "Charter Audit Log Delete Matagumpay", 
-                  messageFail:"Charter Audit Log Delete Pumalya",
+                  messageFail:"Charter Audit Log Delete Fail",
                 }); 
 
                 setSelectedRows({});

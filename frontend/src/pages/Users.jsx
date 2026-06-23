@@ -387,7 +387,7 @@ export default function Users() {
                   messageSuccess: 
                     `User ${edit ? 'Update' : 'Dagdag'} Matagumpay`, 
                   messageFail:
-                    `User ${edit ? 'Update' : 'Dagdag'} Pumalya`, 
+                    `User ${edit ? 'Update' : 'Dagdag'} Fail`, 
                 }); 
 
                 if (res.ok) {
@@ -432,7 +432,7 @@ export default function Users() {
                   method: "DELETE",
                   authTokens: authTokens, 
                   messageSuccess: "User Delete Matagumpay", 
-                  messageFail:"User Delete Pumalya",
+                  messageFail:"User Delete Fail",
                 }); 
                 refreshList({
                   handlePaging: handlePaging,

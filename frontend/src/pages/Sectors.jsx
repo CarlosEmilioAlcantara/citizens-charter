@@ -350,7 +350,7 @@ export default function Sectors() {
                   method: "POST",
                   authTokens: authTokens, 
                   messageSuccess: "Sector Dagdag Matagumpay", 
-                  messageFail:"Sectors Dagdag Pumalya",
+                  messageFail:"Sectors Dagdag Fail",
                 }); 
 
                 if (res.ok) {
@@ -397,7 +397,7 @@ export default function Sectors() {
                         method: "DELETE",
                         authTokens: authTokens, 
                         messageSuccess: "Sectors Delete Matagumpay", 
-                        messageFail:"Sectors Delete Pumalya",
+                        messageFail:"Sectors Delete Fail",
                       }); 
                       setSelectedRows({});
 
@@ -430,7 +430,7 @@ export default function Sectors() {
                         method: "PUT",
                         authTokens: authTokens,
                         messageSuccess: "Sectors Update Matagumpay",
-                        messageFail: "Sectors Update Pumalya",
+                        messageFail: "Sectors Update Fail",
                       });
 
                       if (res.ok) {
