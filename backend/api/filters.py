@@ -90,7 +90,7 @@ class ServiceFilter(django_filters.FilterSet):
     ) 
     classification_types = django_filters.CharFilter(
         field_name='classification_types',
-        lookup_expr='exact'
+        lookup_expr='iexact'
     ) 
 
     class Meta:

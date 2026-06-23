@@ -111,7 +111,17 @@ export default function Charter() {
       transaction: "simple",
       is_subservice: false,
     }));
-  }, [setRoute, setAccessToken, authTokens.access, setValues, user.office_id]);
+    setField("classification_types");
+    setFiltersRoute("/api/filters/service");
+  }, [
+    setRoute, 
+    setAccessToken, 
+    authTokens.access, 
+    setValues, 
+    user.office_id,
+    setField,
+    setFiltersRoute,
+  ]);
 
   const tableItems = Object.fromEntries(
     Object.entries(items).map(([key, data]) => [
