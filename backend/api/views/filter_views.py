@@ -86,11 +86,6 @@ class ServiceFiltersView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        transactions = [
-            transaction[0] 
-            for transaction 
-            in Service._meta.get_field('transaction').choices
-        ]
         classification_types = [
             classification[0]
             for classification
@@ -111,6 +106,6 @@ class ServiceFiltersView(APIView):
             for classification 
             in combinations(classification_types, 4)
         ]
-        data = transactions + classification_types + classification_twos + classification_threes + classification_fours
+        data = classification_types + classification_twos + classification_threes + classification_fours
 
         return Response(data=data, status=status.HTTP_200_OK)

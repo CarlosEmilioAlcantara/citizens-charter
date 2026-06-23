@@ -84,10 +84,6 @@ class AdminAuditFilter(django_filters.FilterSet):
         fields = ['content_type__model']
 
 class ServiceFilter(django_filters.FilterSet):
-    transaction = django_filters.CharFilter(
-        field_name='transaction',
-        lookup_expr='icontains'
-    ) 
     classification_types = django_filters.CharFilter(
         field_name='classification_types',
         lookup_expr='iexact'
@@ -95,10 +91,4 @@ class ServiceFilter(django_filters.FilterSet):
 
     class Meta:
         model = Service
-        fields = ['transaction', 'classification_types']
-
-# class ServiceClassificationFilter(django_filters.FilterSet):
-#     classification_types = django_filters.CharFilter(
-#         field_name='classification_types',
-#         lookup_expr='icontains'
-#     ) 
+        fields = ['classification_types']

@@ -465,6 +465,7 @@ export default function Charter() {
               search={search}
               pageSize={pageSize}
               fetchItems={handlePaging}
+              accessToken={accessToken}
               route={route}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
@@ -527,7 +528,7 @@ export default function Charter() {
                 if (res.ok) {
                   refreshList({
                     handlePaging: handlePaging,
-                    accessToken: authTokens.access,
+                    accessToken: accessToken,
                     route: route,
                     currentPage: currentPage,
                     setCurrentPage: setCurrentPage,
