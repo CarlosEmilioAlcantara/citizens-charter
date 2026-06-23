@@ -466,11 +466,21 @@ export default function Charter() {
             <AddEditService 
               onClose={() => {
                 setValues((prev) => {
-                  const reset = Object.keys(prev).map(key => [key, '']);
+                  const reset = Object.keys(prev).map(key => [
+                    key,
+                    key === "transaction" ?
+                      "simple" :
+                    key === "is_subservice" ?
+                      false :
+                    key === "office" ?
+                      user.office_id :
+                      ''
+                  ]);
                   return Object.fromEntries(reset);
                 });
                 setShowAdd(false); 
                 setEdit(false);
+                setSelected([]);
                 setData({});
               }} 
               label={`${edit ? 'Magupdate' : 'Magdagdag'} ng Serbisyo`}
@@ -519,10 +529,21 @@ export default function Charter() {
                     timeout: 300,
                   });
                   setValues((prev) => {
-                    const reset = Object.keys(prev).map(key => [key, '']);
+                    const reset = Object.keys(prev).map(key => [
+                      key,
+                      key === "transaction" ?
+                        "simple" :
+                      key === "is_subservice" ?
+                        false :
+                      key === "office" ?
+                        user.office_id :
+                        ''
+                    ]);
                     return Object.fromEntries(reset);
                   });
-                  setShowAdd(false);
+                  setShowAdd(false); 
+                  setEdit(false);
+                  setSelected([]);
                   setData({});
                 } else {
                   const data = await res.json()

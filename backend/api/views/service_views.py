@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 from ..models import Office, Service
 from ..serializers import (
     ServiceBulkUpdateSerializer, 
@@ -12,6 +13,8 @@ from ..serializers import (
 )
 from ..permissions import IsInOffice, IsSuperuser
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
+from ..pagers import MyCustomPagination
+from ..filters import ServiceFilter
 from ..utils.view_utils import audit_save, audit_delete
 
 class ServiceView(APIView):
@@ -72,7 +75,12 @@ class ServiceListView(ListAPIView):
     queryset = Service.objects.all().order_by('id')
     permission_classes = [IsAuthenticated]
     serializer_class = ServiceListSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    pagination_class = MyCustomPagination
+    filter_backends = [
+        filters.SearchFilter, 
+        filters.OrderingFilter,
+        DjangoFilterBackend,
+    ]
     search_fields = ['number', 'name']
     ordering_fields = [
         'number',
@@ -82,6 +90,7 @@ class ServiceListView(ListAPIView):
         'classification_types',
         'availers',
     ]
+    filterset_class = ServiceFilter
 
     def get_queryset(self):
         excluded_queryset = self.queryset.filter(

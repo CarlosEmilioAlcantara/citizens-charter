@@ -1,7 +1,7 @@
 import django_filters
 from django.db.models import Count
 from auditlog.models import LogEntry
-from .models import Sector, CitizensCharter, Office, Position, User
+from .models import Service, Sector, CitizensCharter, Office, Position, User
 
 class SectorFilter(django_filters.FilterSet):
     office_count_range = django_filters.CharFilter(
@@ -82,3 +82,23 @@ class AdminAuditFilter(django_filters.FilterSet):
     class Meta:
         model = LogEntry
         fields = ['content_type__model']
+
+class ServiceFilter(django_filters.FilterSet):
+    transaction = django_filters.CharFilter(
+        field_name='transaction',
+        lookup_expr='icontains'
+    ) 
+    classification_types = django_filters.CharFilter(
+        field_name='classification_types',
+        lookup_expr='exact'
+    ) 
+
+    class Meta:
+        model = Service
+        fields = ['transaction', 'classification_types']
+
+# class ServiceClassificationFilter(django_filters.FilterSet):
+#     classification_types = django_filters.CharFilter(
+#         field_name='classification_types',
+#         lookup_expr='icontains'
+#     ) 

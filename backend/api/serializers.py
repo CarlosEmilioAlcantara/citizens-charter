@@ -429,6 +429,10 @@ class ServiceSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Must have atleast a single claffication.'
             )
+        else:
+            data["classification_types"] = sorted(
+                data.get('classification_types')
+            )
 
         return data
 
