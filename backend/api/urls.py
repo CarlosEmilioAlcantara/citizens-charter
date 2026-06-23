@@ -86,6 +86,7 @@ from .views.filter_views import (
     OfficeFiltersView,
     PositionFiltersView,
     CharterAuditFiltersView,
+    AdminAuditFiltersView,
 )
 from .views.audit_log_views import (
     AuditLogListView, 
@@ -356,6 +357,11 @@ urlpatterns = [
         'filters/charter-audit',
         CharterAuditFiltersView.as_view(),
         name='fetch_charter_audit_filters'
+    ),
+    path(
+        'filters/admin-audit',
+        AdminAuditFiltersView.as_view(),
+        name='fetch_admin_audit_filters'
     ),
 
     # Audit logs

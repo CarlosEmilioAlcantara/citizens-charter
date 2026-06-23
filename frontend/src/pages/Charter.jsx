@@ -12,7 +12,6 @@ import FilterSelector from "../components/table_controls/FilterSelector";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import TableHeader from "../components/table/TableHeader";
 import Table from "../components/table/Table";
-import ListMobile from "../components/list/ListMobile";
 import Dropdown from "../components/dropdowns/Dropdown";
 import DropdownItem from "../components/dropdowns/DropdownItem";
 import EntriesCounter from "../components/table_controls/EntriesCounter";
@@ -20,9 +19,9 @@ import Pager from "../components/table_controls/Pager";
 import PDFViewer from "../components/modals/PDFViewer";
 import Loader from "../components/modals/Loader";
 import Alert from "../components/modals/Alert";
-import ButtonGroup from "../components/buttons/ButtonGroup";
 import AddEditService from "../components/modals/AddEditService";
 import Confirmation from "../components/modals/Confirmation";
+import { useNavigate } from "react-router-dom";
 import useLoader from "../hooks/useLoader";
 import useSelectItems from "../hooks/useSelectItems";
 import usePaging from "../hooks/usePaging";
@@ -30,7 +29,6 @@ import useTableControls from "../hooks/useTableControls";
 import useWindowWidth from "../hooks/useWindowWidth";
 import useValues from "../hooks/useValues";
 import refreshList from "../utils/refreshList";
-import { isTablet } from "../utils/isTablet";
 import { isDesktop } from "../utils/isDesktop";
 import { FaEye, FaPrint, FaTrashAlt, FaPlus } from "react-icons/fa";
 import { MdHomeRepairService, MdChecklistRtl } from "react-icons/md";
@@ -86,6 +84,7 @@ export default function Charter() {
     selected, 
     setSelected,
   } = useSelectItems();
+  const navigate = useNavigate();
   const [windowWidth] = useWindowWidth();
   const [showAdd, setShowAdd] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -219,27 +218,9 @@ export default function Charter() {
                 icon={<MdChecklistRtl />} 
                 label={"Update Kinakailangan"}
               />, 
-              // "function": async () => { 
-              //   await handleLoading({
-              //     api: regenerateCharterPDF,
-              //     id: data["office"],
-              //     authTokens: authTokens,
-              //     messageSuccess: "PDF Regenerated",
-              //     messageFail: "PDF Regeneration Failed",
-              //   }); 
-              //   refreshList({
-              //     handlePaging: handlePaging,
-              //     route: route,
-              //     currentPage: currentPage,
-              //     setCurrentPage: setCurrentPage,
-              //     search: search,
-              //     pageSize: pageSize,
-              //     ordering: ordering,
-              //     field: field,
-              //     filter: filter,
-              //     timeout: 300,
-              //   });
-              // },
+              "function": () => { 
+                navigate(`/service/${data["id"]}`)
+              },
             },
             {
               "label": <DropdownItem 
@@ -410,69 +391,49 @@ export default function Charter() {
             </div>
           </div>
 
-          {isTablet(windowWidth) ? (
-            <Table 
-              headers={[
-                <TableHeader 
-                  label={"#"} 
-                  order={"number"}
-                  setOrdering={setOrdering} 
-                  onClick={closeControls}
-                />, 
-                <TableHeader 
-                  label={"Serbisyo"} 
-                  order={"name"}
-                  setOrdering={setOrdering} 
-                  onClick={closeControls}
-                />, 
-                <TableHeader 
-                  label={"Deskripsyon"} 
-                  order={"description"}
-                  setOrdering={setOrdering} 
-                  onClick={closeControls}
-                />, 
-                <TableHeader 
-                  label={"Uri ng Transaksyon"} 
-                  order={"transaction"}
-                  setOrdering={setOrdering} 
-                  onClick={closeControls}
-                />, 
-                <TableHeader 
-                  label={"Klasipikasyon"} 
-                  order={"classification_types"}
-                  setOrdering={setOrdering} 
-                  onClick={closeControls}
-                />, 
-                <TableHeader 
-                  label={"Maaring Kumuha"} 
-                  order={"availers"}
-                  setOrdering={setOrdering} 
-                  onClick={closeControls}
-                />, 
-                "Actions",
-              ]}
-              body={tableItems}
-              serviceList={true}
-            />
-          ) : (
-            <ListMobile 
-              headers={[
-                <TableHeader 
-                  label={"PDF"} 
-                  order={"name"}
-                  setOrdering={setOrdering} 
-                  onClick={closeControls}
-                />, 
-                <TableHeader 
-                  label={"Sector"} 
-                  order={"sector__name"}
-                  setOrdering={setOrdering} 
-                  onClick={closeControls}
-                />, 
-              ]}
-              body={items}
-            />
-          )}
+          <Table 
+            headers={[
+              <TableHeader 
+                label={"#"} 
+                order={"number"}
+                setOrdering={setOrdering} 
+                onClick={closeControls}
+              />, 
+              <TableHeader 
+                label={"Serbisyo"} 
+                order={"name"}
+                setOrdering={setOrdering} 
+                onClick={closeControls}
+              />, 
+              <TableHeader 
+                label={"Deskripsyon"} 
+                order={"description"}
+                setOrdering={setOrdering} 
+                onClick={closeControls}
+              />, 
+              <TableHeader 
+                label={"Uri ng Transaksyon"} 
+                order={"transaction"}
+                setOrdering={setOrdering} 
+                onClick={closeControls}
+              />, 
+              <TableHeader 
+                label={"Klasipikasyon"} 
+                order={"classification_types"}
+                setOrdering={setOrdering} 
+                onClick={closeControls}
+              />, 
+              <TableHeader 
+                label={"Maaring Kumuha"} 
+                order={"availers"}
+                setOrdering={setOrdering} 
+                onClick={closeControls}
+              />, 
+              "Actions",
+            ]}
+            body={tableItems}
+            serviceList={true}
+          />
 
           <div className="
             flex 

@@ -72,3 +72,13 @@ class CharterAuditFilter(django_filters.FilterSet):
     class Meta:
         model = LogEntry
         fields = ['content_type__model']
+
+class AdminAuditFilter(django_filters.FilterSet):
+    model_name = django_filters.CharFilter(
+        field_name='content_type__model',
+        lookup_expr='icontains'
+    )
+
+    class Meta:
+        model = LogEntry
+        fields = ['content_type__model']

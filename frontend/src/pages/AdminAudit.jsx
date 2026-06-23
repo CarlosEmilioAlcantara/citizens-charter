@@ -78,7 +78,7 @@ export default function AdminAudit() {
   useEffect(() => {
     setRoute("/api/admin-audit-logs");
     setField("content_type__model");
-    setFiltersRoute("/api/filters/charter-audit");
+    setFiltersRoute("/api/filters/admin-audit");
     setAccessToken(authTokens.access);
   }, [setRoute, setAccessToken, setField, setFiltersRoute, authTokens.access])
 

@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Charter from "./pages/Charter";
+import Requirements from "./pages/Requirements";
 import Sectors from "./pages/Sectors";
 import Offices from "./pages/Offices";
 import Positions from "./pages/Positions";
@@ -35,6 +36,14 @@ export default function App() {
                 </ProtectedRoute>
               }
               path="/charter"
+            />
+            <Route
+              element={
+                <ProtectedRoute>
+                  <Requirements />
+                </ProtectedRoute>
+              }
+              path="/service/:id"
             />
             <Route
               element={

@@ -55,3 +55,15 @@ class CharterAuditFiltersView(APIView):
             'content_type__model'
         ).distinct()
         return Response(data=data, status=status.HTTP_200_OK)
+
+class AdminAuditFiltersView(APIView):
+    content_types = [6, 7, 12, 16, 17]
+    def get(self, request):
+        data = LogEntry.objects.filter(
+            content_type_id__in=self.content_types
+        ).values_list(
+            'content_type__model', flat=True
+        ).order_by(
+            'content_type__model'
+        ).distinct()
+        return Response(data=data, status=status.HTTP_200_OK)

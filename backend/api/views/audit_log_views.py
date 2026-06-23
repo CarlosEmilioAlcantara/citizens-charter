@@ -9,7 +9,7 @@ from ..permissions import IsSuperuser
 from ..mixins import BulkDeleteMixin
 from ..serializers import AuditLogSerializer
 from ..pagers import MyCustomPagination
-from ..filters import CharterAuditFilter
+from ..filters import CharterAuditFilter, AdminAuditFilter
 
 content_types = [6, 7, 12, 16, 17]
 
@@ -70,6 +70,7 @@ class SuperadminAuditLogListView(ListAPIView):
         'timestamp',
         'action_name',
     ]
+    filterset_class = AdminAuditFilter
 
     def get_queryset(self):
         return self.queryset
