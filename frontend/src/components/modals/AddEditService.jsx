@@ -9,7 +9,6 @@ import Selectbox from '../inputs/Selectbox';
 import Button from '../buttons/Button';
 import useShow from '../../hooks/useShow';
 import useTransactionSelector from '../../hooks/useTransactionSelector';
-import useSelectItems from '../../hooks/useSelectItems';
 import OptionTicker from '../buttons/OptionTicker';
 
 export default function AddEditService({ 
@@ -17,8 +16,9 @@ export default function AddEditService({
   label, 
   values,
   setValues,
+  selected,
+  setSelected,
   data,
-  setData,
   addFunc,
   edit = false,
 }) {
@@ -26,10 +26,6 @@ export default function AddEditService({
   const {
     transactionSelector, toggleTransactionSelector
   } = useTransactionSelector();
-  const {
-    selected, 
-    setSelected,
-  } = useSelectItems();
   const regex = /^\d{1,7}\.?\d{0,2}$/;
 
   return ReactDom.createPortal(
@@ -117,7 +113,8 @@ export default function AddEditService({
 
             <OptionTicker 
               label={"Subservice"} 
-              value={"is_subservice"}
+              name={"is_subservice"}
+              value={values.is_subservice}
               setValue={setValues}
             />
           </div>

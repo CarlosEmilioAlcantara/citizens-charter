@@ -23,6 +23,7 @@ import Alert from "../components/modals/Alert";
 import ButtonGroup from "../components/buttons/ButtonGroup";
 import AddEditService from "../components/modals/AddEditService";
 import useLoader from "../hooks/useLoader";
+import useSelectItems from "../hooks/useSelectItems";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useWindowWidth from "../hooks/useWindowWidth";
@@ -80,10 +81,15 @@ export default function Charter() {
     loadingMessage,
     setLoadingMessage,
   } = useLoader();
+  const {
+    selected, 
+    setSelected,
+  } = useSelectItems();
   const [windowWidth] = useWindowWidth();
   const [showAdd, setShowAdd] = useState(false);
   const [edit, setEdit] = useState(false);
   const [url, setUrl] = useState("");
+  const [id, setId] = useState(null);
   const {values, setValues, data, setData} = useValues([
     "number", 
     "name", 
@@ -93,7 +99,7 @@ export default function Charter() {
     "availers",
     "is_subservice",
     "office",
-  ])
+  ]);
 
   useEffect(() => {
     setRoute("/api/services");
@@ -171,7 +177,34 @@ export default function Charter() {
                 icon={<MdHomeRepairService />} 
                 label={"Update Serbisyo"}
               />, 
-              // "function": () => downloadCharterPDF(data["id"]),
+              "function": () => {
+                setEdit(true);
+                setShowAdd(true);
+                setId(data["id"]);
+
+                const classificationTypes = 
+                  data["formatted_classification_types"]
+                    .split(',')
+                    .map((classification) => classification.toLowerCase())
+
+                setValues((prev) => ({
+                  ...prev,
+                  number: data["number"],
+                  name: data["name"],
+                  description: data["description"],
+                  transaction: 
+                    (data["formatted_transaction"] === "Simple") ?
+                      "simple" :
+                    (data["formatted_transaction"] === "Komplikado") ?
+                      "complicated" :
+                    (data["formatted_transaction"] === "Lubhang Teknikal") &&
+                      "complicated",
+                  classification_types: classificationTypes,
+                  availers: data["availers"],
+                  is_subservice: data["is_subservice"],
+                }));
+                setSelected(classificationTypes);
+              },
             },
             {
               "label": <DropdownItem 
@@ -562,21 +595,32 @@ export default function Charter() {
               label={`${edit ? 'Magupdate' : 'Magdagdag'} ng Serbisyo`}
               values={values}
               setValues={setValues}
+              selected={selected}
+              setSelected={setSelected}
               data={data}
               setData={setData}
               edit={edit}
               addFunc={async () => {
                 closeControls();
 
-                setLoadingMessage("Naglilikha ng Serbisyo");
+                setLoadingMessage(edit ?
+                  "Naguupdate ng Serbisyo" :
+                  "Naglilikha ng Serbisyo"
+                );
                 const res = await handleLoading({
                   api: genericAPI, 
-                  route: "/api/service/create",
+                  route: (edit && id) ? 
+                    `/api/service/${id}` : 
+                    "/api/service/create",
                   authTokens: authTokens, 
-                  method: "POST",
+                  method: edit ? "PUT" : "POST",
                   body: values,
-                  messageSuccess: "Serbisyo Nalikha", 
-                  messageFail:"Serbisyo Paglikha Fail",
+                  messageSuccess: edit ? 
+                    "Serbisyo Naupdate" : 
+                    "Serbisyo Nalikha", 
+                  messageFail: edit ? 
+                    "Serbisyo Pagupdate Fail" : 
+                    "Serbisyo Paglikha Fail",
                 });
 
                 if (res.ok) {

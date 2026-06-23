@@ -457,6 +457,7 @@ class ServiceListSerializer(serializers.ModelSerializer):
             'formatted_transaction', 
             'formatted_classification_types',
             'availers',
+            'is_subservice',
         ]
 
 class ServiceBulkUpdateSerializer(serializers.ModelSerializer):

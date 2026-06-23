@@ -299,6 +299,7 @@ export default function Table({
         const isNumberColumn = key === "number"
         const isTransactionColumn = key === "formatted_transaction"
         const isClassificationColumn = key === "formatted_classification_types"
+        const isSubserivceColumn = key === "is_subservice"
         const isActionColumn = key === "actions"
 
         return (
@@ -312,6 +313,8 @@ export default function Table({
                       'text-center' :
                     isClassificationColumn ?
                       'pr-[52px] text-center' :
+                    isSubserivceColumn ?
+                      'hidden' :
                     isActionColumn ?
                       'w-[108px] text-end' :
                       ''
