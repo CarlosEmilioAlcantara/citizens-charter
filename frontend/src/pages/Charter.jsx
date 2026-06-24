@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { fetchAPI } from "../apis/fetchAPI";
 import { genericAPI } from "../apis/genericAPI";
 import { generateCharterAPI } from "../apis/generateCharterAPI";
@@ -21,7 +22,6 @@ import Loader from "../components/modals/Loader";
 import Alert from "../components/modals/Alert";
 import AddEditService from "../components/modals/AddEditService";
 import Confirmation from "../components/modals/Confirmation";
-import { useNavigate } from "react-router-dom";
 import useLoader from "../hooks/useLoader";
 import useSelectItems from "../hooks/useSelectItems";
 import usePaging from "../hooks/usePaging";
@@ -229,7 +229,13 @@ export default function Charter() {
                 label={"Update Kinakailangan"}
               />, 
               "function": () => { 
-                navigate(`/service/${data["id"]}`)
+                navigate(
+                  `/service/${data["id"]}`, 
+                  { state: { 
+                    "number": data["number"],
+                    "name": data["name"],
+                  }}
+                );
               },
             },
             {

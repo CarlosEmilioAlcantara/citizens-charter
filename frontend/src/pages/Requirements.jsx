@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { fetchAPI } from "../apis/fetchAPI";
 import { genericAPI } from "../apis/genericAPI";
 import { genericBulkAPI } from "../apis/genericBulkAPI";
@@ -24,7 +24,7 @@ import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import refreshList from "../utils/refreshList";
-import { FaPlus, FaTrashAlt, FaSave } from "react-icons/fa";
+import { FaPlus, FaTrashAlt, FaSave, FaChevronLeft } from "react-icons/fa";
 
 export default function Requirements() {
   const { authTokens } = useContext(AuthContext);
@@ -64,6 +64,9 @@ export default function Requirements() {
     setLoadingMessage,
   } = useLoader();
   const { serviceID } = useParams();
+  const location = useLocation();
+  const { number, name } = location.state;
+  const navigate = useNavigate();
   const [selectedRows, setSelectedRows] = useState({});
   const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
@@ -141,10 +144,37 @@ export default function Requirements() {
         ">
           <div className="flex flex-col items-start gap-2">
             <h2 
-              className="text-sm font-bold md:text-xl"
+              className="flex items-center gap-2 text-sm font-bold md:text-xl"
             >
-              Update Tseklist ng mga Kinakailangan
+              <span 
+                className="
+                  cursor-pointer 
+                  transition-all 
+                  duration-500 
+                  hover:text-unfocused
+                "
+                onClick={() => navigate("/charter")}
+              >
+                <FaChevronLeft />
+              </span> 
+              <span>Update Tseklist ng mga Kinakailangan</span>
             </h2>
+
+            <h3
+              className="flex items-center gap-2 text-sm md:text-lg"
+            >
+              <span>
+                {
+                  /\.00$/.test(number) ? 
+                  number.replace(/\.00$/, "") : 
+                  /\.([1-9])0$/.test(number) ? 
+                  number.replace(/\.([1-9])0$/, ".$1") : 
+                  number
+                }.
+              </span>
+              <span>{name}</span>
+            </h3>
+
             <Button 
               label={"Magdagdag"} 
               icon={<FaPlus />} 
