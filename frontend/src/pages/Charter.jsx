@@ -230,7 +230,7 @@ export default function Charter() {
               />, 
               "function": () => { 
                 navigate(
-                  `/service/${data["id"]}`, 
+                  `/service/requirement/${data["id"]}`, 
                   { state: { 
                     "number": data["number"],
                     "name": data["name"],
@@ -243,27 +243,15 @@ export default function Charter() {
                 icon={<BsBarChartSteps />} 
                 label={"Update Hakbang"}
               />, 
-              // "function": async () => { 
-              //   await handleLoading({
-              //     api: regenerateCharterPDF,
-              //     id: data["office"],
-              //     authTokens: authTokens,
-              //     messageSuccess: "PDF Regenerated",
-              //     messageFail: "PDF Regeneration Failed",
-              //   }); 
-              //   refreshList({
-              //     handlePaging: handlePaging,
-              //     route: route,
-              //     currentPage: currentPage,
-              //     setCurrentPage: setCurrentPage,
-              //     search: search,
-              //     pageSize: pageSize,
-              //     ordering: ordering,
-              //     field: field,
-              //     filter: filter,
-              //     timeout: 300,
-              //   });
-              // },
+              "function": () => { 
+                navigate(
+                  `/service/step/${data["id"]}`, 
+                  { state: { 
+                    "number": data["number"],
+                    "name": data["name"],
+                  }}
+                );
+              },
             },
             {
               "label": <DropdownItem 
@@ -280,7 +268,7 @@ export default function Charter() {
       />)
       }
     ]) 
-  )
+  );
 
   return(
     <>

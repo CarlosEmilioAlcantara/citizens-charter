@@ -26,7 +26,7 @@ import useTableControls from "../hooks/useTableControls";
 import refreshList from "../utils/refreshList";
 import { FaPlus, FaTrashAlt, FaSave, FaChevronLeft } from "react-icons/fa";
 
-export default function Requirements() {
+export default function Steps() {
   const { authTokens } = useContext(AuthContext);
   const {
     accessToken,
@@ -72,11 +72,18 @@ export default function Requirements() {
   const [showAdd, setShowAdd] = useState(false);
   const [confirmation, setConfirmation] = useState(null);
   const {values, setValues, data, setData} = useValues([
-    "name", "where_to_secure", "service"
+    "name", 
+    "action", 
+    "fee", 
+    "legal_basis", 
+    "processing_time", 
+    "is_subaction",
+    "service",
+    "position",
   ]);
 
   useEffect(() => {
-    setRoute(`/api/service/${serviceID}/requirements`);
+    setRoute(`/api/service/${serviceID}/steps`);
     setAccessToken(authTokens.access);
     setValues((prev) => ({
       ...prev,
@@ -121,7 +128,7 @@ export default function Requirements() {
         )
       }
     ])
-  );
+  )
 
   return(
     <>
@@ -157,7 +164,7 @@ export default function Requirements() {
               >
                 <FaChevronLeft />
               </span> 
-              <span>Update Tseklist ng mga Kinakailangan</span>
+              <span>Update Hakbang ng Kliyente</span>
             </h2>
 
             <h3
@@ -184,7 +191,7 @@ export default function Requirements() {
             <div className="flex flex-col gap-3 w-full sm:flex-row">
               <Search 
                 className="flex-1"
-                placeholder={"Ngalan ng kinakailangan"} 
+                placeholder={"Ngalan ng hakbang"} 
                 value={search} 
                 setValue={setSearch}
                 onClick={closeControls}
@@ -214,9 +221,7 @@ export default function Requirements() {
                   }
                   label={"Save Inedit"} 
                   icon={<FaSave />} 
-                  onClick={() => setConfirmation({
-                    label: "Edit ng Kinakailangan"
-                  })}
+                  onClick={() => setConfirmation({label: "Edit ng Hakbang"})}
                 />
 
                 <Button 
@@ -229,7 +234,7 @@ export default function Requirements() {
                   icon={<FaTrashAlt />} 
                   remove={true}
                   onClick={() => setConfirmation({
-                    label: "Magtanggal ng Sector",
+                    label: "Magtanggal ng Hakbang",
                     remove: true
                   })}
                 />
@@ -240,14 +245,38 @@ export default function Requirements() {
           <Table 
             headers={[
               <TableHeader 
-                label={"Kinakailangan"} 
+                label={"Hakbang"} 
                 order={"name"}
                 setOrdering={setOrdering} 
                 onClick={closeControls}
               />, 
               <TableHeader 
-                label={"Tutunguan"} 
-                order={"where_to_secure"}
+                label={"Gagawin ng Ahensya"} 
+                order={"action"}
+                setOrdering={setOrdering} 
+                onClick={closeControls}
+              />, 
+              <TableHeader 
+                label={"Bayarin"} 
+                order={"fee"}
+                setOrdering={setOrdering} 
+                onClick={closeControls}
+              />, 
+              <TableHeader 
+                label={"Basehang Legal"} 
+                order={"legal_basis"}
+                setOrdering={setOrdering} 
+                onClick={closeControls}
+              />, 
+              <TableHeader 
+                label={"Oras ng Pagproseso"} 
+                order={"processing_time"}
+                setOrdering={setOrdering} 
+                onClick={closeControls}
+              />, 
+              <TableHeader 
+                label={"Taong Responsable"} 
+                order={"position"}
                 setOrdering={setOrdering} 
                 onClick={closeControls}
               />, 
@@ -299,7 +328,7 @@ export default function Requirements() {
                 setShowAdd(false);
                 setData({});
               }} 
-              label={"Magdagdag ng Kinakailangan"}
+              label={"Magdagdag ng Hakbang"}
               inputs={[
                 <Input 
                   label={"Kinakailangan"}
@@ -374,15 +403,15 @@ export default function Requirements() {
                   ? async () => {
                       closeControls();
 
-                      setLoadingMessage("Nagtatanggal ng Kinakailangan");
+                      setLoadingMessage("Nagtatanggal ng Hakbang");
                       await handleLoading({
                         api: genericBulkAPI, 
                         body: selectedRows,
-                        route: "/api/requirement/delete",
+                        route: "/api/step/delete",
                         method: "DELETE",
                         authTokens: authTokens, 
-                        messageSuccess: "Kinakailangan Delete Matagumpay", 
-                        messageFail:"Kinakailangan Delete Fail",
+                        messageSuccess: "Hakbang Delete Matagumpay", 
+                        messageFail:"Hakbang Delete Fail",
                       }); 
                       setSelectedRows({});
 
@@ -406,15 +435,15 @@ export default function Requirements() {
                         item => selectedRows[item.id]
                       );
 
-                      setLoadingMessage("Naguupdate ng Kinakailangan");
+                      setLoadingMessage("Naguupdate ng Hakbang");
                       const res = await handleLoading({
                         api: genericBulkAPI,
                         body: editedItems,
-                        route: "/api/requirement/update",
+                        route: "/api/step/update",
                         method: "PUT",
                         authTokens: authTokens,
-                        messageSuccess: "Kinakailangan Update Matagumpay",
-                        messageFail: "Kinakailangan Update Fail",
+                        messageSuccess: "Hakbang Update Matagumpay",
+                        messageFail: "Hakbang Update Fail",
                       });
 
                       if (res.ok) {
