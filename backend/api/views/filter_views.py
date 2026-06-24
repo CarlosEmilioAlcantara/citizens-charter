@@ -106,6 +106,18 @@ class ServiceFiltersView(APIView):
             for classification 
             in combinations(classification_types, 4)
         ]
-        data = classification_types + classification_twos + classification_threes + classification_fours
+        classifications = \
+            classification_types + \
+            classification_twos + \
+            classification_threes + \
+            classification_fours
+        uppercase_classfications = [
+            classification.upper() 
+            for classification
+            in classifications
+        ]
 
-        return Response(data=data, status=status.HTTP_200_OK)
+        return Response(
+            data=uppercase_classfications, 
+            status=status.HTTP_200_OK
+        )
