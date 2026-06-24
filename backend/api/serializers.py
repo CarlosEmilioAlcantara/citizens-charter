@@ -531,6 +531,10 @@ class RequirementSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'where_to_secure', 'service']
         extra_kwargs = {'service': {'read_only': True}}
 
+    def create(self, validated_data):
+        service = self.context["service"]
+        return Requirement.objects.create(service=service, **validated_data)
+
 class RequirementListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Requirement

@@ -22,7 +22,10 @@ class CreateRequirementView(APIView):
     def post(self, request, pk):
         service = get_object_or_404(Service, pk=pk)
         self.check_object_permissions(request, service)
-        serializer = RequirementSerializer(data=request.data)
+        serializer = RequirementSerializer(
+            data=request.data,
+            context={'service': service}
+        )
         serializer.is_valid(raise_exception=True)
         audit_save(serializer, request)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

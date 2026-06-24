@@ -378,7 +378,7 @@ export default function Requirements() {
                       const res = await handleLoading({
                         api: genericBulkAPI,
                         body: editedItems,
-                        route: "/api/kinakailangan/update",
+                        route: "/api/requirement/update",
                         method: "PUT",
                         authTokens: authTokens,
                         messageSuccess: "Kinakailangan Update Matagumpay",
