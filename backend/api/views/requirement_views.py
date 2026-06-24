@@ -4,10 +4,16 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 from ..models import Requirement, Service
-from ..serializers import RequirementBulkUpdateSerializer, RequirementSerializer
+from ..serializers import (
+    RequirementBulkUpdateSerializer, 
+    RequirementSerializer,
+    RequirementListSerializer,
+)
 from ..permissions import IsInOffice, IsSuperuser
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
+from ..pagers import MyCustomPagination
 from ..utils.view_utils import audit_save, audit_delete
 
 class CreateRequirementView(APIView):
@@ -63,10 +69,12 @@ class UpdateRequirementView(BulkUpdateMixin, APIView):
 
 class RequirementListView(ListAPIView):
     queryset = Requirement.objects.all().order_by('id')
-    permission_classes = [IsAuthenticated]
-    serializer_class = RequirementSerializer
-    filter_backends = [filters.SearchFilter]
+    permission_classes = [IsAuthenticated, IsInOffice]
+    serializer_class = RequirementListSerializer
+    pagination_class = MyCustomPagination
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
+    ordering_fields = ['name', 'where_to_secure']
 
     def get_queryset(self):
         excluded_queryset = self.queryset.filter(
@@ -78,9 +86,11 @@ class RequirementListView(ListAPIView):
 class OfficeRequirementListView(ListAPIView):
     queryset = Requirement.objects.all().order_by('id')
     permission_classes = [IsAuthenticated, IsSuperuser]
-    serializer_class = RequirementSerializer
-    filter_backends = [filters.SearchFilter]
+    serializer_class = RequirementListSerializer
+    pagination_class = MyCustomPagination
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
+    ordering_fields = ['name', 'where_to_secure']
 
     def get_queryset(self):
         excluded_queryset = self.queryset.filter(

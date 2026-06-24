@@ -485,7 +485,7 @@ export default function Charter() {
                       false :
                     key === "office" ?
                       user.office_id :
-                      ''
+                      ""
                   ]);
                   return Object.fromEntries(reset);
                 });
@@ -548,7 +548,7 @@ export default function Charter() {
                         false :
                       key === "office" ?
                         user.office_id :
-                        ''
+                        ""
                     ]);
                     return Object.fromEntries(reset);
                   });

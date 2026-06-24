@@ -43,7 +43,7 @@ export default function App() {
                   <Requirements />
                 </ProtectedRoute>
               }
-              path="/service/:id"
+              path="/service/:serviceID"
             />
             <Route
               element={

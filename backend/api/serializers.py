@@ -531,6 +531,11 @@ class RequirementSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'where_to_secure', 'service']
         extra_kwargs = {'service': {'read_only': True}}
 
+class RequirementListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Requirement
+        fields = ['id', 'name', 'where_to_secure']
+
 class RequirementBulkUpdateSerializer(serializers.ModelSerializer):
     # pk = serializers.IntegerField()
     id = serializers.IntegerField(required=False)
