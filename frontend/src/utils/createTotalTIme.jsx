@@ -1,4 +1,7 @@
 export const createTotalTime = (time) => {
+  if (time === 0 || time === null) {
+    return "";
+  }
   let totalTime;
   let remainingTime;
   let formattedTime;
@@ -78,7 +81,7 @@ export const createTotalTime = (time) => {
   }
 
   const check = remainingTime.match(/\d+/)
-  if (check[0] > 0) {
+  if (check && check[0] > 0) {
     formattedTime = `${totalTime} and ${remainingTime}`
     return formattedTime;
   }
