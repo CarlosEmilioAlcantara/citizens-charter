@@ -10,6 +10,7 @@ export default function Table({
   userList = false,
   charterAudit = false,
   serviceList = false,
+  stepList = false,
 }) {
   const renderHeaders = () => {
     if (charterList) {
@@ -329,6 +330,38 @@ export default function Table({
       });
     }
 
+    if (stepList) {
+      return Object.entries(data).map(([key, value]) => {
+        if (hideID && key === "id") {
+          return (
+            <td key={key} className="hidden">
+              {value}
+            </td>
+          );
+        }
+
+        const isCheckboxColumn = key === "checkbox"
+        const isSubactionColumn = key === "is_subaction"
+
+        return (
+          value !== null && (
+            <td 
+              key={key}
+              className={`p-1 align-middle 
+                ${isCheckboxColumn ? 
+                    'w-[24px] text-center' : 
+                  isSubactionColumn &&
+                    'hidden'
+                }
+              `}
+            >
+              {value}
+            </td>
+          )
+        );
+      });
+    }
+
     return Object.entries(data).map(([key, value]) => {
       if (hideID && key === "id") {
         return (
@@ -346,13 +379,13 @@ export default function Table({
         value !== null && (
           <td 
             key={key}
-            className={`align-middle 
+            className={`p-1 align-middle 
               ${isCheckboxColumn ? 
                   'w-[24px] text-center' : 
                 isActionColumn && userList ?
-                  'w-[164px] p-1' :
+                  'w-[164px]' :
                 isActionColumn ?
-                  'p-1' :
+                  '' :
                   'p-1 text-center wrap-break-word'
               }
             `}

@@ -664,6 +664,25 @@ class StepBulkUpdateSerializer(serializers.ModelSerializer):
             data['name'] = None
         return data
 
+class StepListSerializer(serializers.ModelSerializer):
+    positions = serializers.SerializerMethodField()
+
+    def get_positions(self, obj):
+        return obj.position.all().values_list('name', flat=True)
+
+    class Meta:
+        model = Step
+        fields = [
+            'id',
+            'name', 
+            'action',
+            'fee',
+            'legal_basis',
+            'processing_time',
+            'is_subaction',
+            'positions',
+        ]
+
 class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
     total_requirement = serializers.IntegerField(read_only=True)
     total_step = serializers.IntegerField(read_only=True)

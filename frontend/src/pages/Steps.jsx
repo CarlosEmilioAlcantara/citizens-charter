@@ -24,6 +24,7 @@ import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import refreshList from "../utils/refreshList";
+import { createTotalTime } from "../utils/createTotalTIme";
 import { FaPlus, FaTrashAlt, FaSave, FaChevronLeft } from "react-icons/fa";
 
 export default function Steps() {
@@ -116,14 +117,24 @@ export default function Steps() {
         ...Object.fromEntries(
           Object.entries(data).map(([field, value]) => [
             field,
-            <TextArea 
-              rowkey={key} 
-              field={field} 
-              value={value}
-              selectedRows={selectedRows}
-              data={data}
-              setItems={setItems}
-            />
+            (field === "name" && 
+              data["is_subaction"] === true
+            ) ? (
+              <></>
+            ) : (field === "processing_time") ? (
+              createTotalTime(value)
+            ) : (field === "positions") ? (
+              value
+            ) : (
+              <TextArea 
+                rowkey={key} 
+                field={field} 
+                value={value}
+                selectedRows={selectedRows}
+                data={data}
+                setItems={setItems}
+              />
+            )
           ])
         )
       }
@@ -283,6 +294,7 @@ export default function Steps() {
             ]}
             body={tableItems}
             hideID={true}
+            stepList={true}
           />
 
           <div className="

@@ -5,7 +5,11 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..models import Service, Step
-from ..serializers import StepBulkUpdateSerializer, StepSerializer
+from ..serializers import (
+    StepBulkUpdateSerializer, 
+    StepSerializer,
+    StepListSerializer,
+)
 from ..permissions import IsInOffice, IsSuperuser
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
 from ..utils.view_utils import audit_save, audit_delete
@@ -72,7 +76,7 @@ class UpdateStepView(BulkUpdateMixin, APIView):
 class StepListView(ListAPIView):
     queryset = Step.objects.all().order_by('id')
     permission_classes = [IsAuthenticated]
-    serializer_class = StepSerializer
+    serializer_class = StepListSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
