@@ -6,6 +6,7 @@ export default function Button({
   full = false,
   remove = false,
   disabled = false,
+  iconButton = false,
 }) {
   return(
     <button
@@ -40,7 +41,7 @@ export default function Button({
       `}
     >
       {icon && (<span>{icon}</span>)}
-      <p>{label}</p>
+      {iconButton ? '' : (<p>{label}</p>)}
     </button>
   );
 }

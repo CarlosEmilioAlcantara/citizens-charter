@@ -1,4 +1,4 @@
-export const createTotalTime = (time) => {
+export const createTotalTime = (time, formatOnly) => {
   if (time === 0 || time === null) {
     return "";
   }

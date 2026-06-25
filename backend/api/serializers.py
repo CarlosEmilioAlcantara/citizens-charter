@@ -681,6 +681,8 @@ class StepListSerializer(serializers.ModelSerializer):
             'processing_time',
             'is_subaction',
             'positions',
+            'service',
+            'position',
         ]
 
 class OfficeAnalyticsListSerializer(serializers.ModelSerializer):

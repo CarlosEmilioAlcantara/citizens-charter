@@ -9,6 +9,7 @@ import Button from "../components/buttons/Button";
 import Input from "../components/inputs/Input";
 import Search from "../components/inputs/Search";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
+import TimeSelector from "../components/dropdowns/TimeSelector";
 import TableHeader from "../components/table/TableHeader";
 import Table from "../components/table/Table";
 import EntriesCounter from "../components/table_controls/EntriesCounter";
@@ -23,9 +24,17 @@ import useValues from "../hooks/useValues";
 import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
+import useStepSelectors from "../hooks/useStepSelectors";
 import refreshList from "../utils/refreshList";
+import { changeTime } from "../utils/changeTime";
 import { createTotalTime } from "../utils/createTotalTIme";
-import { FaPlus, FaTrashAlt, FaSave, FaChevronLeft } from "react-icons/fa";
+import { 
+  FaPlus, 
+  FaTrashAlt, 
+  FaSave, 
+  FaChevronLeft, 
+  FaClock 
+} from "react-icons/fa";
 
 export default function Steps() {
   const { authTokens } = useContext(AuthContext);
@@ -64,6 +73,12 @@ export default function Steps() {
     loadingMessage,
     setLoadingMessage,
   } = useLoader();
+  const {
+    timeSelector,
+    toggleTimeSelector,
+    positionSelector,
+    togglePositionSelector,
+  } = useStepSelectors();
   const { serviceID } = useParams();
   const location = useLocation();
   const { number, name } = location.state;
@@ -71,6 +86,10 @@ export default function Steps() {
   const [selectedRows, setSelectedRows] = useState({});
   const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
+  const [showTimeSelector, setShowTimeSelector] = useState(false);
+  const [timeFormat, setTimeFormat] = useState("Seconds");
+  const [rowkey, setRowkey] = useState(null);
+  const [currentTime, setCurrentTime] = useState(null);
   const [confirmation, setConfirmation] = useState(null);
   const {values, setValues, data, setData} = useValues([
     "name", 
@@ -122,9 +141,23 @@ export default function Steps() {
             ) ? (
               <></>
             ) : (field === "processing_time") ? (
-              createTotalTime(value)
+              <div className="flex items-center justify-center gap-1">
+                <span>{createTotalTime(value)}</span>
+                <span>
+                  <Button 
+                    icon={<FaClock size={18} />} 
+                    iconButton={true}
+                    onClick={() => {
+                      setRowkey(key);
+                      setCurrentTime(data["processing_time"]);
+                      setShowTimeSelector(true);
+                      setShowAdd(true);
+                    }}
+                  />
+                </span>
+              </div>
             ) : (field === "positions") ? (
-              value
+              value.join(", ")
             ) : (
               <TextArea 
                 rowkey={key} 
@@ -139,7 +172,12 @@ export default function Steps() {
         )
       }
     ])
-  )
+  );
+
+  useEffect(() => {
+    console.log(values);
+    console.log(items);
+  }, [values, items])
 
   return(
     <>
@@ -327,6 +365,7 @@ export default function Steps() {
 
           {showAdd && (
             <AddEditItem 
+              timeSelector={true}
               onClose={() => {
                 setValues((prev) => {
                   const reset = Object.keys(prev).map(key => [
@@ -340,18 +379,25 @@ export default function Steps() {
                 setShowAdd(false);
                 setData({});
               }} 
-              label={"Magdagdag ng Hakbang"}
+              label={
+                showTimeSelector ? 
+                  "Magupdate ng Oras" :
+                  "Magdagdag ng Hakbang"
+                }
               inputs={[
-                <Input 
-                  label={"Kinakailangan"}
-                  warning={data?.name}
-                  type={"text"}
-                  placeholder={"Kinakailangan..."}
-                  name={"name"}
-                  value={values.name}
-                  setValue={setValues}
-                  small={true}
-                />,
+                showTimeSelector ? (
+                  <TimeSelector 
+                    timeFormat={timeFormat}
+                    setTimeFormat={setTimeFormat}
+                    name={"processing_time"}
+                    value={currentTime}
+                    setValue={setCurrentTime}
+                    rowkey={rowkey}
+                    setItems={setItems}
+                    isOpen={timeSelector}
+                    toggle={toggleTimeSelector}
+                  />
+                ) : (
                 <Input 
                   label={"Tutunguan"}
                   warning={data?.where_to_secure}
@@ -361,50 +407,58 @@ export default function Steps() {
                   value={values.where_to_secure}
                   setValue={setValues}
                   small={true}
-                />,
+                />),
               ]}
-              addFunc={async () => {
-                setLoadingMessage("Nagdadagdag ng Kinakailangan");
-                const res = await handleLoading({
-                  api: genericAPI, 
-                  body: values,
-                  route: `/api/service/${serviceID}/create-requirement`,
-                  method: "POST",
-                  authTokens: authTokens, 
-                  messageSuccess: "Kinakailangan Dagdag Matagumpay", 
-                  messageFail:"Kinakailangan Dagdag Fail",
-                }); 
+              addFunc={
+                showTimeSelector ? 
+                  () => {
+                    changeTime(currentTime, timeFormat, setItems, rowkey);
+                    setShowAdd(false);
+                  }
+                : 
+                  async () => {
+                  setLoadingMessage("Nagdadagdag ng Kinakailangan");
+                  const res = await handleLoading({
+                    api: genericAPI, 
+                    body: values,
+                    route: `/api/service/${serviceID}/create-requirement`,
+                    method: "POST",
+                    authTokens: authTokens, 
+                    messageSuccess: "Kinakailangan Dagdag Matagumpay", 
+                    messageFail:"Kinakailangan Dagdag Fail",
+                  }); 
 
-                if (res.ok) {
-                  refreshList({
-                    handlePaging: handlePaging,
-                    accessToken: accessToken,
-                    route: route,
-                    currentPage: currentPage,
-                    setCurrentPage: setCurrentPage,
-                    search: search,
-                    pageSize: pageSize,
-                    ordering: ordering,
-                    field: field,
-                    timeout: 300,
-                  });
+                  if (res.ok) {
+                    refreshList({
+                      handlePaging: handlePaging,
+                      accessToken: accessToken,
+                      route: route,
+                      currentPage: currentPage,
+                      setCurrentPage: setCurrentPage,
+                      search: search,
+                      pageSize: pageSize,
+                      ordering: ordering,
+                      field: field,
+                      timeout: 300,
+                    });
 
-                  setValues((prev) => {
-                    const reset = Object.keys(prev).map(key => [
-                      key,
-                      key === "service" ?
-                        serviceID :
-                        ""
-                    ]);
-                    return Object.fromEntries(reset);
-                  });
-                  setShowAdd(false);
-                  setData({});
-                } else {
-                  const data = await res.json();
-                  setData(data);
+                    setValues((prev) => {
+                      const reset = Object.keys(prev).map(key => [
+                        key,
+                        key === "service" ?
+                          serviceID :
+                          ""
+                      ]);
+                      return Object.fromEntries(reset);
+                    });
+                    setShowAdd(false);
+                    setData({});
+                  } else {
+                    const data = await res.json();
+                    setData(data);
+                  }
                 }
-              }}
+              }
             />
           )}
           {confirmation && (

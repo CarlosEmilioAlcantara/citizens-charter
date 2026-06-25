@@ -14,6 +14,7 @@ export default function AddEditItem({
   sector = false,
   addUser = false,
   edit = false,
+  timeSelector = false,
 }) {
   const [show, handleClose] = useShow({initialValue: false, onClose: onClose});
   const entries = Object.entries(inputs);
@@ -53,7 +54,7 @@ export default function AddEditItem({
         overflow-hidden
         z-50
       `}>
-        <div className="
+        <div className={`
           absolute 
           top-0 
           left-0
@@ -69,7 +70,7 @@ export default function AddEditItem({
           text-accent 
           text-md
           font-bold
-        ">
+        `}>
           <div className="flex items-center gap-2">
             {edit ? <FaPen /> : <FaPlus />}
             <span>{label}</span>
@@ -92,7 +93,8 @@ export default function AddEditItem({
         </div>
 
         <div className={`
-          ${sector ? 'w-[300px] pb-4' : 'w-[600px]'} 
+          ${(sector || rows.length === 1) ? 'w-[300px] pb-4' : 'w-[600px]'} 
+          ${timeSelector && 'h-[500px]'}
           mt-3
         `}>
           {addUser && firstInput && (
@@ -135,9 +137,13 @@ export default function AddEditItem({
 
           <Button 
             label={edit ? 'Iedit' : 'Idagdag'}
-            onClick={async () => {
-              await addFunc();
-            }}
+            onClick={
+              timeSelector ? 
+                () => addFunc()
+              :
+                async () => {
+                await addFunc();
+              }}
           /> 
         </div>
       </div>

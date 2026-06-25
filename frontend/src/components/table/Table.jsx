@@ -342,6 +342,8 @@ export default function Table({
 
         const isCheckboxColumn = key === "checkbox"
         const isSubactionColumn = key === "is_subaction"
+        const isServiceColumn = key === "service"
+        const isPositionColumn = key === "position"
 
         return (
           value !== null && (
@@ -350,7 +352,7 @@ export default function Table({
               className={`p-1 align-middle 
                 ${isCheckboxColumn ? 
                     'w-[24px] text-center' : 
-                  isSubactionColumn &&
+                  (isSubactionColumn || isServiceColumn || isPositionColumn) &&
                     'hidden'
                 }
               `}
