@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 
-export default function Listbox({ items, prevSelected = null }) {
+export default function Listbox({ 
+  items, 
+  prevSelected = null, 
+  setSelectedPositions = null,
+}) {
   const [selected, setSelected] = useState("");
 
   useEffect(() => {
@@ -27,7 +31,17 @@ export default function Listbox({ items, prevSelected = null }) {
         {items.map((item, index) => (
           <li 
             key={index}
-            onClick={() => {item.onClick(); setSelected(item.name);}}
+            onClick={() => {
+              if (setSelectedPositions) {
+                setSelectedPositions((prev) => [
+                  ...prev, 
+                  item
+                ])
+              } else {
+                item.onClick(); 
+                setSelected(item.name);
+              }
+            }}
             className={`
               block
               w-full

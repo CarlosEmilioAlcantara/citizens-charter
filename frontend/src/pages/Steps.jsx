@@ -24,7 +24,7 @@ import useValues from "../hooks/useValues";
 import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
-import useStepSelectors from "../hooks/useStepSelectors";
+import useTimeSelector from "../hooks/useTimeSelector";
 import refreshList from "../utils/refreshList";
 import { changeTime } from "../utils/changeTime";
 import { createTotalTime } from "../utils/createTotalTIme";
@@ -33,8 +33,11 @@ import {
   FaTrashAlt, 
   FaSave, 
   FaChevronLeft, 
-  FaClock 
+  FaClock,
+  FaPen,
 } from "react-icons/fa";
+import DualListbox from "../components/inputs/DualListbox";
+import useOfficePositions from "../hooks/useOfficePositions";
 
 export default function Steps() {
   const { authTokens } = useContext(AuthContext);
@@ -73,12 +76,12 @@ export default function Steps() {
     loadingMessage,
     setLoadingMessage,
   } = useLoader();
-  const {
-    timeSelector,
-    toggleTimeSelector,
-    positionSelector,
-    togglePositionSelector,
-  } = useStepSelectors();
+  const { timeSelector, toggleTimeSelector } = useTimeSelector();
+  const [
+    positions, 
+    selectedPositions, 
+    setSelectedPositions,
+  ] = useOfficePositions(accessToken);
   const { serviceID } = useParams();
   const location = useLocation();
   const { number, name } = location.state;
@@ -87,6 +90,7 @@ export default function Steps() {
   const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [showTimeSelector, setShowTimeSelector] = useState(false);
+  const [showPositionSelector, setPositionSelector] = useState(false);
   const [timeFormat, setTimeFormat] = useState("Seconds");
   const [rowkey, setRowkey] = useState(null);
   const [currentTime, setCurrentTime] = useState(null);
@@ -158,7 +162,21 @@ export default function Steps() {
                 </span>
               </div>
             ) : (field === "positions") ? (
-              value.join(", ")
+              <div className="flex items-center justify-center gap-1">
+                <span>{value.join(", ")}</span>
+                <span>
+                  <Button 
+                    disabled={!selectedRows[data.id]}
+                    icon={<FaPen size={18} />} 
+                    iconButton={true}
+                    onClick={() => {
+                      setRowkey(key);
+                      setPositionSelector(true);
+                      setShowAdd(true);
+                    }}
+                  />
+                </span>
+              </div>
             ) : (
               <TextArea 
                 rowkey={key} 
@@ -176,9 +194,8 @@ export default function Steps() {
   );
 
   useEffect(() => {
-    console.log(values);
-    console.log(items);
-  }, [values, items])
+    console.log(positions);
+  }, [positions])
 
   return(
     <>
@@ -366,7 +383,7 @@ export default function Steps() {
 
           {showAdd && (
             <AddEditItem 
-              timeSelector={true}
+              timeSelector={showTimeSelector ? true : false}
               onClose={() => {
                 setValues((prev) => {
                   const reset = Object.keys(prev).map(key => [
@@ -378,6 +395,8 @@ export default function Steps() {
                   return Object.fromEntries(reset);
                 });
                 setShowAdd(false);
+                setShowTimeSelector(false);
+                setPositionSelector(false);
                 setData({});
               }} 
               label={
@@ -397,6 +416,12 @@ export default function Steps() {
                     setItems={setItems}
                     isOpen={timeSelector}
                     toggle={toggleTimeSelector}
+                  />
+                ) : showPositionSelector ? (
+                  <DualListbox 
+                    items={positions}
+                    selectedPositions={selectedPositions}
+                    setSelectedPositions={setSelectedPositions}
                   />
                 ) : (
                 <Input 

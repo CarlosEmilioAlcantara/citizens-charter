@@ -14,6 +14,7 @@ from .views.office_views import (
     UpdateOfficeView,
     OfficeSelectorView,
     OfficeListView,
+    OfficePositionsView,
 )
 from .views.user_views import (
     UserView, 
@@ -123,6 +124,11 @@ urlpatterns = [
         name='fetch_offices_info'
     ),
     path('offices', OfficeListView.as_view(), name='fetch_offices'),
+    path(
+        'office-positions', 
+        OfficePositionsView.as_view(), 
+        name='fetch_office_positions'
+    ),
 
     # User Urls
     path('user/create', UserView.as_view(), name='create_user'),

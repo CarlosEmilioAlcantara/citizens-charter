@@ -12,7 +12,7 @@ from ..serializers import (
     OfficeSerializer,
     OfficeListSerializer,
 )
-from ..permissions import IsSuperuser
+from ..permissions import IsSuperuser, IsInOffice
 from ..mixins import BulkDeleteMixin, BulkUpdateMixin
 from ..pagers import MyCustomPagination
 from ..filters import OfficeFilter
@@ -92,3 +92,17 @@ class OfficeListView(ListAPIView):
 
     def get_queryset(self):
         return self.queryset
+
+class OfficePositionsView(APIView):
+    permission_classes = [IsAuthenticated, IsInOffice]
+
+    def get(self, request):
+        office = Office.objects.prefetch_related(
+            'positions'
+        ).get(
+            pk=self.request.user.office_id 
+        )
+
+        positions = office.positions.values('id', 'name')
+
+        return Response(data=positions, status=status.HTTP_200_OK)

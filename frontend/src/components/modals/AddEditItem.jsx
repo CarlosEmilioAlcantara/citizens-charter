@@ -93,7 +93,7 @@ export default function AddEditItem({
         </div>
 
         <div className={`
-          ${(sector || rows.length === 1) ? 'w-[300px] pb-4' : 'w-[600px]'} 
+          ${(sector || timeSelector) ? 'w-[300px] pb-4' : 'w-[600px]'} 
           ${timeSelector && 'h-[100px]'}
           mt-3
         `}>
