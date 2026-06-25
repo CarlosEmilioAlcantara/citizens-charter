@@ -10,6 +10,7 @@ export default function Dropdown({
   sizeSelector = false, 
   sectorSelector = false,
   transactionSelector = false,
+  timeSelector = false,
   centerItems = false,
   full = false,
   items,
@@ -36,7 +37,7 @@ export default function Dropdown({
       `}>
         <div 
           className={`
-            ${sizeSelector && 'w-30'}
+            ${(sizeSelector || timeSelector)&& 'w-30'}
             ${transactionSelector && 'w-48'}
             ${sectorSelector && 'w-70'}
             ${full && 'w-full'}
@@ -95,6 +96,7 @@ export default function Dropdown({
           ${sectorSelector && 
             'w-70 h-[200px] overflow-auto'
           }
+          ${timeSelector && 'w-full h-[97px] overflow-auto'}
           max-h-[400px]
           bg-background 
           border 

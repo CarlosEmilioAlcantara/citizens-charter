@@ -45,6 +45,7 @@ export default function TimeSelector({
         isOpen={isOpen}
         toggle={toggle}
         label={timeFormat}
+        timeSelector={true}
         items={[
           {
             "label": "Seconds",

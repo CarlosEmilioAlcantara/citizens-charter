@@ -145,6 +145,7 @@ export default function Steps() {
                 <span>{createTotalTime(value)}</span>
                 <span>
                   <Button 
+                    disabled={!selectedRows[data.id]}
                     icon={<FaClock size={18} />} 
                     iconButton={true}
                     onClick={() => {

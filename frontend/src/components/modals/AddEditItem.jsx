@@ -43,7 +43,7 @@ export default function AddEditItem({
       z-50
     `}>
       <Overlay show={show} zIndex={40} toggle={handleClose} />
-      <div className={`
+      <div className="
         relative
         flex
         flex-col
@@ -53,8 +53,8 @@ export default function AddEditItem({
         bg-background
         overflow-hidden
         z-50
-      `}>
-        <div className={`
+      ">
+        <div className="
           absolute 
           top-0 
           left-0
@@ -70,7 +70,7 @@ export default function AddEditItem({
           text-accent 
           text-md
           font-bold
-        `}>
+        ">
           <div className="flex items-center gap-2">
             {edit ? <FaPen /> : <FaPlus />}
             <span>{label}</span>
@@ -94,7 +94,7 @@ export default function AddEditItem({
 
         <div className={`
           ${(sector || rows.length === 1) ? 'w-[300px] pb-4' : 'w-[600px]'} 
-          ${timeSelector && 'h-[500px]'}
+          ${timeSelector && 'h-[100px]'}
           mt-3
         `}>
           {addUser && firstInput && (
