@@ -6,7 +6,6 @@ export default function TimeSelector({
   name,
   value,
   setValue,
-  rowkey,
   isOpen,
   toggle, 
   setItems,
@@ -29,7 +28,7 @@ export default function TimeSelector({
           if (setItems) {
             setValue(e.target.value);
           } else {
-            setValue(value=>({...value, [name]:e.target.value}))
+            setValue(value=>({...value, [name]:e.target.value}));
           }
         }}
         className="

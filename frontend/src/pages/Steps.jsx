@@ -27,6 +27,7 @@ import useTableControls from "../hooks/useTableControls";
 import useTimeSelector from "../hooks/useTimeSelector";
 import refreshList from "../utils/refreshList";
 import { changeTime } from "../utils/changeTime";
+import { changePositions } from "../utils/changePositions";
 import { createTotalTime } from "../utils/createTotalTIme";
 import { 
   FaPlus, 
@@ -193,6 +194,10 @@ export default function Steps() {
       }
     ])
   );
+
+  useEffect(() => {
+    console.log(items);
+  }, [items]);
 
   return(
     <>
@@ -380,8 +385,9 @@ export default function Steps() {
 
           {showAdd && (
             <AddEditItem 
-              timeSelector={showTimeSelector ? true : false}
+              timeSelector={showTimeSelector}
               positionSelector={showPositionSelector}
+              edit={showTimeSelector || showPositionSelector}
               onClose={() => {
                 setValues((prev) => {
                   const reset = Object.keys(prev).map(key => [
@@ -400,6 +406,8 @@ export default function Steps() {
               label={
                 showTimeSelector ? 
                   "Magupdate ng Oras" :
+                showPositionSelector ?
+                  "Magupdate ng mga Posisyon" :
                   "Magdagdag ng Hakbang"
                 }
               inputs={[
@@ -440,7 +448,12 @@ export default function Steps() {
                     changeTime(currentTime, timeFormat, setItems, rowkey);
                     setShowAdd(false);
                   }
-                : 
+                : showPositionSelector ? 
+                  () => {
+                    changePositions(selectedPositions, setItems, rowkey);
+                    setShowAdd(false);
+                  }
+                :
                   async () => {
                   setLoadingMessage("Nagdadagdag ng Kinakailangan");
                   const res = await handleLoading({
