@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 export default function Listbox({ 
   items, 
   prevSelected = null, 
+  setPositions = null,
   setSelectedPositions = null,
 }) {
   const [selected, setSelected] = useState("");
@@ -28,34 +29,42 @@ export default function Listbox({
       hover:[&::-webkit-scrollbar-thumb]:bg-accent
     ">
       <ul className="w-full overflow-hidden">
-        {items.map((item, index) => (
-          <li 
-            key={index}
-            onClick={() => {
-              if (setSelectedPositions) {
-                setSelectedPositions((prev) => [
-                  ...prev, 
-                  item
-                ])
-              } else {
-                item.onClick(); 
-                setSelected(item.name);
-              }
-            }}
-            className={`
-              block
-              w-full
-              ${selected === item.name && 'bg-active'}
-              px-2
-              py-1
-              wrap-break-word
-              cursor-pointer
-              transition-all 
-              duration-300
-              hover:bg-active
-          `}>
-            {item.name}
-          </li>
+        {[...items]
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((item, index) => (
+            <li 
+              key={index}
+              onClick={() => {
+                if (setSelectedPositions) {
+                  setSelectedPositions((prev) =>
+                    prev.includes(item) ?
+                      prev.filter((position) => position !== item) :
+                    [...prev, item]
+                  );
+                  setPositions((prev) =>
+                    prev.includes(item) ?
+                      prev.filter((position) => position !== item) :
+                    [...prev, item]
+                  );
+                } else {
+                  item.onClick(); 
+                  setSelected(item.name);
+                }
+              }}
+              className={`
+                block
+                w-full
+                ${selected === item.name && 'bg-active'}
+                px-2
+                py-1
+                wrap-break-word
+                cursor-pointer
+                transition-all 
+                duration-300
+                hover:bg-active
+            `}>
+              {item.name}
+            </li>
         ))}
       </ul>
     </div>

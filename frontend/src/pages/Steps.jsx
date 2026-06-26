@@ -79,6 +79,7 @@ export default function Steps() {
   const { timeSelector, toggleTimeSelector } = useTimeSelector();
   const [
     positions, 
+    setPositions,
     selectedPositions, 
     setSelectedPositions,
   ] = useOfficePositions(accessToken);
@@ -192,10 +193,6 @@ export default function Steps() {
       }
     ])
   );
-
-  useEffect(() => {
-    console.log(positions);
-  }, [positions])
 
   return(
     <>
@@ -420,6 +417,7 @@ export default function Steps() {
                 ) : showPositionSelector ? (
                   <DualListbox 
                     items={positions}
+                    setPositions={setPositions}
                     selectedPositions={selectedPositions}
                     setSelectedPositions={setSelectedPositions}
                   />

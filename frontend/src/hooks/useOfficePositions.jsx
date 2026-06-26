@@ -20,5 +20,5 @@ export default function useOfficePositions(accessToken) {
     }
   }, [accessToken, handleFetching])
 
-  return [positions, selectedPositions, setSelectedPositions];
+  return [positions, setPositions, selectedPositions, setSelectedPositions];
 }
