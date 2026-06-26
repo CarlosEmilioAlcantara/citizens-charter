@@ -381,6 +381,7 @@ export default function Steps() {
           {showAdd && (
             <AddEditItem 
               timeSelector={showTimeSelector ? true : false}
+              positionSelector={showPositionSelector}
               onClose={() => {
                 setValues((prev) => {
                   const reset = Object.keys(prev).map(key => [

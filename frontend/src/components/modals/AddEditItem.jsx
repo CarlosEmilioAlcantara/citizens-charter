@@ -15,6 +15,7 @@ export default function AddEditItem({
   addUser = false,
   edit = false,
   timeSelector = false,
+  positionSelector = false,
 }) {
   const [show, handleClose] = useShow({initialValue: false, onClose: onClose});
   const entries = Object.entries(inputs);
@@ -95,6 +96,7 @@ export default function AddEditItem({
         <div className={`
           ${(sector || timeSelector) ? 'w-[300px] pb-4' : 'w-[600px]'} 
           ${timeSelector && 'h-[100px]'}
+          ${positionSelector && 'w-[700px]'}
           mt-3
         `}>
           {addUser && firstInput && (
