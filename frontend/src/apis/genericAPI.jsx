@@ -15,7 +15,7 @@ export const genericAPI = async (
           })
       },
       body: 
-        (body && method === "POST" || method === "PUT") ?
+        (body && method === "POST") || method === "PUT" ?
           JSON.stringify(body) :
           undefined
     });

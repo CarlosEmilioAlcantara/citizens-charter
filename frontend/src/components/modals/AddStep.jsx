@@ -52,7 +52,6 @@ export default function AddStep({
         p-4
         rounded-lg
         bg-background
-        overflow-hidden
         z-50
       `}>
         <div className="
@@ -93,7 +92,7 @@ export default function AddStep({
           />
         </div>
 
-        <div className="flex flex-col gap-2 w-[800px] mt-3 pb-4">
+        <div className="flex flex-col gap-2 w-[800px] mt-3 pb-4 overflow-auto">
           <InputArea 
             label={"Name"}
             warning={data?.name}
@@ -127,7 +126,7 @@ export default function AddStep({
           <Input 
             label={"Basehang Legal"}
             warning={data?.legal_basis}
-            type={"number"}
+            type={"text"}
             placeholder={"Basehang Legal..."}
             name={"legal_basis"}
             value={values.legal_basis}
@@ -135,17 +134,20 @@ export default function AddStep({
             small={true}
           />
 
-          <div className="flex justify-between gap-2">
-            <Input 
-              label={"Bayarin"}
-              warning={data?.fee}
-              type={"number"}
-              placeholder={"Bayarin..."}
-              name={"fee"}
-              value={values.fee}
-              setValue={setValues}
-              small={true}
-            />
+          <div className="flex gap-4">
+            <div className="flex items-center gap-2">
+              <span className="mt-4">Php</span>
+              <Input 
+                label={"Bayarin"}
+                warning={data?.fee}
+                type={"number"}
+                placeholder={"Bayarin..."}
+                name={"fee"}
+                value={values.fee}
+                setValue={setValues}
+                small={true}
+              />
+            </div>
 
             <TimeSelector 
               timeFormat={timeFormat}

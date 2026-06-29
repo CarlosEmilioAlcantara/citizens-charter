@@ -169,7 +169,7 @@ class Step(models.Model):
     name = models.CharField(max_length=180, blank=True, null=True)
     action = models.CharField(max_length=180)
     fee = models.DecimalField(
-        max_digits=9, 
+        max_digits=22, 
         decimal_places=2, 
         blank=True,
         null=True
@@ -194,7 +194,7 @@ class Step(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return self.name or "subaction"
 
 class StepPosition(models.Model):
     step = models.ForeignKey(

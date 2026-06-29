@@ -1,6 +1,6 @@
-export const createTotalTime = (time, formatOnly) => {
+export const createTotalTime = (time) => {
   if (time === 0 || time === null) {
-    return "";
+    return "No Time";
   }
   let totalTime;
   let remainingTime;

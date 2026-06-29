@@ -40,6 +40,7 @@ import {
   FaClock,
   FaPen,
 } from "react-icons/fa";
+import { getSeconds } from "../utils/getSeconds";
 
 export default function Steps() {
   const { authTokens } = useContext(AuthContext);
@@ -116,6 +117,7 @@ export default function Steps() {
     setAccessToken(authTokens.access);
     setValues((prev) => ({
       ...prev,
+      is_subaction: false,
       service: serviceID,
     }))
   }, [
@@ -158,6 +160,7 @@ export default function Steps() {
                     icon={<FaClock size={18} />} 
                     iconButton={true}
                     onClick={() => {
+                      console.log(key)
                       setRowkey(key);
                       setCurrentTime(data["processing_time"]);
                       setShowTimeSelector(true);
@@ -186,7 +189,7 @@ export default function Steps() {
               <TextArea 
                 rowkey={key} 
                 field={field} 
-                value={value}
+                value={value === null ? "" : value}
                 selectedRows={selectedRows}
                 data={data}
                 setItems={setItems}
@@ -197,10 +200,6 @@ export default function Steps() {
       }
     ])
   );
-
-  useEffect(() => {
-    console.log(items);
-  }, [items]);
 
   return(
     <>
@@ -443,51 +442,24 @@ export default function Steps() {
                   () => {
                     changeTime(currentTime, timeFormat, setItems, rowkey);
                     setShowAdd(false);
+                    setShowTimeSelector(false);
+                    setPositionSelector(false);
+                    setTimeFormat("Seconds");
+                    setPositions(oldPositions);
+                    setSelectedPositions([]);
                   }
-                : showPositionSelector ? 
+                : showPositionSelector ?
                   () => {
                     changePositions(selectedPositions, setItems, rowkey);
-                    setShowAdd(false);
-                  }
-                :
-                  async () => {
-                  setLoadingMessage("Nagdadagdag ng Kinakailangan");
-                  const res = await handleLoading({
-                    api: genericAPI, 
-                    body: values,
-                    route: `/api/service/${serviceID}/create-requirement`,
-                    method: "POST",
-                    authTokens: authTokens, 
-                    messageSuccess: "Kinakailangan Dagdag Matagumpay", 
-                    messageFail:"Kinakailangan Dagdag Fail",
-                  }); 
-
-                  if (res.ok) {
-                    refreshList({
-                      handlePaging: handlePaging,
-                      accessToken: accessToken,
-                      route: route,
-                      currentPage: currentPage,
-                      setCurrentPage: setCurrentPage,
-                      search: search,
-                      pageSize: pageSize,
-                      ordering: ordering,
-                      field: field,
-                      timeout: 300,
-                    });
-
                     setShowAdd(false);
                     setShowTimeSelector(false);
                     setPositionSelector(false);
                     setTimeFormat("Seconds");
                     setPositions(oldPositions);
                     setSelectedPositions([]);
-                  } else {
-                    const data = await res.json();
-                    setData(data);
                   }
+                : () => {}
                 }
-              }
             />
           )}
           {showAddStep && (
@@ -506,6 +478,10 @@ export default function Steps() {
                 setValues((prev) => {
                   const reset = Object.keys(prev).map(key => [
                     key,
+                    key === "is_subaction" ?
+                      false :
+                    key === "position" ?
+                      [] :
                     key === "service" ?
                       serviceID :
                       ""
@@ -516,25 +492,67 @@ export default function Steps() {
                 setTimeFormat("Seconds");
                 setPositions(oldPositions);
                 setSelectedPositions([]);
+                setData({});
               }}
               addFunc={async () => {
-                setValues((prev) => {
-                  const reset = Object.keys(prev).map(key => [
-                    key,
-                    key === "service" ?
-                      serviceID :
-                      ""
-                  ]);
-                  return Object.fromEntries(reset);
-                });
-                setShowAddStep(false);
-                setTimeFormat("Seconds");
-                setPositions(oldPositions);
-                setSelectedPositions([]);
+                const ids = selectedPositions.map(position => position.id);
+                const body = {
+                  ...values,
+                  processing_time: Number(
+                    getSeconds(values.processing_time, timeFormat)
+                  ),
+                  position: ids,
+                }
+
+                setLoadingMessage("Nagdadagdag ng Hakbang");
+                const res = await handleLoading({
+                  api: genericAPI, 
+                  body: body,
+                  route: `/api/service/${serviceID}/create-step`,
+                  method: "POST",
+                  authTokens: authTokens, 
+                  messageSuccess: "Hakbang Dagdag Matagumpay", 
+                  messageFail:"Hakbang Dagdag Fail",
+                }); 
+
+                if (res.ok) {
+                  refreshList({
+                    handlePaging: handlePaging,
+                    accessToken: accessToken,
+                    route: route,
+                    currentPage: currentPage,
+                    setCurrentPage: setCurrentPage,
+                    search: search,
+                    pageSize: pageSize,
+                    ordering: ordering,
+                    field: field,
+                    timeout: 300,
+                  });
+
+                  setValues((prev) => {
+                    const reset = Object.keys(prev).map(key => [
+                      key,
+                      key === "is_subaction" ?
+                        false :
+                      key === "service" ?
+                        serviceID :
+                        ""
+                    ]);
+                    return Object.fromEntries(reset);
+                  });
+                  setShowAddStep(false);
+                  setTimeFormat("Seconds");
+                  setPositions(oldPositions);
+                  setSelectedPositions([]);
+                  setData({});
+                } else {
+                  const data = await res.json();
+                  setData(data);
+                }
+
               }}
             />
           )}
-
 
           {confirmation && (
             <Confirmation 

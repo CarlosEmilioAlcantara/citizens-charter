@@ -37,10 +37,11 @@ export default function Dropdown({
       `}>
         <div 
           className={`
-            ${(sizeSelector || timeSelector)&& 'w-30'}
+            ${(sizeSelector || timeSelector) && 'w-30'}
             ${transactionSelector && 'w-48'}
             ${sectorSelector && 'w-70'}
             ${full && 'w-full'}
+            ${timeSelector && 'h-full'}
             relative
             flex
             ${(sectorSelector || transactionSelector) ? 

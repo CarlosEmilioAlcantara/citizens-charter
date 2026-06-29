@@ -592,13 +592,13 @@ class StepSerializer(serializers.ModelSerializer):
                 'Must have a step first before a subaction.'
             )
 
-        if data.get('is_subaction') and data.get('name'):
+        if data.get('is_subaction') and not data.get('name') == "":
             raise serializers.ValidationError(
                 'Subaction assigns to specific step.'
             )
         if not data.get('is_subaction') and not data.get('name'):
             raise serializers.ValidationError('Must name a step.')
-        if len(data.get('position')) == 0:
+        if not data.get('position'):
             raise serializers.ValidationError('Must have atleast one position.')
 
         if data.get('is_subaction'):
