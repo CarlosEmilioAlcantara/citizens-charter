@@ -20,11 +20,14 @@ import Checkbox from "../components/buttons/Checkbox";
 import TextArea from "../components/inputs/TextArea";
 import AddEditItem from "../components/modals/AddEditItem";
 import Confirmation from "../components/modals/Confirmation";
+import DualListbox from "../components/inputs/DualListbox";
+import AddStep from "../components/modals/AddStep";
 import useValues from "../hooks/useValues";
 import useLoader from "../hooks/useLoader";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useTimeSelector from "../hooks/useTimeSelector";
+import useOfficePositions from "../hooks/useOfficePositions";
 import refreshList from "../utils/refreshList";
 import { changeTime } from "../utils/changeTime";
 import { changePositions } from "../utils/changePositions";
@@ -37,8 +40,6 @@ import {
   FaClock,
   FaPen,
 } from "react-icons/fa";
-import DualListbox from "../components/inputs/DualListbox";
-import useOfficePositions from "../hooks/useOfficePositions";
 
 export default function Steps() {
   const { authTokens } = useContext(AuthContext);
@@ -78,12 +79,13 @@ export default function Steps() {
     setLoadingMessage,
   } = useLoader();
   const { timeSelector, toggleTimeSelector } = useTimeSelector();
-  const [
+  const {
     positions, 
+    oldPositions,
     setPositions,
     selectedPositions, 
     setSelectedPositions,
-  ] = useOfficePositions(accessToken);
+  } = useOfficePositions(accessToken);
   const { serviceID } = useParams();
   const location = useLocation();
   const { number, name } = location.state;
@@ -91,6 +93,7 @@ export default function Steps() {
   const [selectedRows, setSelectedRows] = useState({});
   const [itemIDs, setItemIDs] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
+  const [showAddStep, setShowAddStep] = useState(false);
   const [showTimeSelector, setShowTimeSelector] = useState(false);
   const [showPositionSelector, setPositionSelector] = useState(false);
   const [timeFormat, setTimeFormat] = useState("Seconds");
@@ -104,8 +107,8 @@ export default function Steps() {
     "legal_basis", 
     "processing_time", 
     "is_subaction",
-    "service",
     "position",
+    "service",
   ]);
 
   useEffect(() => {
@@ -254,7 +257,7 @@ export default function Steps() {
             <Button 
               label={"Magdagdag"} 
               icon={<FaPlus />} 
-              onClick={() => {closeControls(); setShowAdd(true);}}
+              onClick={() => {closeControls(); setShowAddStep(true);}}
             />
 
             <div className="flex flex-col gap-3 w-full sm:flex-row">
@@ -389,26 +392,19 @@ export default function Steps() {
               positionSelector={showPositionSelector}
               edit={showTimeSelector || showPositionSelector}
               onClose={() => {
-                setValues((prev) => {
-                  const reset = Object.keys(prev).map(key => [
-                    key,
-                    key === "service" ?
-                      serviceID :
-                      ""
-                  ]);
-                  return Object.fromEntries(reset);
-                });
                 setShowAdd(false);
                 setShowTimeSelector(false);
                 setPositionSelector(false);
-                setData({});
+                setTimeFormat("Seconds");
+                setPositions(oldPositions);
+                setSelectedPositions([]);
               }} 
               label={
                 showTimeSelector ? 
                   "Magupdate ng Oras" :
                 showPositionSelector ?
                   "Magupdate ng mga Posisyon" :
-                  "Magdagdag ng Hakbang"
+                  ""
                 }
               inputs={[
                 showTimeSelector ? (
@@ -480,17 +476,12 @@ export default function Steps() {
                       timeout: 300,
                     });
 
-                    setValues((prev) => {
-                      const reset = Object.keys(prev).map(key => [
-                        key,
-                        key === "service" ?
-                          serviceID :
-                          ""
-                      ]);
-                      return Object.fromEntries(reset);
-                    });
                     setShowAdd(false);
-                    setData({});
+                    setShowTimeSelector(false);
+                    setPositionSelector(false);
+                    setTimeFormat("Seconds");
+                    setPositions(oldPositions);
+                    setSelectedPositions([]);
                   } else {
                     const data = await res.json();
                     setData(data);
@@ -499,6 +490,52 @@ export default function Steps() {
               }
             />
           )}
+          {showAddStep && (
+            <AddStep 
+              label={"Magdagdag ng Hakbang"}
+              values={values}
+              setValues={setValues}
+              data={data}
+              timeFormat={timeFormat}
+              setTimeFormat={setTimeFormat}
+              positions={positions}
+              setPositions={setPositions}
+              selectedPositions={selectedPositions}
+              setSelectedPositions={setSelectedPositions}
+              onClose={() => {
+                setValues((prev) => {
+                  const reset = Object.keys(prev).map(key => [
+                    key,
+                    key === "service" ?
+                      serviceID :
+                      ""
+                  ]);
+                  return Object.fromEntries(reset);
+                });
+                setShowAddStep(false);
+                setTimeFormat("Seconds");
+                setPositions(oldPositions);
+                setSelectedPositions([]);
+              }}
+              addFunc={async () => {
+                setValues((prev) => {
+                  const reset = Object.keys(prev).map(key => [
+                    key,
+                    key === "service" ?
+                      serviceID :
+                      ""
+                  ]);
+                  return Object.fromEntries(reset);
+                });
+                setShowAddStep(false);
+                setTimeFormat("Seconds");
+                setPositions(oldPositions);
+                setSelectedPositions([]);
+              }}
+            />
+          )}
+
+
           {confirmation && (
             <Confirmation 
               label={confirmation.label}
