@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from ..serializers import OfficeAnalyticsListSerializer
 from ..permissions import IsInOffice
 from ..models import Service, Requirement, Step, Office
+from ..pagers import MyCustomPagination
 from ..utils.report_utils import create_office_report
 from ..utils.time_utils import create_total_time
 
@@ -44,8 +45,12 @@ class OfficeAnalyticsListView(ListAPIView):
 
     permission_classes = [IsAuthenticated, IsInOffice]
     serializer_class = OfficeAnalyticsListSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['name']
+    pagination_class = MyCustomPagination
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    search_fields = ['number', 'name']
 
     def get_queryset(self):
         excluded_queryset = self.queryset.filter(
