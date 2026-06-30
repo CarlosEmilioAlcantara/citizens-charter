@@ -8,15 +8,17 @@ export default function useSelectItems() {
   const [selected, setSelected] = useState([]);
 
   useEffect(() => {
-    async function handleGetItems() {
-      try {
-        const data = await fetchAPI(route, accessToken);
-        setSelectionItems(data);
-      } catch {
-        return false;
+    if (route) {
+      async function handleGetItems() {
+        try {
+          const data = await fetchAPI(route, accessToken);
+          setSelectionItems(data);
+        } catch {
+          return false;
+        }
       }
+      handleGetItems();
     }
-    handleGetItems();
   }, [accessToken, route]);
 
   return {setAccessToken, setRoute, selectionItems, selected, setSelected};

@@ -31,7 +31,7 @@ export default function DataBackup() {
   useEffect(() => {
     setAccessToken(authTokens.access);
     setRoute("/api/model-list");
-  }, [selected]);
+  }, [setAccessToken, authTokens.access, setRoute]);
 
   return(
     <>
