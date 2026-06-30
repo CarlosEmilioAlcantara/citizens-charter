@@ -222,32 +222,45 @@ export default function Table({
     }
 
     if (sectorList) {
-      return (
-        <>
-          <td className="w-[24px] align-middle text-center">
-            {/* {String(Object.values(data)[1]).replace(/\.0$/, "")} */}
-            {Object.values(data)[0]}
-          </td>
+      return Object.entries(data).map(([field, value]) => {
+        if (field === "id") {
+          return (
+            <td key={field} className="hidden">
+              {value}
+            </td>
+          );
+        }
 
-          <td className="w-[64px] p-1 pl-4 align-middle text-left">
-            {Object.values(data)[2]}
-          </td>
+        const isCheckboxColumn = field === "checkbox"
+        const isNumberColumn = field === "number"
+        const isNameColumn = field === "name"
 
-          <td className="p-1">
-            {Object.values(data)[3]}
-          </td>
-
-          <td className="p-1 align-middle text-center">
-            {Object.values(data)[4]}
-          </td>
-
-          <td className="p-1 align-middle">
-            <div className="flex justify-end">
-              {Object.values(data)[5]}
-            </div>
-          </td>
-        </>
-      );
+        return (
+          field !== "office_names" ? (
+            <td 
+              key={field}
+              className={`p-1 align-middle 
+                ${isCheckboxColumn ? 
+                    'w-[24px] text-center' :
+                  isNumberColumn ?
+                    'w-[64px] pl-4 align-middle text-left' :
+                  isNameColumn ?
+                    'text-center' :
+                    'text-center wrap-break-word'
+                }
+              `}
+            >
+              {value}
+            </td>
+          ) : (
+            <td key={field} className="p-1 align-middle">
+              <div className="flex justify-end">
+                {value}
+              </div>
+            </td>
+          )
+        );
+      });
     }
 
     if (charterAudit) {
@@ -436,9 +449,9 @@ export default function Table({
           border-collapse
         ">
           <tbody>
-            {Object.values(body).map((rowData) => (
+            {Object.entries(body).map(([key, rowData]) => (
               <tr
-                key={rowData.id}
+                key={key}
                 className="
                   border-b
                   border-b-unfocused

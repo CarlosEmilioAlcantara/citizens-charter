@@ -150,6 +150,10 @@ export default function Sectors() {
     )}])
   )
 
+  useEffect(() => {
+    console.log(typeof tableItems);
+  }, [tableItems])
+
   return(
     <>
       <Loader show={loading} message={loadingMessage} />
