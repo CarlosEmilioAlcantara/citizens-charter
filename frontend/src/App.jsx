@@ -4,6 +4,7 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Analytics from "./pages/Analytics";
 import Charter from "./pages/Charter";
 import Requirements from "./pages/Requirements";
 import Steps from "./pages/Steps";
@@ -29,6 +30,14 @@ export default function App() {
                 </ProtectedRoute>
               }
               path="/dashboard"
+            />
+            <Route
+              element={
+                <ProtectedRoute>
+                  <Analytics />
+                </ProtectedRoute>
+              }
+              path="/analytics"
             />
             <Route
               element={

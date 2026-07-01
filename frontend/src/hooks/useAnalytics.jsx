@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
 
-export default function useOfficeAnalytics(accessToken) {
+export default function useAnalytics(route, accessToken) {
   const [analytics, setAnalytics] = useState({});
 
   const handleFetching = useCallback(async() => {
     try {
-      const data = await fetchAPI("/api/office-analytics", accessToken);
+      const data = await fetchAPI(route, accessToken);
       return data;
     } catch {
       return [];
     }
-  }, [accessToken]);
+  }, [route, accessToken]);
 
   useEffect(() => {
     if (accessToken) {

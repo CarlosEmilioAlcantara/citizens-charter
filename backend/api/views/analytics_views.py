@@ -4,7 +4,10 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from ..serializers import OfficeAnalyticsListSerializer
+from ..serializers import (
+    OfficeAnalyticsListSerializer, 
+    CitizensCharterAnalyticsListSerializer,
+)
 from ..permissions import IsInOffice
 from ..models import Service, Requirement, Step, Office
 from ..pagers import MyCustomPagination
@@ -46,11 +49,8 @@ class OfficeAnalyticsListView(ListAPIView):
     permission_classes = [IsAuthenticated, IsInOffice]
     serializer_class = OfficeAnalyticsListSerializer
     pagination_class = MyCustomPagination
-    filter_backends = [
-        filters.SearchFilter,
-        filters.OrderingFilter,
-    ]
-    search_fields = [
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = [
         'number', 
         'name', 
         'total_requirement', 
@@ -65,34 +65,49 @@ class OfficeAnalyticsListView(ListAPIView):
         )
         return excluded_queryset
 
-class CitizensCharterAnalyticsView(APIView):
+class CitizensCharterAnalyticsView(ListAPIView):
+    step_queryset = Step.objects.filter(
+        service__office=OuterRef('pk')
+    ).values('service__office').annotate(
+        total_step=Count('id'),
+        total_price=Sum('fee'),
+        total_time=Sum('processing_time')
+    )
+    requirement_queryset = Requirement.objects.filter(
+        service__office=OuterRef('pk')
+    ).values('service__office').annotate(
+        total_requirement=Count('id')
+    )
+
+    queryset = Office.objects.annotate(
+        total_service=Count('services', distinct=True),
+        total_requirement=Subquery(
+            requirement_queryset.values('total_requirement')
+        ),
+        total_step=Subquery(step_queryset.values('total_step')),
+        total_price=Subquery(step_queryset.values('total_price')),
+        total_time=Subquery(step_queryset.values('total_time'))
+    ).values().order_by('name')
+
+    # for office in queryset:
+    #     office['total_time'] = create_total_time(office['total_time'])
+
     permission_classes = [IsAuthenticated, IsAdminUser]
+    serializer_class = CitizensCharterAnalyticsListSerializer
+    pagination_class = MyCustomPagination
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    search_fields = ['name']
+    ordering_fields = [
+        'name', 
+        'total_service',
+        'total_requirement', 
+        'total_step',
+        'total_price',
+        'total_time',
+    ]
 
-    def get(self, request):
-        step_queryset = Step.objects.filter(
-            service__office=OuterRef('pk')
-        ).values('service__office').annotate(
-            total_step=Count('id'),
-            total_price=Sum('fee'),
-            total_time=Sum('processing_time')
-        )
-        requirement_queryset = Requirement.objects.filter(
-            service__office=OuterRef('pk')
-        ).values('service__office').annotate(
-            total_requirement=Count('id')
-        )
-
-        queryset = Office.objects.annotate(
-            total_service=Count('services', distinct=True),
-            total_requirement=Subquery(
-                requirement_queryset.values('total_requirement')
-            ),
-            total_step=Subquery(step_queryset.values('total_step')),
-            total_price=Subquery(step_queryset.values('total_price')),
-            total_time=Subquery(step_queryset.values('total_time'))
-        ).values()
-
-        for office in queryset:
-            office['total_time'] = create_total_time(office['total_time'])
-
-        return Response(data=queryset, status=status.HTTP_200_OK)
+    def get_queryset(self):
+        return self.queryset

@@ -16,7 +16,7 @@ import Button from "../components/buttons/Button";
 import Alert from "../components/modals/Alert";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
-import useOfficeAnalytics from "../hooks/useOfficeAnalytics";
+import useAnalytics from "../hooks/useAnalytics";
 import useLoader from "../hooks/useLoader";
 import { createTotalTime } from "../utils/createTotalTime";
 import { normalizeNumber } from "../utils/normalizeNumber";
@@ -58,7 +58,7 @@ export default function Dashboard() {
     loadingMessage,
     setLoadingMessage,
   } = useLoader();
-  const [analytics] = useOfficeAnalytics(accessToken);
+  const [analytics] = useAnalytics("/api/office-analytics", accessToken);
   const [url, setUrl] = useState("");
 
   useEffect(() => {

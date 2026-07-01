@@ -705,6 +705,24 @@ class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {'office': {'read_only': True}}
 
+class CitizensCharterAnalyticsListSerializer(serializers.ModelSerializer):
+    total_service = serializers.IntegerField(read_only=True)
+    total_requirement = serializers.IntegerField(read_only=True)
+    total_step = serializers.IntegerField(read_only=True)
+    total_price = serializers.IntegerField(read_only=True)
+    total_time = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Office
+        fields = [
+            'name', 
+            'total_service',
+            'total_requirement',
+            'total_step',
+            'total_price',
+            'total_time',
+        ]
+
 class AuditLogSerializer(serializers.ModelSerializer):
     content_type_model = serializers.SerializerMethodField()
     # action_name = serializers.SerializerMethodField()
