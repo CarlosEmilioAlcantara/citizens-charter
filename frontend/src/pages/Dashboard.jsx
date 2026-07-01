@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation"
@@ -10,6 +10,7 @@ import Pager from "../components/table_controls/Pager";
 import TextArea from "../components/inputs/TextArea";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
+import useOfficeAnalytics from "../hooks/useOfficeAnalytics";
 import { createTotalTime } from "../utils/createTotalTime";
 
 export default function Dashboard() {
@@ -20,11 +21,9 @@ export default function Dashboard() {
     route,
     setRoute,
     items,
-    setItems,
     search,
     pageSize,
     setPageSize,
-    ordering,
     setOrdering,
     prev,
     next,
@@ -39,11 +38,13 @@ export default function Dashboard() {
     togglePageSizeSelector,
     closeControls,
   } = useTableControls();
+  const [analytics] = useOfficeAnalytics(accessToken);
 
   useEffect(() => {
     setRoute("/api/office-analytics-list");
     setAccessToken(authTokens.access);
-  }, [setRoute, setAccessToken, authTokens.access])
+    console.log(analytics);
+  }, [setRoute, setAccessToken, authTokens.access, analytics])
 
   const tableItems = Object.fromEntries(
     Object.entries(items).map(([key, data]) => [
@@ -82,7 +83,7 @@ export default function Dashboard() {
   )
 
   return(
-    <div>
+    <>
       <Navigation />
       <div className="
         flex 
@@ -188,6 +189,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

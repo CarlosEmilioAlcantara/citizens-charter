@@ -690,10 +690,6 @@ class OfficeAnalyticsListSerializer(serializers.ModelSerializer):
     total_step = serializers.IntegerField(read_only=True)
     total_price = serializers.IntegerField(read_only=True)
     total_time = serializers.IntegerField(read_only=True)
-    # total_time = serializers.SerializerMethodField()
-
-    # def get_total_time(self, obj):
-    #     return create_total_time(obj['total_time'])
 
     class Meta:
         model = Service
