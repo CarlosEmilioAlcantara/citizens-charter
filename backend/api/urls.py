@@ -55,6 +55,11 @@ from .views.analytics_views import (
     OfficeAnalyticsView, 
     OfficeAnalyticsListView,
     CitizensCharterAnalyticsView,
+    ServiceAnalyticsView,
+    RequirementAnalyticsView,
+    StepAnalyticsView,
+    PriceAnalyticsView,
+    TimeAnalyticsView,
 )
 from .views.csv_export_views import (
     ExportSectorCsvView,
@@ -233,6 +238,31 @@ urlpatterns = [
         'citizens-charter-analytics', 
         CitizensCharterAnalyticsView.as_view(), 
         name='analysis_citizens_charter'
+    ),
+    path(
+        'service-analytics/<str:order>', 
+        ServiceAnalyticsView.as_view(), 
+        name='analysis_service'
+    ),
+    path(
+        'requirement-analytics/<str:order>', 
+        RequirementAnalyticsView.as_view(), 
+        name='analysis_requirement'
+    ),
+    path(
+        'step-analytics/<str:order>', 
+        StepAnalyticsView.as_view(), 
+        name='analysis_step'
+    ),
+    path(
+        'price-analytics/<str:order>', 
+        PriceAnalyticsView.as_view(), 
+        name='analysis_price'
+    ),
+    path(
+        'time-analytics/<str:order>', 
+        TimeAnalyticsView.as_view(), 
+        name='analysis_time'
     ),
 
     # Csv Urls

@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.exceptions import ValidationError
 from ..serializers import (
     OfficeAnalyticsListSerializer, 
     CitizensCharterAnalyticsListSerializer,
@@ -112,3 +113,106 @@ class CitizensCharterAnalyticsView(ListAPIView):
 
     def get_queryset(self):
         return self.queryset
+
+class ServiceAnalyticsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get(self, request, order):
+        if order == 'most':
+            listing = '-total_service'
+        elif order == 'least':
+            listing = 'total_service'
+        else:
+            raise ValidationError({ 'order': 'Must be most or least' })
+
+        queryset = Office.objects.prefetch_related(
+            'services'
+        ).values(
+            'name'
+        ).annotate(
+            total_service=Count('services', distinct=True),
+        ).order_by(
+            listing
+        )[:5]
+
+        return Response(data=queryset, status=status.HTTP_200_OK)
+
+class RequirementAnalyticsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get(self, request, order):
+        if order == 'most':
+            listing = '-total_requirement'
+        elif order == 'least':
+            listing = 'total_requirement'
+        else:
+            raise ValidationError({ 'order': 'Must be most or least' })
+
+        queryset = Service.objects.prefetch_related(
+            'requirements'
+        ).values(
+            'office__name'
+        ).annotate(
+            total_requirement=Count('requirements', distinct=True)
+        ).order_by(listing)[:5]
+
+        return Response(data=queryset, status=status.HTTP_200_OK)
+
+class StepAnalyticsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get(self, request, order):
+        if order == 'most':
+            listing = '-total_step'
+        elif order == 'least':
+            listing = 'total_step'
+        else:
+            raise ValidationError({ 'order': 'Must be most or least' })
+
+        queryset = Service.objects.prefetch_related(
+            'steps'
+        ).values(
+            'office__name'
+        ).annotate(
+            total_step=Count('steps', distinct=True)
+        ).order_by(listing)[:5]
+
+        return Response(data=queryset, status=status.HTTP_200_OK)
+
+class PriceAnalyticsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get(self, request, order):
+        if order == 'most':
+            listing = '-total_price'
+        elif order == 'least':
+            listing = 'total_price'
+        else:
+            raise ValidationError({ 'order': 'Must be most or least' })
+
+        queryset = Step.objects.values(
+            'service__office__name'
+        ).annotate(
+            total_price=Sum('fee', distinct=True)
+        ).order_by(listing)[:5]
+
+        return Response(data=queryset, status=status.HTTP_200_OK)
+
+class TimeAnalyticsView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get(self, request, order):
+        if order == 'most':
+            listing = '-total_time'
+        elif order == 'least':
+            listing = 'total_time'
+        else:
+            raise ValidationError({ 'order': 'Must be most or least' })
+
+        queryset = Step.objects.values(
+            'service__office__name'
+        ).annotate(
+            total_time=Sum('processing_time', distinct=True)
+        ).order_by(listing)[:5]
+
+        return Response(data=queryset, status=status.HTTP_200_OK)
