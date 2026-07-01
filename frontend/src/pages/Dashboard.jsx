@@ -13,6 +13,8 @@ import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useOfficeAnalytics from "../hooks/useOfficeAnalytics";
 import { createTotalTime } from "../utils/createTotalTime";
+import { normalizeNumber } from "../utils/normalizeNumber";
+import { formatPrice } from "../utils/formatPrice";
 
 export default function Dashboard() {
   const { authTokens } = useContext(AuthContext);
@@ -54,11 +56,7 @@ export default function Dashboard() {
         Object.entries(data).map(([field, value]) => [
           field,
           (field === "number") ? (
-            /\.00$/.test(value) ? 
-              value.replace(/\.00$/, "") : 
-              /\.([1-9])0$/.test(value) ? 
-                value.replace(/\.([1-9])0$/, ".$1") : 
-                value
+            normalizeNumber(value)
           ) : (field === "name") ? (
             <TextArea 
               rowkey={key} 
@@ -125,7 +123,7 @@ export default function Dashboard() {
                   } 
                   number={
                     typeof value === "object" ? 
-                      `Php ${value.total_price}` :
+                      `Php ${formatPrice(value.total_price)}` :
                     value
                   } 
                   />

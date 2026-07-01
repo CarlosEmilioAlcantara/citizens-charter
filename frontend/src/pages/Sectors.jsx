@@ -27,6 +27,7 @@ import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useWindowWidth from "../hooks/useWindowWidth";
 import refreshList from "../utils/refreshList";
+import { normalizeNumber } from "../utils/normalizeNumber";
 // import { isDesktop } from "../utils/isDesktop";
 import { isTablet } from "../utils/isTablet";
 import { 
@@ -118,11 +119,7 @@ export default function Sectors() {
         Object.entries(data).map(([field, value]) => [
         field,
         (field === "number") ? (
-          /\.00$/.test(value) ? 
-            value.replace(/\.00$/, "") : 
-            /\.([1-9])0$/.test(value) ? 
-              value.replace(/\.([1-9])0$/, ".$1") : 
-              value
+          normalizeNumber(value) 
         ) : (field === "office_names") ? (
           <Button 
             disabled={data["office_names"].length < 1}
