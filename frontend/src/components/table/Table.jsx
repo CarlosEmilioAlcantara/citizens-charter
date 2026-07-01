@@ -11,6 +11,7 @@ export default function Table({
   charterAudit = false,
   serviceList = false,
   stepList = false,
+  analyticsList = false,
 }) {
   const renderHeaders = () => {
     if (charterList) {
@@ -177,6 +178,24 @@ export default function Table({
                 ${index === 3 && 'pr-[15px] text-end'}
                 ${index === 5 && 'pr-[32px] text-end'}
                 ${index === 6 && 'w-[124px] pr-[30px] text-end'}
+              `}
+            >
+              {header}
+            </th>
+          ))}
+        </tr>
+      )
+    }
+
+    if (analyticsList) {
+      return (
+        <tr>
+          {headers.map((header, index) => (
+            <th
+              key={index}
+              className={`p-1
+                ${index === 0 && 'w-[64px] pl-[24px]'}
+                ${index === 1 && 'w-[500px] text-left'}
               `}
             >
               {header}
@@ -367,6 +386,45 @@ export default function Table({
                     'w-[24px] text-center' : 
                   (isSubactionColumn || isServiceColumn || isPositionColumn) &&
                     'hidden'
+                }
+              `}
+            >
+              {value}
+            </td>
+          )
+        );
+      });
+    }
+
+    if (analyticsList) {
+      return Object.entries(data).map(([field, value]) => {
+        if (hideID && field === "id") {
+          return (
+            <td key={field} className="hidden">
+              {value}
+            </td>
+          );
+        }
+
+        const isNumberColumn = field === "number"
+        const isNameColumn = field === "name"
+        const isRequirementColumn = field === "total_requirement"
+        const isStepColumn = field === "total_step"
+        const isPriceColumn = field === "total_price"
+        const isTimeColumn = field === "total_time"
+
+        return (
+          value !== null && (
+            <td 
+              key={field}
+              className={`p-1 align-middle 
+                ${isNumberColumn ? 
+                    'w-[48px] pl-4 text-center' :
+                  isNameColumn ?
+                    'w-[400px]' :
+                  (isRequirementColumn || isStepColumn || isPriceColumn || isTimeColumn) ? 
+                    'w-[140px] text-center' :
+                    ''
                 }
               `}
             >

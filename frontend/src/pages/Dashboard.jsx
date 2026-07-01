@@ -7,6 +7,7 @@ import Table from "../components/table/Table";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import EntriesCounter from "../components/table_controls/EntriesCounter";
 import Pager from "../components/table_controls/Pager";
+import TextArea from "../components/inputs/TextArea";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 
@@ -49,9 +50,29 @@ export default function Dashboard() {
       {...Object.fromEntries(
         Object.entries(data).map(([field, value]) => [
           field,
-          (field === "total_requirement" && field === "0") ? (
+          (field === "number") ? (
+            /\.00$/.test(value) ? 
+              value.replace(/\.00$/, "") : 
+              /\.([1-9])0$/.test(value) ? 
+                value.replace(/\.([1-9])0$/, ".$1") : 
+                value
+          ) : (field === "name") ? (
+            <TextArea 
+              rowkey={key} 
+              field={field} 
+              value={value}
+            />
+          ) : (field === "total_requirement" && value === 0) ? (
             <span>None</span>
-          ) : value
+          ) : (field === "total_step" && value === null) ? (
+            <span>No Hakbang</span>
+          ) : (field === "total_price" && value === null) ? (
+            <span>No Presyo</span>
+          ) : (field === "total_time" && value === null) ? (
+            <span>No Oras</span>
+          ) : (
+            value
+          )
         ])
       )}
     ])
@@ -132,6 +153,8 @@ export default function Dashboard() {
               />,
             ]}
             body={tableItems}
+            analyticsList={true}
+            hideID={true}
           />
 
           <div className="
