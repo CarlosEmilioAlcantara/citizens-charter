@@ -195,7 +195,7 @@ export default function Table({
               key={index}
               className={`p-1
                 ${index === 0 && 'w-[64px] pl-[24px]'}
-                ${index === 1 && 'w-[500px] text-left'}
+                ${index === 1 && 'w-[500px] text-left xl:w-[620px]'}
               `}
             >
               {header}
@@ -421,7 +421,7 @@ export default function Table({
                 ${isNumberColumn ? 
                     'w-[48px] pl-4 text-center' :
                   isNameColumn ?
-                    'w-[400px]' :
+                    'w-[400px] xl:w-[500px]' :
                   (
                     isRequirementColumn || 
                     isStepColumn || 
