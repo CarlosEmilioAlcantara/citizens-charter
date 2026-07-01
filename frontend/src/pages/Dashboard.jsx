@@ -8,6 +8,7 @@ import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import EntriesCounter from "../components/table_controls/EntriesCounter";
 import Pager from "../components/table_controls/Pager";
 import TextArea from "../components/inputs/TextArea";
+import Card from "../components/collections/Card";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useOfficeAnalytics from "../hooks/useOfficeAnalytics";
@@ -107,6 +108,31 @@ export default function Dashboard() {
               Dashboard
             </h2>
 
+            <div className="flex justify-start gap-3 w-full">
+              {Object.entries(analytics).map(([field, value]) => (
+                field === "office_name" ? ('') : (
+                  <Card key={field} label={
+                    field === "total_service" ?
+                      "Total Serbisyo" :
+                    field === "total_requirement" ?
+                      "Total Kailangan" :
+                    field === "total_step" ?
+                      "Total Hakbang" :
+                    field === "total_price" ?
+                      "Total Presyo" :
+                    field === "total_time" &&
+                      "Total Oras"
+                  } 
+                  number={
+                    typeof value === "object" ? 
+                      `Php ${value.total_price}` :
+                    value
+                  } 
+                  />
+                )
+              ))}
+            </div>
+
             <div className="flex flex-col gap-3 w-full sm:flex-row">
               <PageSizeSelector 
                 label={pageSize} 
@@ -150,7 +176,7 @@ export default function Dashboard() {
                 onClick={closeControls}
               />,
               <TableHeader
-                label={"Haba"} 
+                label={"Oras"} 
                 order={"total_time"}
                 setOrdering={setOrdering}
                 onClick={closeControls}

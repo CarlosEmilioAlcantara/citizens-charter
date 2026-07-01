@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
 
 export default function useOfficeAnalytics(accessToken) {
-  const [analytics, setAnalytics] = useState([]);
+  const [analytics, setAnalytics] = useState({});
 
   const handleFetching = useCallback(async() => {
     try {
