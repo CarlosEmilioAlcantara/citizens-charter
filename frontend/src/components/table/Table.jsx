@@ -12,6 +12,7 @@ export default function Table({
   serviceList = false,
   stepList = false,
   analyticsList = false,
+  citizensCharterAnalytics = false,
 }) {
   const renderHeaders = () => {
     if (charterList) {
@@ -196,6 +197,28 @@ export default function Table({
               className={`p-1
                 ${index === 0 && 'w-[64px] pl-[24px]'}
                 ${index === 1 && 'w-[500px] text-left xl:w-[620px]'}
+              `}
+            >
+              {header}
+            </th>
+          ))}
+        </tr>
+      )
+    }
+
+    if (citizensCharterAnalytics) {
+      return (
+        <tr>
+          {headers.map((header, index) => (
+            <th
+              key={index}
+              className={`p-1
+                ${index === 0 && 'w-[500px] pl-[12px] text-left'}
+                ${index === 1 && 'w-[230px] pl-[88px] text-center'}
+                ${index === 2 && 'pl-[30px] text-center'}
+                ${index === 3 && 'pl-[20px] text-center'}
+                ${index === 4 && 'pl-[10px] text-center'}
+                ${index === 5 && 'pl-[10px] text-center'}
               `}
             >
               {header}
@@ -427,9 +450,51 @@ export default function Table({
                     isStepColumn || 
                     isPriceColumn || 
                     isTimeColumn
-                  ) ? 
-                    'w-[140px] text-center' :
-                    ''
+                  ) && 
+                    'w-[140px] text-center'
+                }
+              `}
+            >
+              {value}
+            </td>
+          )
+        );
+      });
+    }
+
+    if (citizensCharterAnalytics) {
+      return Object.entries(data).map(([field, value]) => {
+        if (hideID && field === "id") {
+          return (
+            <td key={field} className="hidden">
+              {value}
+            </td>
+          );
+        }
+
+        const isNameColumn = field === "name"
+        const isServiceColumn = field === "total_service"
+        const isRequirementColumn = field === "total_requirement"
+        const isStepColumn = field === "total_step"
+        const isPriceColumn = field === "total_price"
+        const isTimeColumn = field === "total_time"
+
+        return (
+          value !== null && (
+            <td 
+              key={field}
+              className={`p-3 align-middle 
+                ${ 
+                  isNameColumn ?
+                    'w-[400px] xl:w-[500px]' :
+                  (
+                    isServiceColumn ||
+                    isRequirementColumn || 
+                    isStepColumn || 
+                    isPriceColumn || 
+                    isTimeColumn
+                  ) &&
+                    'w-[140px] text-center'
                 }
               `}
             >
@@ -500,6 +565,7 @@ export default function Table({
         h-[500px]
         overflow-y-auto
         [&::-webkit-scrollbar]:w-1
+        [&::-webkit-scrollbar]:h-1
         [&::-webkit-scrollbar-track]:bg-transparent
         [&::-webkit-scrollbar-track]:rounded-full
         [&::-webkit-scrollbar-thumb]:rounded-full

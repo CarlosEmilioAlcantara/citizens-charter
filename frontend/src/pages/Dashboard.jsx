@@ -87,6 +87,8 @@ export default function Dashboard() {
             <span>No Hakbang</span>
           ) : (field === "total_price" && value === null) ? (
             <span>No Presyo</span>
+          ) : (field === "total_price" && value !== null) ? (
+            formatPrice(value)
           ) : (field === "total_time" && value === null) ? (
             <span>No Oras</span>
           ) : (field === "total_time" && value !== null) ? (

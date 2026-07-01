@@ -11,6 +11,8 @@ import Pager from "../components/table_controls/Pager";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useAnalytics from "../hooks/useAnalytics";
+import { createTotalTime } from "../utils/createTotalTime";
+import { formatPrice } from "../utils/formatPrice";
 
 export default function Analytics() {
   const { authTokens } = useContext(AuthContext);
@@ -51,7 +53,33 @@ export default function Analytics() {
     setAccessToken(authTokens.access);
   }, [setRoute, setAccessToken, authTokens.access])
 
-  console.log(items)
+  const tableItems = Object.fromEntries(
+    Object.entries(items).map(([key, data]) => [
+      key,
+      {...Object.fromEntries(
+        Object.entries(data).map(([field, value]) => [
+          field,
+          (field === "total_service" && value === 0) ? (
+            <span>No Serbisyo</span>
+          ) : (field === "total_requirement" && value === null) ? (
+            <span>None</span>
+          ) : (field === "total_step" && value === null) ? (
+            <span>No Hakbang</span>
+          ) : (field === "total_price" && value === null) ? (
+            <span>No Presyo</span>
+          ) : (field === "total_price" && value !== null) ? (
+            formatPrice(value)
+          ) : (field === "total_time" && value === null) ? (
+            <span>No Oras</span>
+          ) : (field === "total_time" && value !== null) ? (
+            createTotalTime(value)
+          ) : (
+            value
+          )
+        ])
+      )}
+    ])
+  )
 
   return (
     <>
@@ -103,37 +131,38 @@ export default function Analytics() {
                 onClick={closeControls}
               />,
               <TableHeader
-                label={"Dami ng Serbisyo"} 
+                label={"Serbisyo No."} 
                 order={"total_service"}
                 setOrdering={setOrdering}
                 onClick={closeControls}
               />,
               <TableHeader
-                label={"Dami ng Kailangan"} 
+                label={"Kailangan No."} 
                 order={"total_requirement"}
                 setOrdering={setOrdering}
                 onClick={closeControls}
               />,
               <TableHeader
-                label={"Dami ng Hakbang"} 
+                label={"Hakbang No."} 
                 order={"total_step"}
                 setOrdering={setOrdering}
                 onClick={closeControls}
               />,
               <TableHeader
-                label={"Presyo ng mga Serbisyo"} 
+                label={"Presyo"} 
                 order={"total_price"}
                 setOrdering={setOrdering}
                 onClick={closeControls}
               />,
               <TableHeader
-                label={"Haba ng mga Serbisyo"} 
+                label={"Haba"} 
                 order={"total_time"}
                 setOrdering={setOrdering}
                 onClick={closeControls}
               />,
             ]}
-            body={items}
+            body={tableItems}
+            citizensCharterAnalytics={true}
           />
           
           <div className="
