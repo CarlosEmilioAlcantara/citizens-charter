@@ -3,6 +3,7 @@ import { fetchAPI } from "../apis/fetchAPI";
 import { generatePdfAPI } from "../apis/generatePdfAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation"
+import Search from "../components/inputs/Search";
 import TableHeader from "../components/table/TableHeader";
 import Table from "../components/table/Table";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
@@ -33,6 +34,7 @@ export default function Dashboard() {
     setRoute,
     items,
     search,
+    setSearch,
     pageSize,
     setPageSize,
     ordering,
@@ -153,7 +155,15 @@ export default function Dashboard() {
             </div>
 
             <div className="flex flex-col gap-3 w-full sm:flex-row">
+              <Search 
+                placeholder={"Numero/Ngalan ng serbisyo"} 
+                value={search} 
+                setValue={setSearch}
+                onClick={closeControls}
+              />
+
               <Button 
+                reportButton={true}
                 label={"Lumikha ng Report"} 
                 icon={<FaPrint />} 
                 onClick={async () => {

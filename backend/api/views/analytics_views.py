@@ -49,7 +49,11 @@ class OfficeAnalyticsListView(ListAPIView):
     permission_classes = [IsAuthenticated, IsInOffice]
     serializer_class = OfficeAnalyticsListSerializer
     pagination_class = MyCustomPagination
-    filter_backends = [filters.OrderingFilter]
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    search_fields = ['number', 'name']
     ordering_fields = [
         'number', 
         'name', 
@@ -88,9 +92,6 @@ class CitizensCharterAnalyticsView(ListAPIView):
         total_price=Subquery(step_queryset.values('total_price')),
         total_time=Subquery(step_queryset.values('total_time'))
     ).values().order_by('name')
-
-    # for office in queryset:
-    #     office['total_time'] = create_total_time(office['total_time'])
 
     permission_classes = [IsAuthenticated, IsAdminUser]
     serializer_class = CitizensCharterAnalyticsListSerializer

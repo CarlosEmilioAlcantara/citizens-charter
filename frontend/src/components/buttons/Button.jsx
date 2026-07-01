@@ -7,6 +7,7 @@ export default function Button({
   remove = false,
   disabled = false,
   iconButton = false,
+  reportButton = false,
 }) {
   return(
     <button
@@ -17,7 +18,12 @@ export default function Button({
         justify-center
         items-center
         gap-2
-        ${full ? 'w-full' : 'w-auto'}
+        ${full ? 
+            'w-full' :
+          reportButton ?
+            'w-[280px]' :
+           'w-auto'
+        }
         ${large ? 'p-2' : 'px-2 py-1'}
         rounded-sm
         ${remove ? 'bg-danger' : 'bg-accent'}
