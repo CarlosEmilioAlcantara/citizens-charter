@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
 
-export default function useAnalytics(route, accessToken) {
+export default function useAnalytics({
+  name, 
+  setName, 
+  route, 
+  accessToken,
+}) {
   const [analytics, setAnalytics] = useState({});
 
   const handleFetching = useCallback(async() => {
@@ -21,5 +26,8 @@ export default function useAnalytics(route, accessToken) {
     }
   }, [accessToken, handleFetching])
 
-  return [analytics];
+  return {
+    [name]: analytics,
+    [setName]: setAnalytics,
+  };
 }

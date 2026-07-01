@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
@@ -10,7 +10,7 @@ import EntriesCounter from "../components/table_controls/EntriesCounter";
 import Pager from "../components/table_controls/Pager";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
-import useAnalytics from "../hooks/useAnalytics";
+import useCitizensCharterAnalytics from "../hooks/useCitizensCharterAnalytics";
 import { createTotalTime } from "../utils/createTotalTime";
 import { formatPrice } from "../utils/formatPrice";
 
@@ -41,10 +41,23 @@ export default function Analytics() {
     closeControls,
   } = useTableControls();
 
+  const {
+    setServiceOrder,
+    serviceAnalytics,
+    setRequirementOrder,
+    requirementAnalytics,
+    setStepOrder,
+    stepAnalytics,
+    setPriceOrder,
+    priceAnalytics,
+    setTimeOrder,
+    timeAnalytics,
+  } = useCitizensCharterAnalytics(accessToken);
+
   useEffect(() => {
     setRoute("/api/citizens-charter-analytics");
     setAccessToken(authTokens.access);
-  }, [setRoute, setAccessToken, authTokens.access])
+  }, [setRoute, setAccessToken, authTokens.access, serviceAnalytics])
 
   const tableItems = Object.fromEntries(
     Object.entries(items).map(([key, data]) => [

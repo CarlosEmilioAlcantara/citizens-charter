@@ -60,14 +60,17 @@ export default function Dashboard() {
     loadingMessage,
     setLoadingMessage,
   } = useLoader();
-  const [analytics] = useAnalytics("/api/office-analytics", accessToken);
+  const {officeAnalytics} = useAnalytics({
+    name: "officeAnalytics",
+    route: "/api/office-analytics", 
+    accessToken: accessToken,
+  });
   const [url, setUrl] = useState("");
 
   useEffect(() => {
     setRoute("/api/office-analytics-list");
     setAccessToken(authTokens.access);
-    console.log(analytics);
-  }, [setRoute, setAccessToken, authTokens.access, analytics])
+  }, [setRoute, setAccessToken, authTokens.access, officeAnalytics])
 
   const tableItems = Object.fromEntries(
     Object.entries(items).map(([key, data]) => [
@@ -130,7 +133,7 @@ export default function Dashboard() {
             </h2>
 
             <div className="flex justify-start gap-3 w-full">
-              {Object.entries(analytics).map(([field, value]) => (
+              {Object.entries(officeAnalytics).map(([field, value]) => (
                 field === "office_name" ? ('') : (
                   <Card key={field} label={
                     field === "total_service" ?
