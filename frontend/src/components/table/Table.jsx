@@ -422,7 +422,12 @@ export default function Table({
                     'w-[48px] pl-4 text-center' :
                   isNameColumn ?
                     'w-[400px]' :
-                  (isRequirementColumn || isStepColumn || isPriceColumn || isTimeColumn) ? 
+                  (
+                    isRequirementColumn || 
+                    isStepColumn || 
+                    isPriceColumn || 
+                    isTimeColumn
+                  ) ? 
                     'w-[140px] text-center' :
                     ''
                 }

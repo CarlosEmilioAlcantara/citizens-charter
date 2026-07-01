@@ -38,7 +38,7 @@ class OfficeAnalyticsListView(ListAPIView):
         'number',
         'name', 
         'total_requirement',
-        'total_step', 
+        'total_step',
         'total_price', 
         'total_time' 
     ).order_by('number')
@@ -50,7 +50,14 @@ class OfficeAnalyticsListView(ListAPIView):
         filters.SearchFilter,
         filters.OrderingFilter,
     ]
-    search_fields = ['number', 'name']
+    search_fields = [
+        'number', 
+        'name', 
+        'total_requirement', 
+        'total_step',
+        'total_price',
+        'total_time',
+    ]
 
     def get_queryset(self):
         excluded_queryset = self.queryset.filter(

@@ -31,7 +31,7 @@ import useOfficePositions from "../hooks/useOfficePositions";
 import refreshList from "../utils/refreshList";
 import { changeTime } from "../utils/changeTime";
 import { changePositions } from "../utils/changePositions";
-import { createTotalTime } from "../utils/createTotalTIme";
+import { createTotalTime } from "../utils/createTotalTime";
 import { 
   FaPlus, 
   FaTrashAlt, 

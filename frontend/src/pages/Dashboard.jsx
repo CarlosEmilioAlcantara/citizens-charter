@@ -10,6 +10,7 @@ import Pager from "../components/table_controls/Pager";
 import TextArea from "../components/inputs/TextArea";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
+import { createTotalTime } from "../utils/createTotalTime";
 
 export default function Dashboard() {
   const { authTokens } = useContext(AuthContext);
@@ -70,6 +71,8 @@ export default function Dashboard() {
             <span>No Presyo</span>
           ) : (field === "total_time" && value === null) ? (
             <span>No Oras</span>
+          ) : (field === "total_time" && value !== null) ? (
+            createTotalTime(value)
           ) : (
             value
           )
