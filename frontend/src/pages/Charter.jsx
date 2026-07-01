@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchAPI } from "../apis/fetchAPI";
 import { genericAPI } from "../apis/genericAPI";
-import { generateCharterAPI } from "../apis/generateCharterAPI";
+import { generatePdfAPI } from "../apis/generatePdfAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
 import Button from "../components/buttons/Button";
@@ -163,7 +163,7 @@ export default function Charter() {
                 setLoadingMessage("Naglilikha ng karta");
                 isDesktop(windowWidth) ? 
                   setUrl(await handleLoading({
-                    api: generateCharterAPI, 
+                    api: generatePdfAPI, 
                     route: `/api/pdf/citizens-charter/${data["id"]}`,
                     authTokens: authTokens, 
                     method: "GET",
@@ -174,7 +174,7 @@ export default function Charter() {
                 : 
                   window.open(
                     setUrl(await handleLoading({
-                      api: generateCharterAPI, 
+                      api: generatePdfAPI, 
                       route: `/api/pdf/citizens-charter/${data["id"]}`,
                       authTokens: authTokens, 
                       method: "GET",
@@ -306,7 +306,7 @@ export default function Charter() {
 
                   setLoadingMessage("Naglilikha ng Karta");
                   setUrl(await handleLoading({
-                    api: generateCharterAPI, 
+                    api: generatePdfAPI, 
                     route: "/api/pdf/citizens-charter",
                     authTokens: authTokens, 
                     method: "GET",

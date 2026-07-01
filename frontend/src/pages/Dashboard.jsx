@@ -1,5 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
+import { generatePdfAPI } from "../apis/generatePdfAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation"
 import TableHeader from "../components/table/TableHeader";
@@ -9,12 +10,19 @@ import EntriesCounter from "../components/table_controls/EntriesCounter";
 import Pager from "../components/table_controls/Pager";
 import TextArea from "../components/inputs/TextArea";
 import Card from "../components/collections/Card";
+import PDFViewer from "../components/modals/PDFViewer";
+import Loader from "../components/modals/Loader";
+import Button from "../components/buttons/Button";
+import Alert from "../components/modals/Alert";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useOfficeAnalytics from "../hooks/useOfficeAnalytics";
+import useLoader from "../hooks/useLoader";
 import { createTotalTime } from "../utils/createTotalTime";
 import { normalizeNumber } from "../utils/normalizeNumber";
 import { formatPrice } from "../utils/formatPrice";
+import refreshList from "../utils/refreshList";
+import { FaPrint } from "react-icons/fa";
 
 export default function Dashboard() {
   const { authTokens } = useContext(AuthContext);
@@ -27,6 +35,7 @@ export default function Dashboard() {
     search,
     pageSize,
     setPageSize,
+    ordering,
     setOrdering,
     prev,
     next,
@@ -41,7 +50,16 @@ export default function Dashboard() {
     togglePageSizeSelector,
     closeControls,
   } = useTableControls();
+  const {
+    toast, 
+    setToast, 
+    loading, 
+    handleLoading,
+    loadingMessage,
+    setLoadingMessage,
+  } = useLoader();
   const [analytics] = useOfficeAnalytics(accessToken);
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
     setRoute("/api/office-analytics-list");
@@ -83,6 +101,7 @@ export default function Dashboard() {
 
   return(
     <>
+      <Loader show={loading} message={loadingMessage} />
       <Navigation />
       <div className="
         flex 
@@ -132,6 +151,37 @@ export default function Dashboard() {
             </div>
 
             <div className="flex flex-col gap-3 w-full sm:flex-row">
+              <Button 
+                label={"Lumikha ng Report"} 
+                icon={<FaPrint />} 
+                onClick={async () => {
+                  closeControls();
+
+                  setLoadingMessage("Naglilikha ng Report");
+                  setUrl(await handleLoading({
+                    api: generatePdfAPI, 
+                    route: "/api/pdf/office-report",
+                    authTokens: authTokens, 
+                    method: "GET",
+                    messageSuccess: "Report Nalikha", 
+                    messageFail:"Report Paglikha Fail",
+                    generateCharter: true,
+                  }))
+
+                  refreshList({
+                    handlePaging: handlePaging,
+                    accessToken: accessToken,
+                    route: route,
+                    currentPage: currentPage,
+                    setCurrentPage: setCurrentPage,
+                    search: search,
+                    pageSize: pageSize,
+                    ordering: ordering,
+                    timeout: 300,
+                  });
+                }}
+              />
+
               <PageSizeSelector 
                 label={pageSize} 
                 setPageSize={setPageSize} 
@@ -211,6 +261,17 @@ export default function Dashboard() {
               setCurrentPage={setCurrentPage}
             />
           </div>
+
+          {url && (
+            <PDFViewer url={url.url} onClose={() => {setUrl(null)}}/>
+          )}
+          {toast && (
+            <Alert 
+              success={toast.success} 
+              message={toast.message} 
+              onClose={() => setToast(null)}
+            />
+          )}
         </div>
       </div>
     </>

@@ -1,4 +1,4 @@
-export const generateCharterAPI = async (
+export const generatePdfAPI = async (
   authTokens, 
   route, 
   method, 
