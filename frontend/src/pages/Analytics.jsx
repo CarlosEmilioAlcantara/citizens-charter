@@ -8,6 +8,7 @@ import Table from "../components/table/Table";
 import PageSizeSelector from "../components/table_controls/PageSizeSelector";
 import EntriesCounter from "../components/table_controls/EntriesCounter";
 import Pager from "../components/table_controls/Pager";
+import BarGraph from "../components/graphs/BarGraph";
 import usePaging from "../hooks/usePaging";
 import useTableControls from "../hooks/useTableControls";
 import useCitizensCharterAnalytics from "../hooks/useCitizensCharterAnalytics";
@@ -57,6 +58,13 @@ export default function Analytics() {
   useEffect(() => {
     setRoute("/api/citizens-charter-analytics");
     setAccessToken(authTokens.access);
+    console.log(
+      serviceAnalytics,
+      requirementAnalytics,
+      stepAnalytics,
+      priceAnalytics,
+      timeAnalytics,
+    )
   }, [setRoute, setAccessToken, authTokens.access, serviceAnalytics])
 
   const tableItems = Object.fromEntries(
@@ -170,7 +178,7 @@ export default function Analytics() {
             body={tableItems}
             citizensCharterAnalytics={true}
           />
-          
+
           <div className="
             flex 
             flex-col 
@@ -197,6 +205,36 @@ export default function Analytics() {
               setCurrentPage={setCurrentPage}
             />
           </div>
+
+          <BarGraph 
+            label={"Mga opisina na may pinakamarami serbisyo"}
+            data={serviceAnalytics}
+            dataName={"total_service"}
+          />
+
+          <BarGraph 
+            label={"Mga opisina na may pinakamarami kailangan"}
+            data={requirementAnalytics}
+            dataName={"total_requirement"}
+          />
+
+          <BarGraph 
+            label={"Mga opisina na may pinakamarami hakbang"}
+            data={stepAnalytics}
+            dataName={"total_step"}
+          />
+
+          <BarGraph 
+            label={"Mga opisina na may pinakamahal na serbisyo"}
+            data={priceAnalytics}
+            dataName={"total_price"}
+          />
+
+          <BarGraph 
+            label={"Mga opisina na may pinakamahaba na serbisyo"}
+            data={timeAnalytics}
+            dataName={"total_time"}
+          />
         </div>
       </div>
     </>

@@ -1,4 +1,4 @@
-from django.db.models import Sum, Count, OuterRef, Subquery
+from django.db.models import Sum, Count, OuterRef, Subquery, F
 from rest_framework import status, filters
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
@@ -128,7 +128,7 @@ class ServiceAnalyticsView(APIView):
         queryset = Office.objects.prefetch_related(
             'services'
         ).values(
-            'name'
+            office_name=F('name')
         ).annotate(
             total_service=Count('services', distinct=True),
         ).order_by(
@@ -151,7 +151,7 @@ class RequirementAnalyticsView(APIView):
         queryset = Service.objects.prefetch_related(
             'requirements'
         ).values(
-            'office__name'
+            office_name=F('office__name')
         ).annotate(
             total_requirement=Count('requirements', distinct=True)
         ).order_by(listing)[:5]
@@ -172,7 +172,7 @@ class StepAnalyticsView(APIView):
         queryset = Service.objects.prefetch_related(
             'steps'
         ).values(
-            'office__name'
+            office_name=F('office__name')
         ).annotate(
             total_step=Count('steps', distinct=True)
         ).order_by(listing)[:5]
@@ -191,7 +191,7 @@ class PriceAnalyticsView(APIView):
             raise ValidationError({ 'order': 'Must be most or least' })
 
         queryset = Step.objects.values(
-            'service__office__name'
+            office_name=F('service__office__name')
         ).annotate(
             total_price=Sum('fee', distinct=True)
         ).order_by(listing)[:5]
@@ -210,7 +210,7 @@ class TimeAnalyticsView(APIView):
             raise ValidationError({ 'order': 'Must be most or least' })
 
         queryset = Step.objects.values(
-            'service__office__name'
+            office_name=F('service__office__name')
         ).annotate(
             total_time=Sum('processing_time', distinct=True)
         ).order_by(listing)[:5]

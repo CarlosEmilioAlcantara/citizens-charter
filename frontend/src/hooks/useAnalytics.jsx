@@ -7,7 +7,7 @@ export default function useAnalytics({
   route, 
   accessToken,
 }) {
-  const [analytics, setAnalytics] = useState({});
+  const [analytics, setAnalytics] = useState([]);
 
   const handleFetching = useCallback(async() => {
     try {
