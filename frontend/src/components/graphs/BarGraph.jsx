@@ -1,7 +1,7 @@
 import { Bar } from "react-chartjs-2";
 import { Chart, BarController, BarElement } from "chart.js/auto";
 
-export default function BarGraph({ label, data, dataName }) {
+export default function BarGraph({ label, data, dataName, toggleOrder }) {
   const accent = getComputedStyle(
     document.documentElement
   ).getPropertyValue(
@@ -20,6 +20,7 @@ export default function BarGraph({ label, data, dataName }) {
 
   return(
     <div>
+      <p onClick={() => toggleOrder()}>test</p>
       <Bar data={formattedData} />
     </div>
   );

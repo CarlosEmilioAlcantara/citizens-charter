@@ -37,16 +37,30 @@ export default function useCitizensCharterAnalytics(accessToken) {
     accessToken: accessToken,
   });
 
+  const toggleOrder = (order, setOrder) => {
+    if (order === "most") {
+      setOrder("least");
+    } else {
+      setOrder("most");
+    }
+  }
+
   return {
+    serviceOrder,
     setServiceOrder,
     serviceAnalytics,
+    requirementOrder,
     setRequirementOrder,
     requirementAnalytics,
+    stepOrder,
     setStepOrder,
     stepAnalytics,
+    priceOrder,
     setPriceOrder,
     priceAnalytics,
+    timeOrder,
     setTimeOrder,
     timeAnalytics,
+    toggleOrder,
   }
 }

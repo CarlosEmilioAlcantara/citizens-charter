@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { fetchAPI } from "../apis/fetchAPI";
 import AuthContext from "../context/AuthContext";
 import Navigation from "../components/navigation/Navigation";
@@ -43,16 +43,22 @@ export default function Analytics() {
   } = useTableControls();
 
   const {
+    serviceOrder,
     setServiceOrder,
     serviceAnalytics,
+    requirementOrder,
     setRequirementOrder,
     requirementAnalytics,
+    stepOrder,
     setStepOrder,
     stepAnalytics,
+    priceOrder,
     setPriceOrder,
     priceAnalytics,
+    timeOrder,
     setTimeOrder,
     timeAnalytics,
+    toggleOrder,
   } = useCitizensCharterAnalytics(accessToken);
 
   useEffect(() => {
@@ -210,30 +216,38 @@ export default function Analytics() {
             label={"Mga opisina na may pinakamarami serbisyo"}
             data={serviceAnalytics}
             dataName={"total_service"}
+            toggleOrder={() => toggleOrder(serviceOrder, setServiceOrder)}
           />
 
           <BarGraph 
             label={"Mga opisina na may pinakamarami kailangan"}
             data={requirementAnalytics}
             dataName={"total_requirement"}
+            toggleOrder={() => toggleOrder(
+              requirementOrder, 
+              setRequirementOrder,
+            )}
           />
 
           <BarGraph 
             label={"Mga opisina na may pinakamarami hakbang"}
             data={stepAnalytics}
             dataName={"total_step"}
+            toggleOrder={() => toggleOrder(stepOrder, setStepOrder)}
           />
 
           <BarGraph 
             label={"Mga opisina na may pinakamahal na serbisyo"}
             data={priceAnalytics}
             dataName={"total_price"}
+            toggleOrder={() => toggleOrder(priceOrder, setPriceOrder)}
           />
 
           <BarGraph 
             label={"Mga opisina na may pinakamahaba na serbisyo"}
             data={timeAnalytics}
             dataName={"total_time"}
+            toggleOrder={() => toggleOrder(timeOrder, setTimeOrder)}
           />
         </div>
       </div>
